@@ -1,0 +1,349 @@
+Searching 48 files for "$message1="Assigned Team Member  id-".$iggd." Name-".$name."";"
+
+/home/randhava/cansia/canada/app/Controllers/Ainp_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Aipp_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Amend_immi_doc_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/BC_PNP_heathcare_prof_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/BC_PNP_semi_skilled_long_haul_truck.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/BC_pnp_sw_in_can_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Bc_pnp_sw_overseas_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/BC_PNP_tech_pilot_skill_worker.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Bridging_open_wp_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Canadian_exp_class.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Caregivers_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Citizenship_application_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Family_sponsorship_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/FSTW_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/FSW_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Indian_visa_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/International_exp_class_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Minp_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Oci.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Pr_card_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/RNIP_sault_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/RNIP_vernon_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/RNIP_west_kootenay_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+/home/randhava/cansia/canada/app/Controllers/Travel_doc_application_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+24 matches across 24 files
+
+
+Searching 48 files for "essage1="Assigned Team Member  id-".$iggd." Name-".$name."";"
+
+/home/randhava/cansia/canada/app/Controllers/Ainp_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";
+  282  
+  283  
+
+1 match in 1 file
+
+
+Searching 48 files for "$message1="Assigned Team Member  id-".$iggd." Name-".$name."";"
+
+/home/randhava/cansia/canada/app/Controllers/Aipp_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Amend_immi_doc_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/BC_PNP_heathcare_prof_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/BC_PNP_semi_skilled_long_haul_truck.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/BC_pnp_sw_in_can_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Bc_pnp_sw_overseas_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/BC_PNP_tech_pilot_skill_worker.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Bridging_open_wp_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Canadian_exp_class.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Caregivers_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Citizenship_application_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Family_sponsorship_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/FSTW_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/FSW_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Indian_visa_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/International_exp_class_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Minp_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Oci.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Pr_card_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/RNIP_sault_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/RNIP_vernon_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/RNIP_west_kootenay_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+/home/randhava/cansia/canada/app/Controllers/Travel_doc_application_na.php:
+  279  
+  280  
+  281: $message1="Assigned Team Member  id-".$iggd." Name-".$name."";  282: 
+  283  
+  284  $phone = array('919653364499','17782575709');
+
+23 matches across 23 files

@@ -1,0 +1,4 @@
+# Track only the app/ folder — ignore everything else at the project root
+/*
+!/app
+!/.gitignore
