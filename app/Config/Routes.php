@@ -70,6 +70,9 @@ $routes->post('appoint/AppointAdmin/reschedule/(:num)',   'Appoint\AppointAdmin:
 $routes->get( 'appoint/AppointAdmin/team_schedule',       'Appoint\AppointAdmin::team_schedule');
 $routes->get( 'appoint/AppointAdmin/team_schedule_export','Appoint\AppointAdmin::team_schedule_export');
 
+// --- Agreement ---
+$routes->get( 'agreement/Agreement/dashboard',       'Agreement\Agreement::dashboard');
+
 
 /**
  * --------------------------------------------------------------------

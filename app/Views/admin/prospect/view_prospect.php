@@ -217,9 +217,10 @@ function add_status(id,st)
                 <!--th >Number</th-->
               
                 <th >Admin Status</th>
-                
-               
-               
+                <th >Retainer Agreement</th>
+
+
+
                                             </tr>
                                         </thead>
                                         
@@ -406,7 +407,13 @@ function add_status(id,st)
                                                
                                              
                                                <td><?php echo $allcat['admin_status'];?></td>
-      
+                                               <td style="min-width:170px;">
+                                                    <div style="border:1px dashed #ccc;border-radius:8px;background:#fafafa;padding:14px 10px;text-align:center;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+                                                        <div style="font-size:12px;color:#999;margin-bottom:10px;">No Agreement<br>(Not Created Yet)</div>
+                                                        <a href="#" style="display:inline-block;border:1px solid #1a73e8;color:#1a73e8;background:#fff;border-radius:5px;padding:5px 12px;font-size:12px;font-weight:600;text-decoration:none;">+ Create Agreement</a>
+                                                    </div>
+                                               </td>
                                             </tr>
                                            <?php } ?>
                                            

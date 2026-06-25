@@ -116,11 +116,24 @@
                                     <a class="nav-link" href="<?php echo base_url();?>/appoint/AppointAdmin/dashboard">Manage All Appointment</a>
                                       <!--a class="nav-link" href="<?php echo base_url();?>/appoint/Appoint/add">Add Appointment</a-->
                                     <a class="nav-link" href="<?php echo base_url();?>/appoint/Appoint/index">View My Appointments</a>
-                                    <a class="nav-link" href="<?php echo base_url();?>/appoint/AppointAdmin/team_schedule">Team Appointments slot</a> 
+                                    <a class="nav-link" href="<?php echo base_url();?>/appoint/AppointAdmin/team_schedule">Team Appointments slot</a>
 
                                 </nav>
                             </div>
-							  
+
+                              <!---->
+                                  <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#agreementMenu" aria-expanded="false" aria-controls="agreementMenu"
+                                ><div class="sb-nav-link-icon"><i style="color:#e23b3b" class="fas fa-file-signature"></i></div>
+                                Agreement
+                                <div class="sb-sidenav-collapse-arrow"><i  class="fas fa-angle-down"></i></div
+                            ></a>
+                            <div class="collapse" id="agreementMenu" aria-labelledby="headingtwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+
+                                    <a class="nav-link" href="<?php echo base_url();?>/agreement/Agreement/dashboard">Dashboard</a>
+
+                                </nav>
+                            </div>
                               <!---->
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts"
                                 ><div class="sb-nav-link-icon"><i style="color:#F4B400" class="fa fa-user-circle"></i></div>
