@@ -10,6 +10,7 @@
         <link href="<?php echo base_url();?>/public/dist/css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <style>
             .agreement-dashboard { font-family: 'Segoe UI', Arial, sans-serif; color: #1f2430; padding-top: 6px; }
             .agreement-dashboard * { box-sizing: border-box; }
@@ -113,7 +114,7 @@
                     <div class="container-fluid agreement-dashboard">
 
                         <div class="ag-topbar-row">
-                            <button class="ag-btn-create">
+                            <button class="ag-btn-create" id="ag-btn-create" onclick="caOpen()">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                                 Create New Agreement
                             </button>
@@ -342,11 +343,15 @@
                         </div>
 
                     </div>
+
+                    <?= view('agreement/_create_modal'); ?>
+
                 </main>
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="<?php echo base_url();?>/public/dist/js/scripts.js"></script>
     </body>
 </html>

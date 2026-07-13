@@ -56,6 +56,26 @@ public function getentery_client(){
                    ->findAll();
     }
 
+    // Client-only search (entery_status='client') for the "Create New Agreement" client picker,
+    // since only clients have applications to attach an agreement to.
+    public function searchActiveClients(string $q = '', int $limit = 50): array
+    {
+        $builder = $this->select('id, heading, email, number, cc')
+            ->where('entery_status', 'client')
+            ->groupStart()->where('hide_prospect', null)->orWhere('hide_prospect !=', 1)->groupEnd()
+            ->orderBy('id', 'desc');
+
+        if ($q !== '') {
+            $builder->groupStart()
+                ->like('heading', $q)->orLike('id', $q)->orLike('number', $q)->orLike('email', $q)
+                ->groupEnd();
+        }
+
+        // findAll()'s own $limit param always wins over an earlier ->limit() call
+        // (it unconditionally re-applies limit(0) internally when called bare), so pass it here.
+        return $builder->findAll($limit);
+    }
+
 
 
 

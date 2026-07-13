@@ -58,6 +58,19 @@ class Client_application_model extends Model {
       //return $this->findAll();
     }
 
+      // Returns [id, siaportalid] pairs for applications belonging to the given prospect/client ids.
+      public function getApplicationIdsByProspectIds(array $prospectIds){
+
+       if (empty($prospectIds)) {
+           return [];
+       }
+
+       return $this->db->table('client_application')
+       ->select('client_application.id, client_application.siaportalid')
+       ->whereIn('client_application.siaportalid', $prospectIds)
+       ->get()->getResultArray();
+    }
+
       public function get_detail($id){
 
        return $this->db->table('client_application')

@@ -27,6 +27,7 @@ use App\Models\Immigration_enquiry_model;
 use App\Models\Work_and_eduction_model;
 
 use App\Models\Client_application_model;
+use App\Models\Agreement\Agreement_model;
 use codeigniter\controller;
 use CodeIgniter\I18n\Time;
 use CodeIgniter\HTTP\Files\UploadedFile;
@@ -3479,8 +3480,19 @@ if($entries=='all'){
 
 	$teamMembers = $db->query("SELECT id, firstname, lastname FROM tbl_reg WHERE status=1 AND type='Employee' ORDER BY firstname ASC")->getResultArray();
 
+	$clientRows = $query->orderBy('id', 'desc')->paginate(50);
+
+	// Agreement status keyed by application_id, for the applications belonging to clients on this page
+	$ApplicationModel = new Client_application_model();
+	$applicationIdsOnPage = array_column(
+		$ApplicationModel->getApplicationIdsByProspectIds(array_column($clientRows, 'id')),
+		'id'
+	);
+	$AgreementModel = new Agreement_model();
+	$agreementStatus = $AgreementModel->getStatusByApplicationIds($applicationIdsOnPage);
+
 	$data = [
-			'client'          => $query->orderBy('id', 'desc')->paginate(50),
+			'client'          => $clientRows,
 			'pager'           => $Prospect->pager,
 			'dupProspectIds'  => $dupProspectIds,
 			'dupClientIds'    => $dupClientIds,
@@ -3489,6 +3501,7 @@ if($entries=='all'){
 			'search_phone' => $search_phone,
 			'bookedIds'    => $bookedIds,
 			'teamMembers'  => $teamMembers,
+			'agreementStatus' => $agreementStatus,
 		];
 // $data = [
 //     'client' => $Prospect

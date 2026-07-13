@@ -72,6 +72,11 @@ $routes->get( 'appoint/AppointAdmin/team_schedule_export','Appoint\AppointAdmin:
 
 // --- Agreement ---
 $routes->get( 'agreement/Agreement/dashboard',       'Agreement\Agreement::dashboard');
+$routes->post('agreement/Agreement/start_from_application/(:num)', 'Agreement\Agreement::start_from_application/$1');
+$routes->get( 'agreement/Agreement/detail/(:num)',   'Agreement\Agreement::detail/$1');
+$routes->get( 'agreement/Agreement/search_clients',  'Agreement\Agreement::search_clients');
+$routes->get( 'agreement/Agreement/applications_for_client/(:num)', 'Agreement\Agreement::applications_for_client/$1');
+$routes->post('agreement/Agreement/save/(:num)',     'Agreement\Agreement::save/$1');
 
 
 /**
