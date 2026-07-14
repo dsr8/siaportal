@@ -31,10 +31,24 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
   `send_reminder`                TINYINT(1) DEFAULT 1,
   `reminder_days`    INT(11) DEFAULT 3,
   `max_reminders`    INT(11) DEFAULT 2,
+  `sign_token`         VARCHAR(64)  DEFAULT NULL COMMENT 'generated lazily when a signing link is first created',
+  `viewed_at`          DATETIME     DEFAULT NULL,
+  `viewed_ip`          VARCHAR(45)  DEFAULT NULL,
+  `consultant_signature` VARCHAR(255) DEFAULT NULL COMMENT 'file path under public/assets/agreement_signatures/',
+  `client_signature`      VARCHAR(255) DEFAULT NULL COMMENT 'file path, current (draft or final) client signature image',
+  `client_signature_type` VARCHAR(10)  DEFAULT NULL COMMENT 'draw|type|upload',
+  `client_typed_name`     VARCHAR(150) DEFAULT NULL COMMENT 'only set when signature_type = type',
+  `consent_accepted`   TINYINT(1)   NOT NULL DEFAULT 0,
+  `client_signed_at`   DATETIME     DEFAULT NULL,
+  `client_signed_ip`   VARCHAR(45)  DEFAULT NULL,
+  `client_signed_device` VARCHAR(255) DEFAULT NULL COMMENT 'user agent string, captured at signing',
+  `declined_at`        DATETIME     DEFAULT NULL,
+  `decline_reason`     VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_application_id` (`application_id`),
   KEY `idx_prospect_id` (`prospect_id`),
-  UNIQUE KEY `uniq_active_application` (`active_application_id`)
+  UNIQUE KEY `uniq_active_application` (`active_application_id`),
+  UNIQUE KEY `uniq_sign_token` (`sign_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Run these ALTERs if upgrading an existing table created before the unique-active-application guard:
@@ -62,3 +76,20 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
 --   ADD COLUMN `send_reminder` TINYINT(1) DEFAULT 1,
 --   ADD COLUMN `reminder_days` INT(11) DEFAULT 3,
 --   ADD COLUMN `max_reminders` INT(11) DEFAULT 2;
+
+-- Run these ALTERs if upgrading an existing table created before the client signing page:
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `sign_token` VARCHAR(64) DEFAULT NULL AFTER `max_reminders`,
+--   ADD COLUMN `viewed_at` DATETIME DEFAULT NULL,
+--   ADD COLUMN `viewed_ip` VARCHAR(45) DEFAULT NULL,
+--   ADD COLUMN `consultant_signature` VARCHAR(255) DEFAULT NULL,
+--   ADD COLUMN `client_signature` VARCHAR(255) DEFAULT NULL,
+--   ADD COLUMN `client_signature_type` VARCHAR(10) DEFAULT NULL,
+--   ADD COLUMN `client_typed_name` VARCHAR(150) DEFAULT NULL,
+--   ADD COLUMN `consent_accepted` TINYINT(1) NOT NULL DEFAULT 0,
+--   ADD COLUMN `client_signed_at` DATETIME DEFAULT NULL,
+--   ADD COLUMN `client_signed_ip` VARCHAR(45) DEFAULT NULL,
+--   ADD COLUMN `client_signed_device` VARCHAR(255) DEFAULT NULL,
+--   ADD COLUMN `declined_at` DATETIME DEFAULT NULL,
+--   ADD COLUMN `decline_reason` VARCHAR(255) DEFAULT NULL,
+--   ADD UNIQUE KEY `uniq_sign_token` (`sign_token`);

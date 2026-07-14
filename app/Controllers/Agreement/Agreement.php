@@ -161,6 +161,7 @@ class Agreement extends BaseController
         $data['typeOptions']     = $TypeClient->getpost();
         $data['milestones']      = $MilestoneModel->getByAgreementId($agreement['id']);
         $data['additionalFees']  = $AdditionalFeeModel->getByAgreementId($agreement['id']);
+        $data['signUrl']         = !empty($agreement['sign_token']) ? base_url('agreement/sign/' . $agreement['sign_token']) : null;
 
         return view('agreement/detail', $data);
     }
@@ -228,5 +229,32 @@ class Agreement extends BaseController
         $AdditionalFeeModel->replaceAll($id, $post['additional_fees'] ?? []);
 
         return redirect()->to(base_url('agreement/Agreement/detail/' . $id))->with('message', 'Draft saved.');
+    }
+
+    // Minimal stand-in for the full "Send for eSign" flow (email + reminders, built in a later phase):
+    // generates the signing-link token and moves the agreement out of draft so the link is reachable.
+    public function generate_link($id = null)
+    {
+        if (!$this->isAuthorized()) {
+            return redirect()->to(base_url());
+        }
+
+        if ($this->request->getMethod() !== 'post') {
+            return redirect()->to(base_url());
+        }
+
+        $id = (int) $id;
+        $AgreementModel = new Agreement_model();
+        $agreement = $AgreementModel->find($id);
+        if (!$agreement || (int) $agreement['hide'] === 1) {
+            return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Agreement not found.');
+        }
+
+        $agreement = $AgreementModel->ensureSignToken($agreement);
+        if ($agreement['status'] === 'draft') {
+            $AgreementModel->update($id, ['status' => 'sent']);
+        }
+
+        return redirect()->to(base_url('agreement/Agreement/detail/' . $id))->with('message', 'Signing link generated.');
     }
 }

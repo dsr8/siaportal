@@ -15,6 +15,10 @@ class Agreement_model extends Model
         'service_fee', 'gst_rate', 'gst_amount', 'government_fee', 'other_fee', 'total_amount',
         'require_client_signature', 'require_consultant_signature', 'email_verification',
         'send_reminder', 'reminder_days', 'max_reminders',
+        'sign_token', 'viewed_at', 'viewed_ip', 'consultant_signature',
+        'client_signature', 'client_signature_type', 'client_typed_name', 'consent_accepted',
+        'client_signed_at', 'client_signed_ip', 'client_signed_device',
+        'declined_at', 'decline_reason',
     ];
 
     // Latest non-hidden agreement for a specific application, or null if none exists yet.
@@ -67,6 +71,31 @@ class Agreement_model extends Model
         $agreement['reference_number'] = $refNumber;
 
         return $agreement;
+    }
+
+    // Generates and persists the signing-link token the first time it's needed.
+    public function ensureSignToken(array $agreement): array
+    {
+        if (!empty($agreement['sign_token'])) {
+            return $agreement;
+        }
+
+        $token = bin2hex(random_bytes(24));
+        $this->update($agreement['id'], ['sign_token' => $token]);
+        $agreement['sign_token'] = $token;
+
+        return $agreement;
+    }
+
+    public function findByToken(string $token): ?array
+    {
+        if ($token === '') {
+            return null;
+        }
+
+        return $this->where('sign_token', $token)
+                    ->where('hide', 0)
+                    ->first();
     }
 
     // Lookup array keyed by application_id -> latest non-hidden agreement row, for status badges on the client list.

@@ -282,9 +282,24 @@
                                     <div class="ca-actions-row">
                                         <button type="button" class="ca-btn-draft" onclick="document.getElementById('caEditForm').submit();">Save as Draft</button>
                                         <button type="button" class="ca-btn-save" onclick="document.getElementById('caEditForm').submit();">Save &amp; Generate Preview</button>
-                                        <button type="button" class="ca-btn-send" onclick="caComingSoon('Sending for eSign will be available in a later phase.')">Send for eSign</button>
+                                        <button type="button" class="ca-btn-send" onclick="caComingSoon('Sending for eSign (with email + reminders) will be available in a later phase.')">Send for eSign</button>
                                     </div>
                                     <div class="ca-note">Dynamic fields are editable and will appear in the final agreement. Fee/milestone changes update the live preview instantly. Sending and PDF generation are not available yet.</div>
+
+                                    <div class="ca-note" style="background:#fff8e6;margin-top:10px;">
+                                        <strong>Signing link (preview)</strong> — until the full Send flow above is built, use this to generate/open the link a client would use to eSign.
+                                        <?php if (!empty($signUrl)): ?>
+                                            <div style="display:flex;gap:8px;margin-top:8px;">
+                                                <input type="text" readonly value="<?php echo esc($signUrl); ?>" id="caSignUrl" style="flex:1;padding:6px 10px;border:1px solid #d8dce1;border-radius:6px;font-size:12.5px;">
+                                                <button type="button" class="ca-btn-add" onclick="navigator.clipboard.writeText(document.getElementById('caSignUrl').value); caComingSoon('Link copied.');">Copy</button>
+                                                <a href="<?php echo esc($signUrl); ?>" target="_blank" class="ca-btn-add" style="text-decoration:none;display:inline-flex;align-items:center;">Open</a>
+                                            </div>
+                                        <?php else: ?>
+                                            <form method="post" action="<?php echo base_url('agreement/Agreement/generate_link/' . $agreement['id']); ?>" style="margin-top:8px;">
+                                                <button type="submit" class="ca-btn-add">Generate Signing Link</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
 
                             </div>

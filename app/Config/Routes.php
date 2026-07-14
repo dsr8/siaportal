@@ -77,6 +77,13 @@ $routes->get( 'agreement/Agreement/detail/(:num)',   'Agreement\Agreement::detai
 $routes->get( 'agreement/Agreement/search_clients',  'Agreement\Agreement::search_clients');
 $routes->get( 'agreement/Agreement/applications_for_client/(:num)', 'Agreement\Agreement::applications_for_client/$1');
 $routes->post('agreement/Agreement/save/(:num)',     'Agreement\Agreement::save/$1');
+$routes->post('agreement/Agreement/generate_link/(:num)', 'Agreement\Agreement::generate_link/$1');
+
+// --- Agreement Sign (public, no login — reached via emailed signing link) ---
+$routes->get( 'agreement/sign/(:any)',           'Agreement\Sign::index/$1');
+$routes->post('agreement/sign/(:any)/draft',     'Agreement\Sign::draft/$1');
+$routes->post('agreement/sign/(:any)/submit',    'Agreement\Sign::submit/$1');
+$routes->post('agreement/sign/(:any)/decline',   'Agreement\Sign::decline/$1');
 
 
 /**
