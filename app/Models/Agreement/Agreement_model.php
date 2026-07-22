@@ -12,13 +12,16 @@ class Agreement_model extends Model
         'application_id', 'prospect_id', 'client_name', 'client_email', 'client_phone',
         'category_id', 'type_id', 'status', 'hide', 'created_by', 'insert_on', 'update_on',
         'reference_number', 'agreement_date', 'consultant_name', 'rcic_number', 'currency', 'template_name',
-        'service_fee', 'gst_rate', 'gst_amount', 'government_fee', 'other_fee', 'total_amount',
+        'service_fee', 'gst_rate', 'gst_amount', 'government_fee',
+        'govt_proc_main', 'govt_proc_spouse', 'govt_proc_dep_above22', 'govt_proc_dep_under22',
+        'govt_pr_main', 'govt_pr_spouse', 'govt_pr_pnp',
+        'other_fee', 'total_amount',
         'require_client_signature', 'require_consultant_signature', 'email_verification',
         'send_reminder', 'reminder_days', 'max_reminders',
-        'sign_token', 'viewed_at', 'viewed_ip', 'consultant_signature',
+        'sign_token', 'last_sent_at', 'viewed_at', 'viewed_ip', 'consultant_signature',
         'client_signature', 'client_signature_type', 'client_typed_name', 'consent_accepted',
         'client_signed_at', 'client_signed_ip', 'client_signed_device',
-        'declined_at', 'decline_reason',
+        'declined_at', 'decline_reason', 'custom_clauses', 'pdf_path',
     ];
 
     // Latest non-hidden agreement for a specific application, or null if none exists yet.
@@ -66,11 +69,26 @@ class Agreement_model extends Model
             return $agreement;
         }
 
-        $refNumber = 'SIA-' . date('Y') . '-' . str_pad((string) $agreement['id'], 6, '0', STR_PAD_LEFT);
+        $refNumber = 'SIA-' . date('Y') . '-' . $agreement['id'];
         $this->update($agreement['id'], ['reference_number' => $refNumber]);
         $agreement['reference_number'] = $refNumber;
 
         return $agreement;
+    }
+
+    // Atomically transitions the agreement to 'signed' only if it's still actionable
+    // (sent|viewed) — the guard against duplicate submissions (double-click, a retried
+    // request) racing each other into two "signed" states and two client emails. Returns
+    // false if another request already won the race, so the caller can skip re-sending
+    // the confirmation email / regenerating the PDF.
+    public function claimSigning(int $id, array $data): bool
+    {
+        $this->builder()
+            ->where('id', $id)
+            ->whereIn('status', ['sent', 'viewed'])
+            ->update($data);
+
+        return $this->db->affectedRows() > 0;
     }
 
     // Generates and persists the signing-link token the first time it's needed.
@@ -85,6 +103,96 @@ class Agreement_model extends Model
         $agreement['sign_token'] = $token;
 
         return $agreement;
+    }
+
+    // Dashboard stat cards. "Pending Signature" means the client actually has something to
+    // sign — sent/viewed only. A draft was never sent, so it doesn't belong in that count; it
+    // only shows up in the running total until "Send for eSign" moves it into sent/viewed.
+    public function getDashboardCounts(): array
+    {
+        $counts = ['pending' => 0, 'signed' => 0, 'declined' => 0, 'total' => 0];
+
+        $rows = $this->db->table($this->table)
+            ->select('status, COUNT(*) as c')
+            ->where('hide', 0)
+            ->groupBy('status')
+            ->get()->getResultArray();
+
+        foreach ($rows as $row) {
+            $c = (int) $row['c'];
+            $counts['total'] += $c;
+            if (in_array($row['status'], ['sent', 'viewed'], true)) {
+                $counts['pending'] += $c;
+            } elseif ($row['status'] === 'signed') {
+                $counts['signed'] += $c;
+            } elseif ($row['status'] === 'declined') {
+                $counts['declined'] += $c;
+            }
+        }
+
+        return $counts;
+    }
+
+    // Count of archived (soft-hidden) agreements, for the "View Archived" toggle's badge.
+    public function getArchivedCount(): int
+    {
+        return $this->where('hide', 1)->countAllResults();
+    }
+
+    // Shared WHERE/JOIN builder for the dashboard table — called fresh for both the count
+    // and the paginated list so the two never share (and accidentally leak) builder state.
+    // $filters: q (matches client name, phone, email, agreement id, or client SIA id — the
+    // single Search box), date_from, date_to (against insert_on), type_id, status_bucket
+    // (pending|sent|viewed|signed|declined), archived (show hidden/archived rows instead of active ones).
+    private function dashboardQuery(array $filters)
+    {
+        $builder = $this->db->table($this->table . ' a')
+            ->select('a.*, tc.type as type_name, cat.category as category_name')
+            ->join('type_client tc', 'tc.id = a.type_id', 'left')
+            ->join('category cat', 'cat.id = tc.category_id', 'left')
+            ->where('a.hide', !empty($filters['archived']) ? 1 : 0);
+
+        if (!empty($filters['q'])) {
+            $q = trim((string) $filters['q']);
+            $builder->groupStart()
+                ->like('a.client_name', $q)
+                ->orLike('a.client_phone', $q)
+                ->orLike('a.client_email', $q)
+                ->orLike('a.id', $q)
+                ->orLike('a.prospect_id', $q)
+            ->groupEnd();
+        }
+        if (!empty($filters['date_from'])) {
+            $builder->where('a.insert_on >=', $filters['date_from'] . ' 00:00:00');
+        }
+        if (!empty($filters['date_to'])) {
+            $builder->where('a.insert_on <=', $filters['date_to'] . ' 23:59:59');
+        }
+        if (!empty($filters['type_id'])) {
+            $builder->where('a.type_id', (int) $filters['type_id']);
+        }
+        if (!empty($filters['status_bucket'])) {
+            if ($filters['status_bucket'] === 'pending') {
+                $builder->whereIn('a.status', ['sent', 'viewed']);
+            } else {
+                $builder->where('a.status', $filters['status_bucket']);
+            }
+        }
+
+        return $builder;
+    }
+
+    public function getDashboardTotal(array $filters): int
+    {
+        return $this->dashboardQuery($filters)->countAllResults();
+    }
+
+    public function getDashboardList(array $filters, int $page, int $perPage): array
+    {
+        return $this->dashboardQuery($filters)
+            ->orderBy('a.id', 'desc')
+            ->limit($perPage, ($page - 1) * $perPage)
+            ->get()->getResultArray();
     }
 
     public function findByToken(string $token): ?array

@@ -135,6 +135,19 @@
                                 </nav>
                             </div>
                               <!---->
+                                  <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#declarationMenu" aria-expanded="false" aria-controls="declarationMenu"
+                                ><div class="sb-nav-link-icon"><i style="color:#e23b3b" class="fas fa-file-contract"></i></div>
+                                Declaration / Consent
+                                <div class="sb-sidenav-collapse-arrow"><i  class="fas fa-angle-down"></i></div
+                            ></a>
+                            <div class="collapse" id="declarationMenu" aria-labelledby="headingtwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+
+                                    <a class="nav-link" href="<?php echo base_url();?>/declaration/Declaration/dashboard">Dashboard</a>
+
+                                </nav>
+                            </div>
+                              <!---->
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts"
                                 ><div class="sb-nav-link-icon"><i style="color:#F4B400" class="fa fa-user-circle"></i></div>
                                Clients

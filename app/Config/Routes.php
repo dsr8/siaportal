@@ -78,12 +78,38 @@ $routes->get( 'agreement/Agreement/search_clients',  'Agreement\Agreement::searc
 $routes->get( 'agreement/Agreement/applications_for_client/(:num)', 'Agreement\Agreement::applications_for_client/$1');
 $routes->post('agreement/Agreement/save/(:num)',     'Agreement\Agreement::save/$1');
 $routes->post('agreement/Agreement/generate_link/(:num)', 'Agreement\Agreement::generate_link/$1');
+$routes->get( 'agreement/Agreement/pdf/(:num)',      'Agreement\Agreement::pdf/$1');
+$routes->post('agreement/Template/save/(:num)',      'Agreement\Template::save/$1');
+$routes->get( 'agreement/Template/get/(:num)',       'Agreement\Template::get/$1');
 
 // --- Agreement Sign (public, no login — reached via emailed signing link) ---
+// (:any) is greedy (matches across slashes) so more specific routes must come first.
+$routes->get( 'agreement/sign/(:any)/pdf',       'Agreement\Sign::pdf/$1');
 $routes->get( 'agreement/sign/(:any)',           'Agreement\Sign::index/$1');
+$routes->post('agreement/sign/(:any)/initial',   'Agreement\Sign::initial/$1');
 $routes->post('agreement/sign/(:any)/draft',     'Agreement\Sign::draft/$1');
 $routes->post('agreement/sign/(:any)/submit',    'Agreement\Sign::submit/$1');
 $routes->post('agreement/sign/(:any)/decline',   'Agreement\Sign::decline/$1');
+
+// --- Declaration / Consent ---
+$routes->get( 'declaration/Declaration/dashboard',       'Declaration\Declaration::dashboard');
+$routes->get( 'declaration/Declaration/create',           'Declaration\Declaration::create');
+$routes->post('declaration/Declaration/store',             'Declaration\Declaration::store');
+$routes->get( 'declaration/Declaration/detail/(:num)',    'Declaration\Declaration::detail/$1');
+$routes->get( 'declaration/Declaration/search_clients',   'Declaration\Declaration::search_clients');
+$routes->get( 'declaration/Declaration/applications_for_client/(:num)', 'Declaration\Declaration::applications_for_client/$1');
+$routes->post('declaration/Declaration/save/(:num)',       'Declaration\Declaration::save/$1');
+$routes->post('declaration/Declaration/generate_link/(:num)', 'Declaration\Declaration::generate_link/$1');
+$routes->get( 'declaration/Declaration/pdf/(:num)',        'Declaration\Declaration::pdf/$1');
+$routes->post('declaration/Declaration/archive/(:num)',    'Declaration\Declaration::archive/$1');
+$routes->post('declaration/Declaration/restore/(:num)',    'Declaration\Declaration::restore/$1');
+
+// --- Declaration Sign (public, no login — reached via emailed signing link) ---
+$routes->get( 'declaration/sign/(:any)/pdf',       'Declaration\Sign::pdf/$1');
+$routes->get( 'declaration/sign/(:any)',           'Declaration\Sign::index/$1');
+$routes->post('declaration/sign/(:any)/draft',     'Declaration\Sign::draft/$1');
+$routes->post('declaration/sign/(:any)/submit',    'Declaration\Sign::submit/$1');
+$routes->post('declaration/sign/(:any)/decline',   'Declaration\Sign::decline/$1');
 
 
 /**

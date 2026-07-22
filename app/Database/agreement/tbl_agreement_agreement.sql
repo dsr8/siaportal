@@ -22,7 +22,14 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
   `service_fee`      DECIMAL(10,2) DEFAULT 0,
   `gst_rate`         DECIMAL(5,2)  DEFAULT 5.00,
   `gst_amount`       DECIMAL(10,2) DEFAULT 0,
-  `government_fee`   DECIMAL(10,2) DEFAULT 0,
+  `government_fee`   DECIMAL(10,2) DEFAULT 0 COMMENT 'auto-summed from the govt_* breakdown fields below',
+  `govt_proc_main`         DECIMAL(10,2) DEFAULT 0 COMMENT 'Government processing fee - Main Applicant',
+  `govt_proc_spouse`       DECIMAL(10,2) DEFAULT 0 COMMENT 'Government processing fee - Spouse',
+  `govt_proc_dep_above22`  DECIMAL(10,2) DEFAULT 0 COMMENT 'Government processing fee - Dependent child above 22',
+  `govt_proc_dep_under22`  DECIMAL(10,2) DEFAULT 0 COMMENT 'Government processing fee - Dependent child under 22',
+  `govt_pr_main`           DECIMAL(10,2) DEFAULT 0 COMMENT 'Government Right of Permanent Residence fee - Main Applicant',
+  `govt_pr_spouse`         DECIMAL(10,2) DEFAULT 0 COMMENT 'Government Right of Permanent Residence fee - Spouse',
+  `govt_pr_pnp`            DECIMAL(10,2) DEFAULT 0 COMMENT 'Government Right of Permanent Residence fee - PNP Govt.',
   `other_fee`        DECIMAL(10,2) DEFAULT 0,
   `total_amount`     DECIMAL(10,2) DEFAULT 0,
   `require_client_signature`     TINYINT(1) DEFAULT 1,
@@ -32,6 +39,8 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
   `reminder_days`    INT(11) DEFAULT 3,
   `max_reminders`    INT(11) DEFAULT 2,
   `sign_token`         VARCHAR(64)  DEFAULT NULL COMMENT 'generated lazily when a signing link is first created',
+  `sign_password`      VARCHAR(10)  DEFAULT NULL COMMENT '6-digit access PIN emailed to the client, generated lazily alongside sign_token',
+  `last_sent_at`       DATETIME     DEFAULT NULL COMMENT 'set on every successful "Send for eSign" email; guards against duplicate sends from rapid double-clicks',
   `viewed_at`          DATETIME     DEFAULT NULL,
   `viewed_ip`          VARCHAR(45)  DEFAULT NULL,
   `consultant_signature` VARCHAR(255) DEFAULT NULL COMMENT 'file path under public/assets/agreement_signatures/',
@@ -44,6 +53,8 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
   `client_signed_device` VARCHAR(255) DEFAULT NULL COMMENT 'user agent string, captured at signing',
   `declined_at`        DATETIME     DEFAULT NULL,
   `decline_reason`     VARCHAR(255) DEFAULT NULL,
+  `custom_clauses`     LONGTEXT     DEFAULT NULL COMMENT 'JSON map of clause-index => admin-edited HTML override, from the per-agreement clause text editor',
+  `pdf_path`           VARCHAR(255) DEFAULT NULL COMMENT 'file path under public/assets/agreement_pdfs/, generated + locked once signed',
   PRIMARY KEY (`id`),
   KEY `idx_application_id` (`application_id`),
   KEY `idx_prospect_id` (`prospect_id`),
@@ -93,3 +104,32 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
 --   ADD COLUMN `declined_at` DATETIME DEFAULT NULL,
 --   ADD COLUMN `decline_reason` VARCHAR(255) DEFAULT NULL,
 --   ADD UNIQUE KEY `uniq_sign_token` (`sign_token`);
+
+-- Run this ALTER if upgrading an existing table created before PDF generation/locking:
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `pdf_path` VARCHAR(255) DEFAULT NULL AFTER `decline_reason`;
+
+-- Run this ALTER if upgrading an existing table created before the client-side access PIN:
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `sign_password` VARCHAR(10) DEFAULT NULL AFTER `sign_token`;
+
+-- Run this ALTER if upgrading an existing table created before the itemized government-fee breakdown
+-- (Payment Terms and Conditions clause: Government processing fee + Government Right of Permanent
+-- Residence fee, each split by applicant type). `government_fee` remains the auto-summed total.
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `govt_proc_main`        DECIMAL(10,2) DEFAULT 0 AFTER `government_fee`,
+--   ADD COLUMN `govt_proc_spouse`      DECIMAL(10,2) DEFAULT 0 AFTER `govt_proc_main`,
+--   ADD COLUMN `govt_proc_dep_above22` DECIMAL(10,2) DEFAULT 0 AFTER `govt_proc_spouse`,
+--   ADD COLUMN `govt_proc_dep_under22` DECIMAL(10,2) DEFAULT 0 AFTER `govt_proc_dep_above22`,
+--   ADD COLUMN `govt_pr_main`          DECIMAL(10,2) DEFAULT 0 AFTER `govt_proc_dep_under22`,
+--   ADD COLUMN `govt_pr_spouse`        DECIMAL(10,2) DEFAULT 0 AFTER `govt_pr_main`,
+--   ADD COLUMN `govt_pr_pnp`           DECIMAL(10,2) DEFAULT 0 AFTER `govt_pr_spouse`;
+
+-- Run this ALTER if upgrading an existing table created before the duplicate-send guard:
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `last_sent_at` DATETIME DEFAULT NULL AFTER `sign_password`;
+
+-- Run this ALTER if upgrading an existing table created before the per-agreement clause
+-- text editor (clause 6, the fee breakdown, is always auto-generated and never overridable):
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `custom_clauses` LONGTEXT DEFAULT NULL AFTER `decline_reason`;
