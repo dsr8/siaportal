@@ -15,20 +15,33 @@
             .dc-dashboard * { box-sizing: border-box; }
             .dc-dashboard a { text-decoration: none; }
 
-            .dc-topbar-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
+            .dc-topbar-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 14px; }
+            .dc-title-group { display: flex; align-items: center; gap: 12px; }
+            .dc-title-icon {
+                width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg,#e23b3b,#c92f2f);
+                display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+                box-shadow: 0 6px 14px rgba(226,59,59,0.28);
+            }
+            .dc-title-icon svg { width: 21px; height: 21px; color: #fff; }
+            .dc-title-group h4 { margin: 0; font-weight: 800; font-size: 21px; line-height: 1.2; }
+            .dc-title-group .dc-subtitle { font-size: 12.5px; color: #9aa0aa; margin-top: 2px; }
+
             .dc-btn-create {
                 display: inline-flex; align-items: center; gap: 8px;
                 background: #e23b3b; color: #fff; font-weight: 700; font-size: 14px;
                 padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer;
                 box-shadow: 0 6px 14px rgba(226,59,59,0.28);
+                transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
             }
+            .dc-btn-create:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(226,59,59,0.36); background: #c92f2f; }
             .dc-btn-archived-toggle {
                 display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 700;
                 color: #6b7280; background: #fff; border: 1px solid #e6e8eb; border-radius: 10px; padding: 10px 16px;
+                transition: background .15s ease, color .15s ease, border-color .15s ease;
             }
-            .dc-btn-archived-toggle:hover { background: #f8f9fb; color: #1f2430; }
+            .dc-btn-archived-toggle:hover { background: #f8f9fb; color: #1f2430; border-color: #d8dce1; }
 
-            .dc-flash { padding: 12px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 600; margin-bottom: 18px; transition: opacity .4s ease, max-height .4s ease, margin .4s ease, padding .4s ease; overflow: hidden; }
+            .dc-flash { padding: 12px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 600; margin-bottom: 18px; transition: opacity .4s ease, max-height .4s ease, margin .4s ease, padding .4s ease; overflow: hidden; display: flex; align-items: center; gap: 8px; }
             .dc-flash.dc-flash-hide { opacity: 0; max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
             .dc-flash-success { background: #e8f8ee; color: #1e7e42; }
             .dc-flash-error { background: #fdecec; color: #c0392b; }
@@ -38,68 +51,97 @@
             }
             .dc-archived-banner a { color: #2f5fd6; font-weight: 700; margin-left: auto; }
 
-            .dc-stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 22px; }
+            /* ── Stat cards ── */
+            .dc-stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px; }
             .dc-stat-card {
                 background: #fff; border-radius: 14px; padding: 18px 20px;
                 border-left: 4px solid transparent; box-shadow: 0 2px 10px rgba(20,20,43,0.05);
+                display: flex; align-items: center; gap: 14px;
+                transition: transform .15s ease, box-shadow .15s ease;
             }
-            .dc-stat-body .val { font-size: 26px; font-weight: 800; line-height: 1.1; }
-            .dc-stat-body .lbl { font-size: 13px; color: #6b7280; margin-top: 2px; font-weight: 500; }
+            .dc-stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(20,20,43,0.09); }
+            .dc-stat-icon { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+            .dc-stat-icon svg { width: 19px; height: 19px; }
+            .dc-stat-body .val { font-size: 25px; font-weight: 800; line-height: 1.1; }
+            .dc-stat-body .lbl { font-size: 12.5px; color: #6b7280; margin-top: 3px; font-weight: 600; }
 
-            .dc-stat-draft     { border-left-color: #9aa0aa; } .dc-stat-draft .val { color: #6b7280; }
-            .dc-stat-pending   { border-left-color: #f5a623; } .dc-stat-pending .val { color: #f5a623; }
-            .dc-stat-signed    { border-left-color: #2ecc71; } .dc-stat-signed .val { color: #2ecc71; }
-            .dc-stat-declined  { border-left-color: #e74c3c; } .dc-stat-declined .val { color: #e74c3c; }
-            .dc-stat-total     { border-left-color: #2f80ed; } .dc-stat-total .val { color: #2f80ed; }
+            .dc-stat-draft     { border-left-color: #9aa0aa; } .dc-stat-draft .val { color: #6b7280; } .dc-stat-draft .dc-stat-icon { background: #eef0f2; } .dc-stat-draft .dc-stat-icon svg { color: #6b7280; }
+            .dc-stat-pending   { border-left-color: #f5a623; } .dc-stat-pending .val { color: #f5a623; } .dc-stat-pending .dc-stat-icon { background: #fef2e0; } .dc-stat-pending .dc-stat-icon svg { color: #f5a623; }
+            .dc-stat-signed    { border-left-color: #2ecc71; } .dc-stat-signed .val { color: #2ecc71; } .dc-stat-signed .dc-stat-icon { background: #e6f9ee; } .dc-stat-signed .dc-stat-icon svg { color: #2ecc71; }
+            .dc-stat-declined  { border-left-color: #e74c3c; } .dc-stat-declined .val { color: #e74c3c; } .dc-stat-declined .dc-stat-icon { background: #fdecec; } .dc-stat-declined .dc-stat-icon svg { color: #e74c3c; }
+            .dc-stat-total     { border-left-color: #2f80ed; } .dc-stat-total .val { color: #2f80ed; } .dc-stat-total .dc-stat-icon { background: #e8f0fe; } .dc-stat-total .dc-stat-icon svg { color: #2f80ed; }
 
+            /* ── Filters ── */
             .dc-filters-row { display: flex; align-items: stretch; gap: 12px; margin-bottom: 20px; }
             .dc-filter-box {
                 background: #fff; border: 1px solid #e6e8eb; border-radius: 9px; padding: 7px 14px; flex: 1;
                 display: flex; flex-direction: column; gap: 2px; justify-content: center; min-width: 0;
+                transition: border-color .15s ease, box-shadow .15s ease;
             }
+            .dc-filter-box:focus-within { border-color: #c7cbd1; box-shadow: 0 0 0 3px rgba(226,59,59,0.08); }
             .dc-filter-box-wide { flex: 1.7; }
             .dc-filter-box .f-label { font-size: 10.5px; color: #9aa0aa; font-weight: 600; }
             .dc-filter-box .f-value { font-size: 13px; font-weight: 700; color: #1f2430; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+            .dc-filter-box .f-value svg { width: 14px; height: 14px; color: #9aa0aa; flex-shrink: 0; }
             .dc-filter-box select, .dc-filter-box input[type="text"] {
                 border: none; background: transparent; padding: 0; margin: 0; font: inherit;
-                font-size: 13px; font-weight: 700; color: #1f2430; width: 100%; appearance: none;
+                font-size: 13px; font-weight: 700; color: #1f2430; width: 100%; appearance: none; -webkit-appearance: none;
             }
+            .dc-filter-box input[type="text"]::placeholder { color: #9aa0aa; font-weight: 600; }
+            .dc-filter-box select { cursor: pointer; }
             .dc-btn-filters {
                 background: #e23b3b; border: 1px solid #e23b3b; border-radius: 9px; padding: 0 22px;
                 display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #fff;
                 cursor: pointer; white-space: nowrap; font-family: inherit;
+                transition: background .15s ease, box-shadow .15s ease, transform .12s ease;
             }
+            .dc-btn-filters:hover { background: #c92f2f; box-shadow: 0 6px 16px rgba(226,59,59,0.32); transform: translateY(-1px); }
             .dc-btn-reset {
                 background: #fff; border: 1.5px solid #e23b3b; border-radius: 9px; padding: 0 16px;
                 display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: #e23b3b;
-                cursor: pointer; white-space: nowrap;
+                cursor: pointer; white-space: nowrap; transition: background .15s ease;
             }
-            .dc-btn-reset-inactive { opacity: .55; }
+            .dc-btn-reset:hover { background: #fdf1f1; }
+            .dc-btn-reset-inactive { opacity: .5; }
 
+            /* ── Table ── */
             .dc-table-card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 10px rgba(20,20,43,0.05); }
             .dc-table-card table { width: 100%; border-collapse: collapse; margin: 0; }
             .dc-table-card thead th {
-                background: #f8f9fb; text-align: left; font-size: 12.5px; font-weight: 700; color: #6b7280;
+                background: #f8f9fb; text-align: left; font-size: 12px; font-weight: 700; color: #6b7280;
+                text-transform: uppercase; letter-spacing: .02em;
                 padding: 14px 18px; border-bottom: 1px solid #eef0f2; white-space: nowrap;
             }
-            .dc-table-card tbody td { padding: 16px 18px; border-bottom: 1px solid #f1f2f4; font-size: 14px; color: #1f2430; white-space: nowrap; }
+            .dc-table-card tbody td { padding: 14px 18px; border-bottom: 1px solid #f1f2f4; font-size: 13.5px; color: #1f2430; white-space: nowrap; }
             .dc-table-card tbody tr:last-child td { border-bottom: none; }
+            .dc-table-card tbody tr { transition: background .12s ease; }
             .dc-table-card tbody tr:hover { background: #fafbfc; }
-            .dc-client-id { font-weight: 700; color: #1f2430; }
-            .dc-client-sia { font-size: 12px; color: #9aa0aa; margin-top: 2px; }
 
-            .dc-badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; }
-            .dc-badge-draft     { background: #e2e3e5; color: #41464b; }
-            .dc-badge-sent      { background: #fff3cd; color: #856404; }
-            .dc-badge-viewed    { background: #cfe2ff; color: #084298; }
-            .dc-badge-signed    { background: #d1e7dd; color: #0f5132; }
-            .dc-badge-declined  { background: #f8d7da; color: #842029; }
-            .dc-badge-cancelled { background: #f8d7da; color: #842029; }
+            .dc-client-cell { display: flex; align-items: center; gap: 10px; }
+            .dc-avatar {
+                width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center;
+                justify-content: center; font-size: 12.5px; font-weight: 800; color: #fff;
+            }
+            .dc-client-id { font-weight: 700; color: #1f2430; line-height: 1.3; }
+            .dc-client-sia { font-size: 11.5px; color: #9aa0aa; margin-top: 1px; }
+            .dc-doc-title { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: bottom; }
 
-            .dc-actions { display: flex; align-items: center; gap: 14px; color: #9aa0aa; }
-            .dc-actions svg { width: 17px; height: 17px; cursor: pointer; }
-            .dc-actions a { color: inherit; display: inline-flex; }
-            .dc-actions a:hover { color: #e23b3b; }
+            .dc-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+            .dc-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+            .dc-badge-draft     { background: #eef0f2; color: #6b7280; }
+            .dc-badge-sent      { background: #fff3cd; color: #8a6d1f; }
+            .dc-badge-viewed    { background: #cfe2ff; color: #0b5ed7; }
+            .dc-badge-signed    { background: #d1e7dd; color: #198754; }
+            .dc-badge-declined  { background: #f8d7da; color: #c0392b; }
+            .dc-badge-cancelled { background: #f8d7da; color: #c0392b; }
+
+            .dc-actions { display: flex; align-items: center; gap: 6px; color: #9aa0aa; }
+            .dc-actions a {
+                color: inherit; display: inline-flex; align-items: center; justify-content: center;
+                width: 30px; height: 30px; border-radius: 8px; transition: background .15s ease, color .15s ease;
+            }
+            .dc-actions svg { width: 16px; height: 16px; }
+            .dc-actions a:hover { color: #e23b3b; background: #fdf1f1; }
 
             .dc-menu-panel {
                 display: none; position: fixed; z-index: 9998; background: #fff; border-radius: 10px;
@@ -107,27 +149,29 @@
             }
             .dc-menu-panel a {
                 display: block; padding: 9px 12px; border-radius: 7px; font-size: 13.5px; font-weight: 600;
-                color: #1f2430; text-decoration: none; cursor: pointer;
+                color: #1f2430; text-decoration: none; cursor: pointer; transition: background .12s ease;
             }
             .dc-menu-panel a:hover { background: #f8f9fb; }
             .dc-menu-panel a.dc-menu-disabled { color: #c2c6cc; cursor: not-allowed; pointer-events: none; }
             .dc-menu-panel a.dc-menu-danger { color: #c0392b; }
             .dc-menu-panel a.dc-menu-danger:hover { background: #fdecec; }
 
-            .dc-pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; }
-            .dc-pg-info { font-size: 13.5px; color: #6b7280; }
+            .dc-pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
+            .dc-pg-info { font-size: 13px; color: #6b7280; }
             .dc-pg-controls { display: flex; align-items: center; gap: 6px; }
             .dc-pg-btn {
                 width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-                font-size: 13.5px; font-weight: 700; color: #6b7280; cursor: pointer; border: 1px solid transparent;
+                font-size: 13px; font-weight: 700; color: #6b7280; cursor: pointer; border: 1px solid transparent;
+                transition: background .15s ease, color .15s ease;
             }
+            .dc-pg-btn:not(.active):hover { background: #f8f9fb; color: #1f2430; }
             .dc-pg-btn.active { background: #e23b3b; color: #fff; }
             .dc-pg-btn.nav { color: #e23b3b; }
-            .dc-pg-dots { color: #9aa0aa; padding: 0 4px; font-size: 13.5px; }
-            .dc-pg-perpage { border: 1px solid #e6e8eb; border-radius: 8px; padding: 7px 14px; font-size: 13.5px; font-weight: 600; color: #1f2430; display: flex; align-items: center; gap: 8px; }
+            .dc-pg-dots { color: #9aa0aa; padding: 0 4px; font-size: 13px; }
 
-            .dc-empty-state { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px 18px; color: #9aa0aa; }
-            .dc-empty-state .t { font-size: 14px; font-weight: 600; color: #6b7280; }
+            .dc-empty-state { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 56px 18px; color: #9aa0aa; }
+            .dc-empty-state svg { width: 36px; height: 36px; color: #d8dce1; }
+            .dc-empty-state .t { font-size: 14px; font-weight: 700; color: #6b7280; }
             .dc-empty-state .s { font-size: 12.5px; }
 
             #dc-toast {
@@ -164,10 +208,10 @@
                         <?php $isArchived = !empty($filters['archived']); ?>
 
                         <?php if (!empty($flashMsg = session()->getFlashdata('message'))): ?>
-                            <div class="dc-flash dc-flash-success"><?php echo esc($flashMsg); ?></div>
+                            <div class="dc-flash dc-flash-success">&#9989; <?php echo esc($flashMsg); ?></div>
                         <?php endif; ?>
                         <?php if (!empty($flashErr = session()->getFlashdata('error'))): ?>
-                            <div class="dc-flash dc-flash-error"><?php echo esc($flashErr); ?></div>
+                            <div class="dc-flash dc-flash-error">&#9888;&#65039; <?php echo esc($flashErr); ?></div>
                         <?php endif; ?>
 
                         <?php if ($isArchived): ?>
@@ -178,8 +222,14 @@
                         <?php endif; ?>
 
                         <div class="dc-topbar-row">
-                            <div>
-                                <h4 style="margin:0;font-weight:800;">Disclaimer / Consent</h4>
+                            <div class="dc-title-group">
+                                <div class="dc-title-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+                                </div>
+                                <div>
+                                    <h4>Disclaimer / Consent</h4>
+                                    <div class="dc-subtitle">Prepare, send, and track e-signed disclaimer &amp; consent documents</div>
+                                </div>
                             </div>
                             <div style="display:flex;gap:12px;">
                                 <a class="dc-btn-archived-toggle" href="<?php echo base_url('declaration/Declaration/dashboard' . ($isArchived ? '' : '?archived=1')); ?>">
@@ -195,11 +245,26 @@
 
                         <?php if (!$isArchived): ?>
                         <div class="dc-stats-row">
-                            <div class="dc-stat-card dc-stat-draft"><div class="dc-stat-body"><div class="val"><?php echo (int) $counts['draft']; ?></div><div class="lbl">Draft</div></div></div>
-                            <div class="dc-stat-card dc-stat-pending"><div class="dc-stat-body"><div class="val"><?php echo (int) $counts['pending']; ?></div><div class="lbl">Pending Signature</div></div></div>
-                            <div class="dc-stat-card dc-stat-signed"><div class="dc-stat-body"><div class="val"><?php echo (int) $counts['signed']; ?></div><div class="lbl">Signed</div></div></div>
-                            <div class="dc-stat-card dc-stat-declined"><div class="dc-stat-body"><div class="val"><?php echo (int) $counts['declined']; ?></div><div class="lbl">Declined</div></div></div>
-                            <div class="dc-stat-card dc-stat-total"><div class="dc-stat-body"><div class="val"><?php echo (int) $counts['total']; ?></div><div class="lbl">Total</div></div></div>
+                            <div class="dc-stat-card dc-stat-draft">
+                                <div class="dc-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+                                <div class="dc-stat-body"><div class="val"><?php echo (int) $counts['draft']; ?></div><div class="lbl">Draft</div></div>
+                            </div>
+                            <div class="dc-stat-card dc-stat-pending">
+                                <div class="dc-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+                                <div class="dc-stat-body"><div class="val"><?php echo (int) $counts['pending']; ?></div><div class="lbl">Pending Signature</div></div>
+                            </div>
+                            <div class="dc-stat-card dc-stat-signed">
+                                <div class="dc-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+                                <div class="dc-stat-body"><div class="val"><?php echo (int) $counts['signed']; ?></div><div class="lbl">Signed</div></div>
+                            </div>
+                            <div class="dc-stat-card dc-stat-declined">
+                                <div class="dc-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+                                <div class="dc-stat-body"><div class="val"><?php echo (int) $counts['declined']; ?></div><div class="lbl">Declined</div></div>
+                            </div>
+                            <div class="dc-stat-card dc-stat-total">
+                                <div class="dc-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg></div>
+                                <div class="dc-stat-body"><div class="val"><?php echo (int) $counts['total']; ?></div><div class="lbl">Total</div></div>
+                            </div>
                         </div>
                         <?php endif; ?>
 
@@ -210,6 +275,7 @@
                                 <div class="f-label">Search</div>
                                 <div class="f-value">
                                     <input type="text" name="q" value="<?php echo esc($filters['q'] ?? ''); ?>" placeholder="Name, SiaID, email, or title...">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                                 </div>
                             </div>
                             <div class="dc-filter-box dc-filter-box-wide">
@@ -221,6 +287,7 @@
                                             <option value="<?php echo (int) $t['tyid']; ?>" <?php echo ((int) ($filters['type_id'] ?? 0) === (int) $t['tyid']) ? 'selected' : ''; ?>><?php echo esc(($t['ct'] ?? '') . ' — ' . $t['type']); ?></option>
                                         <?php endforeach; ?>
                                     </select>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                                 </div>
                             </div>
                             <div class="dc-filter-box dc-filter-box-wide">
@@ -232,11 +299,18 @@
                                             <option value="<?php echo esc($val); ?>" <?php echo ($filters['status_bucket'] ?? '') === $val ? 'selected' : ''; ?>><?php echo esc($label); ?></option>
                                         <?php endforeach; ?>
                                     </select>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                                 </div>
                             </div>
-                            <button type="submit" class="dc-btn-filters">Filter</button>
+                            <button type="submit" class="dc-btn-filters">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16l-6 8v6l-4 2v-8Z"/></svg>
+                                Filter
+                            </button>
                             <?php $hasActiveFilters = !empty($filters['q']) || !empty($filters['date_from']) || !empty($filters['date_to']) || !empty($filters['type_id']) || !empty($filters['status_bucket']); ?>
-                            <a class="dc-btn-reset<?php echo $hasActiveFilters ? '' : ' dc-btn-reset-inactive'; ?>" href="<?php echo base_url('declaration/Declaration/dashboard'); ?>">Reset</a>
+                            <a class="dc-btn-reset<?php echo $hasActiveFilters ? '' : ' dc-btn-reset-inactive'; ?>" href="<?php echo base_url('declaration/Declaration/dashboard'); ?>" title="Clear all filters">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+                                Reset
+                            </a>
                         </div>
                         </form>
 
@@ -259,22 +333,36 @@
                                     <?php if (empty($rows)): ?>
                                         <tr><td colspan="8">
                                             <div class="dc-empty-state">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
                                                 <div class="t">No documents found</div>
                                                 <div class="s">Try widening your filters, or create a new one.</div>
                                             </div>
                                         </td></tr>
                                     <?php endif; ?>
+                                    <?php
+                                    $dcAvatarColors = ['#e23b3b', '#f5a623', '#2ecc71', '#3498db', '#8e44ad', '#e67e22', '#16a085'];
+                                    ?>
                                     <?php foreach ($rows as $row): ?>
                                         <?php
                                         $badgeLabel = ucfirst($row['status']);
                                         $badgeClass = 'dc-badge-' . $row['status'];
                                         $typeLabel = trim(($row['category_name'] ?? '') . ' — ' . ($row['type_name'] ?? ''), ' —') ?: '—';
                                         $canSend = in_array($row['status'], ['draft', 'sent', 'viewed'], true);
+                                        $initial = strtoupper(substr(trim((string) $row['client_name']), 0, 1)) ?: '?';
+                                        $avatarColor = $dcAvatarColors[(int) $row['id'] % count($dcAvatarColors)];
                                         ?>
                                         <tr>
-                                            <td><div class="dc-client-id"><?php echo esc($row['client_name']); ?></div><div class="dc-client-sia">SiaID: <?php echo (int) $row['prospect_id']; ?></div></td>
+                                            <td>
+                                                <div class="dc-client-cell">
+                                                    <div class="dc-avatar" style="background:<?php echo $avatarColor; ?>;"><?php echo esc($initial); ?></div>
+                                                    <div>
+                                                        <div class="dc-client-id"><?php echo esc($row['client_name']); ?></div>
+                                                        <div class="dc-client-sia">SiaID: <?php echo (int) $row['prospect_id']; ?></div>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td><?php echo esc($typeLabel); ?></td>
-                                            <td><?php echo esc($row['title'] ?: '—'); ?></td>
+                                            <td><span class="dc-doc-title" title="<?php echo esc($row['title'] ?: ''); ?>"><?php echo esc($row['title'] ?: '—'); ?></span></td>
                                             <td><span class="dc-badge <?php echo $badgeClass; ?>"><?php echo esc($badgeLabel); ?></span></td>
                                             <td><?php echo !empty($row['last_sent_at']) ? esc(date('d M Y', strtotime($row['last_sent_at']))) : '&ndash;'; ?></td>
                                             <td><?php echo !empty($row['viewed_at']) ? esc(date('d M Y', strtotime($row['viewed_at']))) : '&ndash;'; ?></td>

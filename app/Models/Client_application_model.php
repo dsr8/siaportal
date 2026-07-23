@@ -71,6 +71,26 @@ class Client_application_model extends Model {
        ->get()->getResultArray();
     }
 
+      // Full application rows (category/type/status labels joined in) for every application
+      // belonging to any of the given prospect/client ids, in one query — used to build a
+      // per-prospect applications list on list pages (e.g. view_prospect) without an N+1 query
+      // per row. Group the result by 'siaportalid' in the caller.
+      public function getForProspectIds(array $prospectIds){
+
+       if (empty($prospectIds)) {
+           return [];
+       }
+
+       return $this->db->table('client_application')
+       ->select('client_application.*,category.category as  ct,type_client.type as ty,status.app_status as st')
+       ->join('category ','category.id=client_application.category','left')
+       ->join('type_client ','type_client.id=client_application.type','left')
+       ->join('status ','status.id=client_application.application_status','left')
+       ->whereIn('client_application.siaportalid', $prospectIds)
+       ->orderBy('client_application.id','desc')
+       ->get()->getResultArray();
+    }
+
       public function get_detail($id){
 
        return $this->db->table('client_application')

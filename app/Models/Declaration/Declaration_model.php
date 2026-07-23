@@ -151,4 +151,29 @@ class Declaration_model extends Model
                     ->where('hide', 0)
                     ->first();
     }
+
+    // Latest non-hidden declaration per application_id, for status badges on the client list.
+    // Unlike Agreement (one per application), an application can have several Declaration/Consent
+    // documents over time — this surfaces only the most recent one for the at-a-glance badge.
+    public function getStatusByApplicationIds(array $applicationIds): array
+    {
+        if (empty($applicationIds)) {
+            return [];
+        }
+
+        $rows = $this->whereIn('application_id', $applicationIds)
+                     ->where('hide', 0)
+                     ->orderBy('id', 'desc')
+                     ->findAll();
+
+        $byApplication = [];
+        foreach ($rows as $row) {
+            $appId = (int) $row['application_id'];
+            if (!isset($byApplication[$appId])) {
+                $byApplication[$appId] = $row;
+            }
+        }
+
+        return $byApplication;
+    }
 }

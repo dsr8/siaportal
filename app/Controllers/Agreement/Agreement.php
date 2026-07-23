@@ -188,13 +188,13 @@ class Agreement extends BaseController
         $ApplicationModel = new Client_application_model();
         $application = $ApplicationModel->get_detail($applicationId)[0] ?? null;
         if (!$application) {
-            return redirect()->to(base_url())->with('error', 'Application not found.');
+            return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Application not found.');
         }
 
         $Prospect = new Prospect_model();
         $prospect = $Prospect->getpost_id($application['siaportalid'])[0] ?? null;
         if (!$prospect) {
-            return redirect()->to(base_url())->with('error', 'Client record not found.');
+            return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Client record not found.');
         }
 
         $phone = $this->composePhone($prospect);
@@ -216,7 +216,7 @@ class Agreement extends BaseController
                 'insert_on'      => date('Y-m-d H:i:s'),
             ]);
         } catch (\RuntimeException $e) {
-            return redirect()->to(base_url())->with('error', 'Could not create agreement draft. Please try again.');
+            return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Could not create agreement draft. Please try again.');
         }
 
         return redirect()->to(base_url('agreement/Agreement/detail/' . $agreement['id']));

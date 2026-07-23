@@ -95,6 +95,7 @@ $routes->post('agreement/sign/(:any)/decline',   'Agreement\Sign::decline/$1');
 $routes->get( 'declaration/Declaration/dashboard',       'Declaration\Declaration::dashboard');
 $routes->get( 'declaration/Declaration/create',           'Declaration\Declaration::create');
 $routes->post('declaration/Declaration/store',             'Declaration\Declaration::store');
+$routes->post('declaration/Declaration/start_from_application/(:num)', 'Declaration\Declaration::start_from_application/$1');
 $routes->get( 'declaration/Declaration/detail/(:num)',    'Declaration\Declaration::detail/$1');
 $routes->get( 'declaration/Declaration/search_clients',   'Declaration\Declaration::search_clients');
 $routes->get( 'declaration/Declaration/applications_for_client/(:num)', 'Declaration\Declaration::applications_for_client/$1');

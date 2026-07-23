@@ -217,7 +217,7 @@ function add_status(id,st)
                 <!--th >Number</th-->
               
                 <th >Admin Status</th>
-                <th >Retainer Agreement</th>
+                <th >Agreement / Consent</th>
 
 
 
@@ -407,12 +407,55 @@ function add_status(id,st)
                                                
                                              
                                                <td><?php echo $allcat['admin_status'];?></td>
-                                               <td style="min-width:170px;">
+                                               <td style="min-width:210px;">
+                                                    <?php $prospectApps = $applicationsByProspect[(int) $allcat['id']] ?? []; ?>
+                                                    <?php if (empty($prospectApps)): ?>
                                                     <div style="border:1px dashed #ccc;border-radius:8px;background:#fafafa;padding:14px 10px;text-align:center;">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
-                                                        <div style="font-size:12px;color:#999;margin-bottom:10px;">No Agreement<br>(Not Created Yet)</div>
-                                                        <a href="#" onclick="caOpen();return false;" style="display:inline-block;border:1px solid #1a73e8;color:#1a73e8;background:#fff;border-radius:5px;padding:5px 12px;font-size:12px;font-weight:600;text-decoration:none;">+ Create Agreement</a>
+                                                        <div style="font-size:12px;color:#999;margin-bottom:10px;">No Application Yet</div>
+                                                        <a href="#" onclick="caOpen(<?php echo (int) $allcat['id']; ?>, <?php echo htmlspecialchars(json_encode($allcat['heading'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), ENT_QUOTES); ?>);return false;" style="display:inline-block;border:1px solid #1a73e8;color:#1a73e8;background:#fff;border-radius:5px;padding:5px 12px;font-size:12px;font-weight:600;text-decoration:none;">+ Create Agreement</a>
+                                                        <br>
+                                                        <a href="<?php echo base_url('declaration/Declaration/create?prospect_id=' . (int) $allcat['id']); ?>" target="_blank" style="display:inline-block;margin-top:6px;border:1px solid #4c3ff5;color:#4c3ff5;background:#fff;border-radius:5px;padding:5px 12px;font-size:12px;font-weight:600;text-decoration:none;">+ Start Consent</a>
                                                     </div>
+                                                    <?php else: ?>
+                                                    <?php $vpBadgeColors = [
+                                                        'draft'     => ['#e2e3e5', '#41464b'],
+                                                        'sent'      => ['#fff3cd', '#856404'],
+                                                        'viewed'    => ['#cfe2ff', '#084298'],
+                                                        'signed'    => ['#d1e7dd', '#0f5132'],
+                                                        'declined'  => ['#f8d7da', '#842029'],
+                                                        'cancelled' => ['#f8d7da', '#842029'],
+                                                    ]; ?>
+                                                    <?php foreach ($prospectApps as $pAppIdx => $pApp): ?>
+                                                        <?php if ($pAppIdx > 0): ?><hr style="margin:8px 0;border-top:1px dashed #ddd;"><?php endif; ?>
+                                                        <div style="font-size:10.5px;color:#666;margin-bottom:4px;" title="<?php echo htmlspecialchars(($pApp['ct'] ?? '') . ' — ' . ($pApp['ty'] ?? '')); ?>">
+                                                            <?php echo htmlspecialchars($pApp['ct'] ?? 'Uncategorized'); ?> — <?php echo htmlspecialchars($pApp['ty'] ?? ''); ?>
+                                                        </div>
+
+                                                        <?php $pAgRow = $agreementStatus[(int) $pApp['id']] ?? null; ?>
+                                                        <?php if ($pAgRow): [$pAgBg, $pAgFg] = $vpBadgeColors[$pAgRow['status']] ?? ['#e2e3e5', '#41464b']; ?>
+                                                            <span style="display:inline-block;background:<?php echo $pAgBg; ?>;color:<?php echo $pAgFg; ?>;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;">&#128196; Agreement: <?php echo ucfirst($pAgRow['status']); ?></span>
+                                                            <a target="_blank" href="<?php echo base_url(); ?>/agreement/Agreement/detail/<?php echo $pAgRow['id']; ?>" style="font-size:11px;">View</a><br>
+                                                        <?php else: ?>
+                                                            <form method="post" target="_blank" action="<?php echo base_url(); ?>/agreement/Agreement/start_from_application/<?php echo (int) $pApp['id']; ?>" style="margin:2px 0;" onsubmit="this.querySelector('button').disabled = true;">
+                                                                <button type="submit" style="display:inline-block;background:#e23b3b;color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;border:none;cursor:pointer;">Start E-Sign</button>
+                                                            </form>
+                                                        <?php endif; ?>
+
+                                                        <?php $pDcRow = $declarationStatus[(int) $pApp['id']] ?? null; ?>
+                                                        <?php if ($pDcRow): [$pDcBg, $pDcFg] = $vpBadgeColors[$pDcRow['status']] ?? ['#e2e3e5', '#41464b']; ?>
+                                                            <span style="display:inline-block;background:<?php echo $pDcBg; ?>;color:<?php echo $pDcFg; ?>;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;">&#128203; Consent: <?php echo ucfirst($pDcRow['status']); ?></span>
+                                                            <a target="_blank" href="<?php echo base_url(); ?>/declaration/Declaration/detail/<?php echo $pDcRow['id']; ?>" style="font-size:11px;">View</a>
+                                                            <form method="post" target="_blank" action="<?php echo base_url(); ?>/declaration/Declaration/start_from_application/<?php echo (int) $pApp['id']; ?>" style="display:inline;margin:0;" onsubmit="this.querySelector('button').disabled = true;">
+                                                                <button type="submit" style="background:none;border:none;color:#4c3ff5;font-size:11px;font-weight:600;cursor:pointer;padding:0;">+ New</button>
+                                                            </form>
+                                                        <?php else: ?>
+                                                            <form method="post" target="_blank" action="<?php echo base_url(); ?>/declaration/Declaration/start_from_application/<?php echo (int) $pApp['id']; ?>" style="margin:2px 0;" onsubmit="this.querySelector('button').disabled = true;">
+                                                                <button type="submit" style="display:inline-block;background:#4c3ff5;color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;border:none;cursor:pointer;">Start Consent</button>
+                                                            </form>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                    <?php endif; ?>
                                                </td>
                                             </tr>
                                            <?php } ?>

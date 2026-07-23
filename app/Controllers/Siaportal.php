@@ -28,6 +28,7 @@ use App\Models\Work_and_eduction_model;
 
 use App\Models\Client_application_model;
 use App\Models\Agreement\Agreement_model;
+use App\Models\Declaration\Declaration_model;
 use codeigniter\controller;
 use CodeIgniter\I18n\Time;
 use CodeIgniter\HTTP\Files\UploadedFile;
@@ -3491,6 +3492,9 @@ if($entries=='all'){
 	$AgreementModel = new Agreement_model();
 	$agreementStatus = $AgreementModel->getStatusByApplicationIds($applicationIdsOnPage);
 
+	$DeclarationModel = new Declaration_model();
+	$declarationStatus = $DeclarationModel->getStatusByApplicationIds($applicationIdsOnPage);
+
 	$data = [
 			'client'          => $clientRows,
 			'pager'           => $Prospect->pager,
@@ -3502,6 +3506,7 @@ if($entries=='all'){
 			'bookedIds'    => $bookedIds,
 			'teamMembers'  => $teamMembers,
 			'agreementStatus' => $agreementStatus,
+			'declarationStatus' => $declarationStatus,
 		];
 // $data = [
 //     'client' => $Prospect
@@ -6920,6 +6925,33 @@ $Prospect = new Prospect_model();
 
 
 
+	// Shared by both view_prospect() branches (search + default listing): given the current
+	// page's paginated prospect rows, fetches every application belonging to any of them in a
+	// couple of batched queries (rather than one query per row) and returns everything the view
+	// needs to render per-application Agreement/Consent status badges and Start buttons.
+	private function buildProspectApplicationData(array $prospectRows): array
+	{
+		$prospectIdsOnPage = array_column($prospectRows, 'id');
+
+		$ApplicationModel = new Client_application_model();
+		$appRowsOnPage = $ApplicationModel->getForProspectIds($prospectIdsOnPage);
+
+		$applicationsByProspect = [];
+		foreach ($appRowsOnPage as $appRow) {
+			$applicationsByProspect[(int) $appRow['siaportalid']][] = $appRow;
+		}
+
+		$applicationIdsOnPage = array_column($appRowsOnPage, 'id');
+		$AgreementModel = new Agreement_model();
+		$DeclarationModel = new Declaration_model();
+
+		return [
+			'applicationsByProspect' => $applicationsByProspect,
+			'agreementStatus'        => $AgreementModel->getStatusByApplicationIds($applicationIdsOnPage),
+			'declarationStatus'      => $DeclarationModel->getStatusByApplicationIds($applicationIdsOnPage),
+		];
+	}
+
 	public function view_prospect()
 	{
 
@@ -7025,8 +7057,9 @@ $Prospect = new Prospect_model();
 				$Prospect2->like('number', $search_phone);
 			}
 		}
-		$data = [
-			'prospect'      => $Prospect2->orderBy('id','desc')->paginate(50),
+		$prospectRowsForSearch = $Prospect2->orderBy('id','desc')->paginate(50);
+		$data = array_merge([
+			'prospect'      => $prospectRowsForSearch,
 			'pager'         => $Prospect2->pager,
 			'search_id'     => $search_id,
 			'search_name'   => $search_name,
@@ -7036,7 +7069,7 @@ $Prospect = new Prospect_model();
 			'dupClientIds'   => $dupClientIds,
 			'bookedIds'      => $bookedIds,
 			'teamMembers'    => $teamMembers,
-		];
+		], $this->buildProspectApplicationData($prospectRowsForSearch));
 		return view('admin/prospect/view_prospect',$data);
 	 }
 
@@ -7063,21 +7096,22 @@ $Prospect = new Prospect_model();
 	 }else{
 $Prospect = new Prospect_model();
 
-$data = [
-			//'prospect' => $paginateData,
-	//->where('appo_book', 'Appointment booked')
-			'prospect'=>$Prospect->select('id,news_image1,voice_added,from_web,heading,email,mail_send,mail_send_on,sms_send,sms_send_on,number,insert_on,pstatus,ppstatus,agent_name,typee,team_member,number,agent_status,admin_status,address')
+$prospectRowsDefault = $Prospect->select('id,news_image1,voice_added,from_web,heading,email,mail_send,mail_send_on,sms_send,sms_send_on,number,insert_on,pstatus,ppstatus,agent_name,typee,team_member,number,agent_status,admin_status,address')
 			->where('entery_status', 'prospect')
 			->groupStart()->where('hide_prospect', null)->orWhere('hide_prospect !=', 1)->groupEnd()
       ->orderBy('id', 'desc')
-                   ->paginate(50),
+                   ->paginate(50);
+$data = array_merge([
+			//'prospect' => $paginateData,
+	//->where('appo_book', 'Appointment booked')
+			'prospect'=>$prospectRowsDefault,
 			'pager'       => $Prospect->pager,
 			'dupProspectIds' => $dupProspectIds,
 			'dupClientIds'   => $dupClientIds,
 			'bookedIds'      => $bookedIds,
 			'teamMembers'    => $teamMembers,
 
-		];
+		], $this->buildProspectApplicationData($prospectRowsDefault));
 
 	return view('admin/prospect/view_prospect',$data);
 	 }

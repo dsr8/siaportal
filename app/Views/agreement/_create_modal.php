@@ -132,13 +132,27 @@
 <script>
     var CA_BASE = '<?php echo base_url(); ?>/';
 
-    function caOpen() {
-        $('#ca_client').val(null).trigger('change');
-        document.getElementById('ca_application').innerHTML = '<option value="">-- Select a client first --</option>';
-        document.getElementById('ca_application').disabled = true;
+    // prospectId/prospectName are optional — pass them (e.g. from a specific prospect's row on
+    // Siaportal/view_prospect) to open the modal with that client already picked, skipping
+    // straight to loading their applications instead of making the admin search for someone
+    // they're already looking at. Called with no arguments (dashboard.php's generic "Create New
+    // Agreement" button) it opens blank, exactly as before.
+    function caOpen(prospectId, prospectName) {
         document.getElementById('ca_app_msg').innerHTML = '';
         document.getElementById('ca_submit_msg').innerHTML = '';
         document.getElementById('ca_submit').disabled = true;
+
+        if (prospectId) {
+            var label = (prospectName || 'Client') + ' (' + prospectId + ')';
+            var option = new Option(label, prospectId, true, true);
+            $('#ca_client').empty().append(option).trigger('change');
+            caLoadApplicationsForClient(prospectId);
+        } else {
+            $('#ca_client').val(null).trigger('change');
+            document.getElementById('ca_application').innerHTML = '<option value="">-- Select a client first --</option>';
+            document.getElementById('ca_application').disabled = true;
+        }
+
         var wrap = document.getElementById('caWrap');
         wrap.style.display = 'block';
         document.body.style.overflow = 'hidden';
@@ -147,11 +161,48 @@
         requestAnimationFrame(function () {
             requestAnimationFrame(function () {
                 wrap.classList.add('ca-show');
+                if (prospectId) {
+                    // Client's already picked — nothing to type, so there's no search box to
+                    // focus into. applications_for_client() already grabs focus once it resolves.
+                    return;
+                }
                 // Focus only — NOT select2('open'). Auto-opening the dropdown immediately
                 // popped up an empty "Please enter 1 or more characters" results panel before
                 // the client had typed anything, which read as a stray/broken second box.
                 setTimeout(function () { $('#ca_client').select2('focus'); }, 180);
             });
+        });
+    }
+
+    // Shared by the select2:select handler (user picks a client by searching) and caOpen()'s
+    // pre-fill path (client already known from the calling page) — both need to end up in
+    // exactly the same state once a client id is settled on.
+    function caLoadApplicationsForClient(clientId) {
+        var appSelect = document.getElementById('ca_application');
+        var submitBtn = document.getElementById('ca_submit');
+        appSelect.innerHTML = '<option value="">Loading...</option>';
+        appSelect.disabled = true;
+        submitBtn.disabled = true;
+        document.getElementById('ca_app_msg').innerHTML = '';
+
+        $.get(CA_BASE + 'agreement/Agreement/applications_for_client/' + clientId, function (data) {
+            var results = data.results || [];
+            if (results.length === 0) {
+                appSelect.innerHTML = '<option value="">-- No applications found --</option>';
+                appSelect.disabled = true;
+                document.getElementById('ca_app_msg').innerHTML = '<span style="color:#f5a623;">&#9888;&#65039; This client has no applications yet. Add one in the CRM first.</span>';
+                return;
+            }
+            var html = '<option value="">-- Select an application --</option>';
+            results.forEach(function (r) {
+                html += '<option value="' + r.id + '">' + r.text + (r.status ? ' (' + r.status + ')' : '') + '</option>';
+            });
+            appSelect.innerHTML = html;
+            appSelect.disabled = false;
+            appSelect.focus();
+        }, 'json').fail(function () {
+            appSelect.innerHTML = '<option value="">-- Error loading applications --</option>';
+            document.getElementById('ca_app_msg').innerHTML = '<span style="color:#e74c3c;">&#9888;&#65039; Could not load applications. Please try again.</span>';
         });
     }
     function caClose() {
@@ -189,32 +240,7 @@
         });
 
         $('#ca_client').on('select2:select', function (e) {
-            var clientId = e.params.data.id;
-            var appSelect = document.getElementById('ca_application');
-            var submitBtn = document.getElementById('ca_submit');
-            appSelect.innerHTML = '<option value="">Loading...</option>';
-            appSelect.disabled = true;
-            submitBtn.disabled = true;
-            document.getElementById('ca_app_msg').innerHTML = '';
-
-            $.get(CA_BASE + 'agreement/Agreement/applications_for_client/' + clientId, function (data) {
-                var results = data.results || [];
-                if (results.length === 0) {
-                    appSelect.innerHTML = '<option value="">-- No applications found --</option>';
-                    appSelect.disabled = true;
-                    document.getElementById('ca_app_msg').innerHTML = '<span style="color:#f5a623;">&#9888;&#65039; This client has no applications yet. Add one in the CRM first.</span>';
-                    return;
-                }
-                var html = '<option value="">-- Select an application --</option>';
-                results.forEach(function (r) {
-                    html += '<option value="' + r.id + '">' + r.text + (r.status ? ' (' + r.status + ')' : '') + '</option>';
-                });
-                appSelect.innerHTML = html;
-                appSelect.disabled = false;
-            }, 'json').fail(function () {
-                appSelect.innerHTML = '<option value="">-- Error loading applications --</option>';
-                document.getElementById('ca_app_msg').innerHTML = '<span style="color:#e74c3c;">&#9888;&#65039; Could not load applications. Please try again.</span>';
-            });
+            caLoadApplicationsForClient(e.params.data.id);
         });
 
         $('#ca_client').on('select2:clear', function () {

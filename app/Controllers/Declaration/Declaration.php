@@ -150,27 +150,92 @@ class Declaration extends BaseController
         $results = [];
         foreach ($rows as $r) {
             $results[] = [
-                'id'     => $r['id'],
-                'text'   => trim(($r['ct'] ?? 'Uncategorized') . ' — ' . ($r['ty'] ?? '')),
-                'status' => $r['st'] ?? '',
+                'id'       => $r['id'],
+                'text'     => trim(($r['ct'] ?? 'Uncategorized') . ' — ' . ($r['ty'] ?? '')),
+                'category' => $r['ct'] ?? 'Uncategorized',
+                'type'     => $r['ty'] ?? '',
+                'status'   => $r['st'] ?? '',
             ];
         }
 
         return $this->response->setJSON(['results' => $results]);
     }
 
+    // One-click entry point from an application row (e.g. Siaportal/view_client's "Start
+    // Consent" button) — creates a blank draft pre-filled from CRM and drops the admin straight
+    // into the edit form to write the actual title/content. Unlike Agreement's equivalent, this
+    // never redirects to an existing row instead of creating one: an application can have several
+    // Declaration/Consent documents over time (different consent_type each), so every click here
+    // is meant to start a new one, not resume the latest.
+    public function start_from_application($applicationId = null)
+    {
+        if (!$this->isAuthorized()) {
+            return redirect()->to(base_url());
+        }
+        if ($this->request->getMethod() !== 'post') {
+            return redirect()->to(base_url());
+        }
+
+        $applicationId = (int) $applicationId;
+        $ApplicationModel = new Client_application_model();
+        $application = $ApplicationModel->get_detail($applicationId)[0] ?? null;
+        if (!$application) {
+            return redirect()->to(base_url())->with('error', 'Application not found.');
+        }
+
+        $Prospect = new Prospect_model();
+        $prospect = $Prospect->getpost_id((int) $application['siaportalid'])[0] ?? null;
+        if (!$prospect) {
+            return redirect()->to(base_url())->with('error', 'Client record not found.');
+        }
+
+        $DeclarationModel = new Declaration_model();
+        $id = $DeclarationModel->insert([
+            'application_id'  => $applicationId,
+            'prospect_id'     => $prospect['id'],
+            'client_name'     => $prospect['heading'],
+            'client_email'    => $prospect['email'],
+            'client_phone'    => $this->composePhone($prospect),
+            'category_id'     => $application['category'],
+            'type_id'         => $application['type'],
+            'title'           => 'Untitled Disclaimer / Consent',
+            'content'         => "Dear [Client Name],\n\nThis declaration is to inform you of the potential consequences related to your application due to the following issue(s)...\n\nI have read and understand the above declaration.",
+            'consultant_name' => trim((string) session()->get('firstname') . ' ' . (string) session()->get('lastname')),
+            'consent_date'    => date('Y-m-d'),
+            'status'          => 'draft',
+            'hide'            => 0,
+            'require_client_signature' => 1,
+            'require_initials'         => 0,
+            'show_consent_checkbox'    => 1,
+            'created_by'      => session()->get('id'),
+            'insert_on'       => date('Y-m-d H:i:s'),
+        ]);
+
+        return redirect()->to(base_url('declaration/Declaration/detail/' . $id));
+    }
+
     // Blank "Create Disclaimer / Consent" form — client + application are picked right on
     // this page (auto-pulled from CRM), unlike the Agreement module's separate picker modal.
+    // ?prospect_id= (e.g. from a "+ Start Consent" link on a specific prospect's row on
+    // Siaportal/view_prospect) pre-selects that client instead of leaving the picker blank.
     public function create()
     {
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
 
+        $prefillProspect = null;
+        $prefillProspectId = (int) ($this->request->getGet('prospect_id') ?? 0);
+        if ($prefillProspectId) {
+            $Prospect = new Prospect_model();
+            $prefillProspect = $Prospect->getpost_id($prefillProspectId)[0] ?? null;
+        }
+
         return view('declaration/form', [
             'declaration'   => null,
             'consentType'   => 'sent',
             'consultantDefault' => trim((string) session()->get('firstname') . ' ' . (string) session()->get('lastname')),
+            'prefillProspect' => $prefillProspect,
         ]);
     }
 
@@ -251,8 +316,12 @@ class Declaration extends BaseController
             return redirect()->to(base_url('declaration/Declaration/dashboard'))->with('error', 'Disclaimer / Consent not found.');
         }
 
-        $data['declaration'] = $declaration;
-        $data['signUrl']     = !empty($declaration['sign_token']) ? base_url('declaration/sign/' . $declaration['sign_token']) : null;
+        $typeInfo = $declaration['type_id'] ? ((new Type_client_model())->getpost_id((int) $declaration['type_id'])[0] ?? null) : null;
+
+        $data['declaration']  = $declaration;
+        $data['categoryName'] = $typeInfo['ct'] ?? '—';
+        $data['typeName']     = $typeInfo['type'] ?? '—';
+        $data['signUrl']      = !empty($declaration['sign_token']) ? base_url('declaration/sign/' . $declaration['sign_token']) : null;
 
         return view('declaration/form', $data);
     }

@@ -403,6 +403,41 @@ if(in_array($block,$allid)){ ?>
           </form>
         <?php endif; ?>
        </div>
+
+        <div class="col-xl-2 col-md-2"  >
+        <?php
+          $dcAppId = (int) $GetData['id'];
+          $dcRow = $declarationStatus[$dcAppId] ?? null;
+          if ($dcRow):
+              $dcBadgeColors = [
+                  'draft'     => ['#e2e3e5', '#41464b'],
+                  'sent'      => ['#fff3cd', '#856404'],
+                  'viewed'    => ['#cfe2ff', '#084298'],
+                  'signed'    => ['#d1e7dd', '#0f5132'],
+                  'declined'  => ['#f8d7da', '#842029'],
+                  'cancelled' => ['#f8d7da', '#842029'],
+              ];
+              [$dcBg, $dcFg] = $dcBadgeColors[$dcRow['status']] ?? ['#e2e3e5', '#41464b'];
+        ?>
+          <span style="display:inline-block;background:<?php echo $dcBg; ?>;color:<?php echo $dcFg; ?>;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;">
+            &#128203; Consent: <?php echo ucfirst($dcRow['status']); ?>
+          </span><br>
+          <a target="_blank" href="<?php echo base_url(); ?>/declaration/Declaration/detail/<?php echo $dcRow['id']; ?>" style="font-size:11px;">View</a>
+          &nbsp;|&nbsp;
+          <form method="post" target="_blank" action="<?php echo base_url(); ?>/declaration/Declaration/start_from_application/<?php echo $dcAppId; ?>" style="margin:0;display:inline;"
+                onsubmit="this.querySelector('button').disabled = true;">
+            <button type="submit" style="background:none;border:none;color:#4c3ff5;font-size:11px;font-weight:600;cursor:pointer;padding:0;">+ New</button>
+          </form>
+        <?php else: ?>
+          <form method="post" target="_blank" action="<?php echo base_url(); ?>/declaration/Declaration/start_from_application/<?php echo $dcAppId; ?>" style="margin:0;"
+                onsubmit="this.querySelector('button').disabled = true;">
+            <button type="submit"
+               style="display:inline-block;background:#4c3ff5;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;border:none;cursor:pointer;">
+              Start Consent
+            </button>
+          </form>
+        <?php endif; ?>
+       </div>
    </div>
 
   <hr style="margin-top: 0px; margin-bottom: 3px;">

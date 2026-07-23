@@ -11,6 +11,14 @@ require_once APPPATH . 'Libraries/Agreement/AgreementPdf.php';
 // module) so this builder is a lot smaller than AgreementPdfBuilder.
 class DeclarationPdfBuilder
 {
+    // Boosted-alpha derivative of the app-wide sia_watermark.png, generated specifically for
+    // this module — the source file AgreementPdf::Header() draws automatically on every page
+    // is only ~3% opaque on average by design (fine as a barely-there texture behind a dense
+    // legal contract), which reads as simply missing on a much sparser single-page document.
+    // Drawn explicitly here (not via Header()) so content painted afterward still layers
+    // correctly on top of it.
+    private const WATERMARK = FCPATH . 'public/assets_client/img/sia_watermark_declaration.png';
+
     public function build(array $declaration): string
     {
         $pdf = new AgreementPdf('P', 'mm', 'A4', true, 'UTF-8', false);
@@ -25,6 +33,7 @@ class DeclarationPdfBuilder
         $pdf->SetAutoPageBreak(true, 22);
 
         $pdf->AddPage();
+        $this->drawWatermark($pdf);
         $this->resetTextState($pdf);
         $pdf->writeHTML($this->titleBlockHtml($declaration), true, false, true, false, '');
         $this->resetTextState($pdf);
@@ -55,6 +64,20 @@ class DeclarationPdfBuilder
     {
         $pdf->SetFont('helvetica', '', 9.5);
         $pdf->SetTextColor(30, 30, 30);
+    }
+
+    // Centered background watermark for the current page — must be called right after
+    // AddPage() and before any content, so subsequent writeHTML()/Cell() calls paint over it
+    // wherever they have an opaque background (matching how AgreementPdf's own Header()
+    // watermark layers under its page content).
+    private function drawWatermark(AgreementPdf $pdf): void
+    {
+        if (!is_file(self::WATERMARK)) {
+            return;
+        }
+        $w = 130;
+        $h = $w * (335 / 779);
+        $pdf->Image(self::WATERMARK, (210 - $w) / 2, (297 - $h) / 2, $w, $h, 'PNG');
     }
 
     private function titleBlockHtml(array $declaration): string
@@ -96,6 +119,7 @@ class DeclarationPdfBuilder
         $y = $pdf->GetY();
         if ($y > 220) {
             $pdf->AddPage();
+            $this->drawWatermark($pdf);
             $y = $pdf->GetY();
         }
 
