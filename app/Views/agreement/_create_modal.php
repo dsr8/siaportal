@@ -41,15 +41,20 @@
     #caBox label svg { width: 14px; height: 14px; color: #b3b8bf; }
     #caBox select { width: 100%; }
 
-    /* Plain <select> (Application) styled to match the rest of the app's rounded, red-focus inputs. */
-    #caBox select#ca_application {
+    /* Plain <select>s (Application, and the quick-add Category/Type) styled to match the rest
+       of the app's rounded, red-focus inputs. */
+    #caBox select#ca_application, #caBox select#ca_qa_category, #caBox select#ca_qa_type, #caBox select#ca_qa_status {
         padding: 10px 12px; border: 1.5px solid #e0e3e8; border-radius: 10px; font-size: 13.5px;
         color: #1f2430; background: #fff; appearance: none; -webkit-appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa0aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
         background-repeat: no-repeat; background-position: right 12px center; background-size: 15px;
-        transition: border-color .15s ease, box-shadow .15s ease;
+        transition: border-color .15s ease, box-shadow .15s ease; width: 100%; margin-bottom: 10px;
     }
-    #caBox select#ca_application:disabled { background-color: #f8f9fb; color: #b3b8bf; cursor: not-allowed; }
+    #caBox select#ca_qa_type { margin-bottom: 0; }
+    #caBox select#ca_application:disabled, #caBox select#ca_qa_category:disabled,
+    #caBox select#ca_qa_type:disabled, #caBox select#ca_qa_status:disabled {
+        background-color: #f8f9fb; color: #b3b8bf; cursor: not-allowed;
+    }
     #caBox select#ca_application:not(:disabled):focus { outline: none; border-color: #e23b3b; box-shadow: 0 0 0 3px rgba(226,59,59,0.1); }
 
     /* select2 (Client search) restyled to match the app's aesthetic instead of its own default blue/square theme. */
@@ -118,6 +123,27 @@
                     <div id="ca_app_msg"></div>
                 </div>
 
+                <!-- Shown only when the picked client has no CRM application yet — lets the
+                     admin create a minimal one (Category + Type) on the spot rather than
+                     having to leave this modal and use the full CRM application form. -->
+                <div class="ca-field" id="ca_quickadd_wrap" style="display:none;background:#fafafa;border:1px dashed #d8dce1;border-radius:10px;padding:14px;">
+                    <label style="margin-bottom:10px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                        Quick-Add Application
+                    </label>
+                    <select id="ca_qa_category" style="margin-bottom:10px;">
+                        <option value="">-- Select category --</option>
+                    </select>
+                    <select id="ca_qa_type" disabled>
+                        <option value="">-- Select category first --</option>
+                    </select>
+                    <select id="ca_qa_status" disabled style="margin-top:10px;">
+                        <option value="">-- Select type first --</option>
+                    </select>
+                    <div id="ca_qa_msg" style="margin-top:8px;"></div>
+                    <button type="button" class="ca-btn-submit" id="ca_qa_submit" onclick="caQuickAddApplication()" disabled style="margin-top:12px;width:100%;">Create Application &amp; Continue</button>
+                </div>
+
                 <div id="ca_submit_msg"></div>
                 <div class="ca-btns">
                     <button type="button" class="ca-btn-submit" id="ca_submit" onclick="caSubmit()" disabled>Start Agreement</button>
@@ -148,6 +174,8 @@
             $('#ca_client').empty().append(option).trigger('change');
             caLoadApplicationsForClient(prospectId);
         } else {
+            caCurrentClientId = null;
+            caHideQuickAdd();
             $('#ca_client').val(null).trigger('change');
             document.getElementById('ca_application').innerHTML = '<option value="">-- Select a client first --</option>';
             document.getElementById('ca_application').disabled = true;
@@ -174,23 +202,31 @@
         });
     }
 
+    // Tracks whichever client is currently picked, so the quick-add-application form (shown
+    // when they have none) knows who to attach the new application to.
+    var caCurrentClientId = null;
+    var caCategoriesLoaded = false;
+
     // Shared by the select2:select handler (user picks a client by searching) and caOpen()'s
     // pre-fill path (client already known from the calling page) — both need to end up in
     // exactly the same state once a client id is settled on.
     function caLoadApplicationsForClient(clientId) {
+        caCurrentClientId = clientId;
         var appSelect = document.getElementById('ca_application');
         var submitBtn = document.getElementById('ca_submit');
         appSelect.innerHTML = '<option value="">Loading...</option>';
         appSelect.disabled = true;
         submitBtn.disabled = true;
         document.getElementById('ca_app_msg').innerHTML = '';
+        caHideQuickAdd();
 
         $.get(CA_BASE + 'agreement/Agreement/applications_for_client/' + clientId, function (data) {
             var results = data.results || [];
             if (results.length === 0) {
                 appSelect.innerHTML = '<option value="">-- No applications found --</option>';
                 appSelect.disabled = true;
-                document.getElementById('ca_app_msg').innerHTML = '<span style="color:#f5a623;">&#9888;&#65039; This client has no applications yet. Add one in the CRM first.</span>';
+                document.getElementById('ca_app_msg').innerHTML = '<span style="color:#f5a623;">&#9888;&#65039; This client has no applications yet.</span>';
+                caShowQuickAdd();
                 return;
             }
             var html = '<option value="">-- Select an application --</option>';
@@ -203,6 +239,119 @@
         }, 'json').fail(function () {
             appSelect.innerHTML = '<option value="">-- Error loading applications --</option>';
             document.getElementById('ca_app_msg').innerHTML = '<span style="color:#e74c3c;">&#9888;&#65039; Could not load applications. Please try again.</span>';
+        });
+    }
+
+    function caShowQuickAdd() {
+        document.getElementById('ca_quickadd_wrap').style.display = 'block';
+        document.getElementById('ca_qa_type').innerHTML = '<option value="">-- Select category first --</option>';
+        document.getElementById('ca_qa_type').disabled = true;
+        document.getElementById('ca_qa_status').innerHTML = '<option value="">-- Select type first --</option>';
+        document.getElementById('ca_qa_status').disabled = true;
+        document.getElementById('ca_qa_submit').disabled = true;
+        document.getElementById('ca_qa_msg').innerHTML = '';
+        document.getElementById('ca_qa_category').value = '';
+
+        if (caCategoriesLoaded) return;
+        var catSelect = document.getElementById('ca_qa_category');
+        $.get(CA_BASE + 'agreement/Agreement/categories', function (data) {
+            var html = '<option value="">-- Select category --</option>';
+            (data.results || []).forEach(function (r) {
+                html += '<option value="' + r.id + '">' + r.text + '</option>';
+            });
+            catSelect.innerHTML = html;
+            caCategoriesLoaded = true;
+        }, 'json');
+    }
+
+    function caHideQuickAdd() {
+        document.getElementById('ca_quickadd_wrap').style.display = 'none';
+    }
+
+    function caQaResetStatus() {
+        document.getElementById('ca_qa_status').innerHTML = '<option value="">-- Select type first --</option>';
+        document.getElementById('ca_qa_status').disabled = true;
+        document.getElementById('ca_qa_submit').disabled = true;
+    }
+
+    document.getElementById('ca_qa_category').addEventListener('change', function () {
+        var typeSelect = document.getElementById('ca_qa_type');
+        caQaResetStatus();
+        if (!this.value) {
+            typeSelect.innerHTML = '<option value="">-- Select category first --</option>';
+            typeSelect.disabled = true;
+            return;
+        }
+        typeSelect.innerHTML = '<option value="">Loading...</option>';
+        typeSelect.disabled = true;
+        $.get(CA_BASE + 'agreement/Agreement/types_for_category/' + this.value, function (data) {
+            var results = data.results || [];
+            if (results.length === 0) {
+                typeSelect.innerHTML = '<option value="">-- No types for this category --</option>';
+                typeSelect.disabled = true;
+                return;
+            }
+            var html = '<option value="">-- Select type --</option>';
+            results.forEach(function (r) {
+                html += '<option value="' + r.id + '">' + r.text + '</option>';
+            });
+            typeSelect.innerHTML = html;
+            typeSelect.disabled = false;
+        }, 'json');
+    });
+
+    document.getElementById('ca_qa_type').addEventListener('change', function () {
+        var statusSelect = document.getElementById('ca_qa_status');
+        caQaResetStatus();
+        if (!this.value) return;
+        statusSelect.innerHTML = '<option value="">Loading...</option>';
+        statusSelect.disabled = true;
+        $.get(CA_BASE + 'agreement/Agreement/statuses_for_type/' + this.value, function (data) {
+            var results = data.results || [];
+            if (results.length === 0) {
+                statusSelect.innerHTML = '<option value="">-- No statuses for this type --</option>';
+                statusSelect.disabled = true;
+                return;
+            }
+            var html = '<option value="">-- Select status --</option>';
+            results.forEach(function (r) {
+                html += '<option value="' + r.id + '">' + r.text + '</option>';
+            });
+            statusSelect.innerHTML = html;
+            statusSelect.disabled = false;
+        }, 'json');
+    });
+
+    document.getElementById('ca_qa_status').addEventListener('change', function () {
+        document.getElementById('ca_qa_submit').disabled = !this.value;
+    });
+
+    function caQuickAddApplication() {
+        var categoryId = document.getElementById('ca_qa_category').value;
+        var typeId = document.getElementById('ca_qa_type').value;
+        var statusId = document.getElementById('ca_qa_status').value;
+        if (!caCurrentClientId || !categoryId || !typeId || !statusId) return;
+
+        var qaSubmit = document.getElementById('ca_qa_submit');
+        qaSubmit.disabled = true;
+        document.getElementById('ca_qa_msg').innerHTML = '<span class="ca-spinner"></span><span style="color:#888;">Creating application...</span>';
+
+        $.post(CA_BASE + 'agreement/Agreement/quick_add_application', {
+            prospect_id: caCurrentClientId,
+            category_id: categoryId,
+            type_id: typeId,
+            status_id: statusId
+        }, function (data) {
+            if (!data.success) {
+                document.getElementById('ca_qa_msg').innerHTML = '<span style="color:#e74c3c;">&#9888;&#65039; ' + (data.error || 'Could not create application.') + '</span>';
+                qaSubmit.disabled = false;
+                return;
+            }
+            caHideQuickAdd();
+            caLoadApplicationsForClient(caCurrentClientId);
+        }, 'json').fail(function () {
+            document.getElementById('ca_qa_msg').innerHTML = '<span style="color:#e74c3c;">&#9888;&#65039; Could not create application. Please try again.</span>';
+            qaSubmit.disabled = false;
         });
     }
     function caClose() {

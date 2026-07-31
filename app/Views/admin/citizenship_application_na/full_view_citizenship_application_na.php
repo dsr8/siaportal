@@ -178,7 +178,7 @@
                   <div class="col-lg-6 col-md-6 col-sm-6 mb-6">
                      <div class="form-group">
  <label class="small mb-1" for="inputFirstName"> Assign Team Member</label>
- <input  class="form-control aa" readonly   placeholder="Enter date of application received" value="<?php echo $team['0']['firstname'];?> <?php echo $team['0']['lastname'];?>"  readonly="readonly"  />
+ <input  class="form-control aa" readonly   placeholder="Enter date of application received" value="<?php echo $team[0]['firstname'] ?? '';?> <?php echo $team[0]['lastname'] ?? '';?>"  readonly="readonly"  />
 
 </div>
      

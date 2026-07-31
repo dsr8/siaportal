@@ -46,14 +46,34 @@ class AgreementHtmlPdfBuilder
         $filename   = 'agreement_' . (int) $agreement['id'] . '_' . preg_replace('/[^A-Za-z0-9\-]/', '', (string) ($agreement['reference_number'] ?? 'draft')) . '.pdf';
         $outputPath = $this->pdfDir() . $filename;
 
+        // Printed to a throwaway path first, then swapped into place — regenerating an
+        // existing agreement's PDF (see Agreement::regenerate_pdf()) prints to the SAME
+        // deterministic filename as before. Printing straight over it let a locked/open
+        // destination file (e.g. still open in a PDF viewer, common on Windows) cause Chrome
+        // to silently fail to write while leaving the old file in place — which passed the
+        // old is_file()/filesize() check below and got reported as a successful regeneration
+        // even though nothing had actually changed. Printing to a fresh temp path first means
+        // any write failure is caught here, before touching the real file at all.
+        $tmpPdfPath = $this->pdfDir() . 'tmp_' . (int) $agreement['id'] . '_' . uniqid('', true) . '.pdf';
         try {
-            $this->printToPdf($tmpHtmlPath, $outputPath);
+            $this->printToPdf($tmpHtmlPath, $tmpPdfPath);
         } finally {
             @unlink($tmpHtmlPath);
         }
 
-        if (!is_file($outputPath) || filesize($outputPath) === 0) {
+        if (!is_file($tmpPdfPath) || filesize($tmpPdfPath) === 0) {
+            @unlink($tmpPdfPath);
             throw new \RuntimeException('Signed PDF generation failed: headless Chrome did not produce an output file.');
+        }
+
+        if (!@rename($tmpPdfPath, $outputPath)) {
+            // rename() can fail on Windows if $outputPath is currently open elsewhere; fall
+            // back to copy+delete, which succeeds as long as the destination isn't locked.
+            if (!@copy($tmpPdfPath, $outputPath)) {
+                @unlink($tmpPdfPath);
+                throw new \RuntimeException('Signed PDF generation succeeded but could not replace the existing file at ' . $outputPath . ' — it may be open in another program.');
+            }
+            @unlink($tmpPdfPath);
         }
 
         return 'assets/agreement_pdfs/' . $filename;

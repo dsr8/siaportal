@@ -38,12 +38,21 @@ class Sign extends BaseController
         $AgreementModel = new Agreement_model();
 
         if ($agreement['status'] === 'sent') {
+            // Sent synchronously, right when the client opens the link — reliable and needs
+            // no scheduled task. viewed_notified_at is stamped here too so the (optional)
+            // SendAgreementViewedNotifications cron, if anyone ever sets it up, never
+            // double-sends for this agreement.
+            $now = date('Y-m-d H:i:s');
             $AgreementModel->update($agreement['id'], [
-                'status'    => 'viewed',
-                'viewed_at' => date('Y-m-d H:i:s'),
-                'viewed_ip' => $this->request->getIPAddress(),
+                'status'             => 'viewed',
+                'viewed_at'          => $now,
+                'viewed_ip'          => $this->request->getIPAddress(),
+                'viewed_notified_at' => $now,
             ]);
             $agreement['status'] = 'viewed';
+
+            helper('agreement_email_helper');
+            sia_send_agreement_viewed_email($agreement);
         }
 
         $TypeClient = new Type_client_model();
@@ -252,11 +261,18 @@ class Sign extends BaseController
             return redirect()->to(base_url('agreement/sign/' . $token));
         }
 
+        $declineReason = trim((string) $this->request->getPost('reason'));
         (new Agreement_model())->update($agreement['id'], [
             'status'         => 'declined',
             'declined_at'    => date('Y-m-d H:i:s'),
-            'decline_reason' => trim((string) $this->request->getPost('reason')),
+            'decline_reason' => $declineReason,
         ]);
+
+        helper('agreement_email_helper');
+        sia_send_agreement_declined_email(array_merge($agreement, [
+            'status' => 'declined',
+            'decline_reason' => $declineReason,
+        ]));
 
         return redirect()->to(base_url('agreement/sign/' . $token))
             ->with('sign_success', 'You have declined this agreement.');

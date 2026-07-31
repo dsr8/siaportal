@@ -136,7 +136,7 @@
                             </div>
                               <!---->
                                   <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#declarationMenu" aria-expanded="false" aria-controls="declarationMenu"
-                                ><div class="sb-nav-link-icon"><i style="color:#e23b3b" class="fas fa-file-contract"></i></div>
+                                ><div class="sb-nav-link-icon"><i style="color:#e23b3b" class="fas fa-handshake"></i></div>
                                 Declaration / Consent
                                 <div class="sb-sidenav-collapse-arrow"><i  class="fas fa-angle-down"></i></div
                             ></a>

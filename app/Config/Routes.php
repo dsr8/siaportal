@@ -76,9 +76,16 @@ $routes->post('agreement/Agreement/start_from_application/(:num)', 'Agreement\Ag
 $routes->get( 'agreement/Agreement/detail/(:num)',   'Agreement\Agreement::detail/$1');
 $routes->get( 'agreement/Agreement/search_clients',  'Agreement\Agreement::search_clients');
 $routes->get( 'agreement/Agreement/applications_for_client/(:num)', 'Agreement\Agreement::applications_for_client/$1');
+$routes->get( 'agreement/Agreement/categories',      'Agreement\Agreement::categories');
+$routes->get( 'agreement/Agreement/types_for_category/(:num)', 'Agreement\Agreement::types_for_category/$1');
+$routes->get( 'agreement/Agreement/statuses_for_type/(:num)', 'Agreement\Agreement::statuses_for_type/$1');
+$routes->post('agreement/Agreement/quick_add_application', 'Agreement\Agreement::quick_add_application');
 $routes->post('agreement/Agreement/save/(:num)',     'Agreement\Agreement::save/$1');
 $routes->post('agreement/Agreement/generate_link/(:num)', 'Agreement\Agreement::generate_link/$1');
 $routes->get( 'agreement/Agreement/pdf/(:num)',      'Agreement\Agreement::pdf/$1');
+$routes->post('agreement/Agreement/regenerate_pdf/(:num)', 'Agreement\Agreement::regenerate_pdf/$1');
+$routes->get( 'agreement/Agreement/cron_send_reminders', 'Agreement\Agreement::cron_send_reminders');
+$routes->get( 'agreement/Agreement/migrate_clause_indices_once', 'Agreement\Agreement::migrate_clause_indices_once');
 $routes->post('agreement/Template/save/(:num)',      'Agreement\Template::save/$1');
 $routes->get( 'agreement/Template/get/(:num)',       'Agreement\Template::get/$1');
 

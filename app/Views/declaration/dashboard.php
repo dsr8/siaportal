@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <title>Declaration / Consent Dashboard - Siaportal</title>
-        <link rel="icon" type="image/png" href="<?php echo base_url();?>/public/assets_client/img/favicon.png" />
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e23b3b' d='M2 16l8-6 3 2v3l-8 6-3-2z'/%3E%3Cpath fill='%23e23b3b' d='M22 16l-8-6-3 2v3l8 6 3-2z'/%3E%3Ccircle fill='%23ffffff' cx='12' cy='12' r='2.2'/%3E%3C/svg%3E" />
         <link href="<?php echo base_url();?>/public/dist/css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">

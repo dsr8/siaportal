@@ -5,6 +5,7 @@ use App\Models\Agreement\Agreement_template_model;
 use App\Models\Agreement\Agreement_template_milestone_model;
 use App\Models\Agreement\Agreement_template_fee_model;
 use App\Models\Type_client_model;
+use App\Libraries\Agreement\AgreementClauses;
 
 class Template extends BaseController
 {
@@ -36,10 +37,8 @@ class Template extends BaseController
 
         $govtProcMain        = (float) ($this->request->getPost('govt_proc_main') ?? 0);
         $govtProcSpouse      = (float) ($this->request->getPost('govt_proc_spouse') ?? 0);
-        $govtProcDepAbove22  = (float) ($this->request->getPost('govt_proc_dep_above22') ?? 0);
-        $govtProcDepUnder22  = (float) ($this->request->getPost('govt_proc_dep_under22') ?? 0);
-        $govtPrMain          = (float) ($this->request->getPost('govt_pr_main') ?? 0);
-        $govtPrSpouse        = (float) ($this->request->getPost('govt_pr_spouse') ?? 0);
+        $govtProcDepAbove22Fees = AgreementClauses::sanitizeFeeList($this->request->getPost('govt_proc_dep_above22') ?? []);
+        $govtProcDepAbove22  = array_sum($govtProcDepAbove22Fees);
         $govtPrPnp           = (float) ($this->request->getPost('govt_pr_pnp') ?? 0);
 
         $TemplateModel = new Agreement_template_model();
@@ -48,14 +47,10 @@ class Template extends BaseController
             'type_id'        => $typeId,
             'category_id'    => $categoryId,
             'service_fee'    => (float) ($this->request->getPost('service_fee') ?? 0),
-            'government_fee' => round($govtProcMain + $govtProcSpouse + $govtProcDepAbove22 + $govtProcDepUnder22
-                + $govtPrMain + $govtPrSpouse + $govtPrPnp, 2),
+            'government_fee' => round($govtProcMain + $govtProcSpouse + $govtProcDepAbove22 + $govtPrPnp, 2),
             'govt_proc_main'        => $govtProcMain,
             'govt_proc_spouse'      => $govtProcSpouse,
-            'govt_proc_dep_above22' => $govtProcDepAbove22,
-            'govt_proc_dep_under22' => $govtProcDepUnder22,
-            'govt_pr_main'          => $govtPrMain,
-            'govt_pr_spouse'        => $govtPrSpouse,
+            'govt_proc_dep_above22' => json_encode($govtProcDepAbove22Fees),
             'govt_pr_pnp'           => $govtPrPnp,
             'other_fee'      => (float) ($this->request->getPost('other_fee') ?? 0),
             'created_by'     => session()->get('id'),
@@ -94,10 +89,7 @@ class Template extends BaseController
             'government_fee'  => $template['government_fee'],
             'govt_proc_main'        => $template['govt_proc_main'],
             'govt_proc_spouse'      => $template['govt_proc_spouse'],
-            'govt_proc_dep_above22' => $template['govt_proc_dep_above22'],
-            'govt_proc_dep_under22' => $template['govt_proc_dep_under22'],
-            'govt_pr_main'          => $template['govt_pr_main'],
-            'govt_pr_spouse'        => $template['govt_pr_spouse'],
+            'govt_proc_dep_above22' => AgreementClauses::depAbove22Fees($template),
             'govt_pr_pnp'           => $template['govt_pr_pnp'],
             'other_fee'       => $template['other_fee'],
             'milestones'      => $MilestoneModel->getByTemplateId($templateId),

@@ -63,12 +63,11 @@
                         <?php endif; ?>
 
                         <div class="ec-note">
-                            <strong>Only this agreement is affected.</strong> Changes here apply solely to Agreement #<?php echo (int) $agreement['id']; ?> — every other agreement keeps the standard wording. Clause 6 (Payment Terms and Conditions) isn't shown here; it's always generated automatically from the fee amounts entered on the main Edit Agreement page.
+                            <strong>Only this agreement is affected.</strong> Changes here apply solely to Agreement #<?php echo (int) $agreement['id']; ?> — every other agreement keeps the standard wording.
                         </div>
 
                         <form id="ecForm" method="post" action="<?php echo base_url('agreement/Agreement/save_clauses/' . $agreement['id']); ?>">
                             <?php foreach ($clauses as $i => $clause): ?>
-                                <?php if ($i === $feeClauseIndex) continue; ?>
                                 <?php $isCustom = ($clauseHtml[$i] ?? '') !== ($defaultHtml[$i] ?? ''); ?>
                                 <div class="ec-card<?php echo $isCustom ? ' ec-is-custom' : ''; ?>" id="ec-card-<?php echo $i; ?>">
                                     <div class="ec-card-head">

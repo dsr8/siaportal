@@ -66,7 +66,27 @@ class AgreementPdfBuilder
         $pdf->writeHTML($this->certificateHtml($agreement), true, false, true, false, '');
 
         $filename = 'agreement_' . (int) $agreement['id'] . '_' . preg_replace('/[^A-Za-z0-9\-]/', '', (string) ($agreement['reference_number'] ?? 'draft')) . '.pdf';
-        $pdf->Output($this->pdfDir() . $filename, 'F');
+        $outputPath = $this->pdfDir() . $filename;
+
+        // Printed to a throwaway path first, then swapped into place — see the matching
+        // comment in AgreementHtmlPdfBuilder::build() for why: printing straight over an
+        // existing, possibly-open (locked) destination file can silently leave the old file
+        // untouched while still reporting success.
+        $tmpPdfPath = $this->pdfDir() . 'tmp_' . (int) $agreement['id'] . '_' . uniqid('', true) . '.pdf';
+        $pdf->Output($tmpPdfPath, 'F');
+
+        if (!is_file($tmpPdfPath) || filesize($tmpPdfPath) === 0) {
+            @unlink($tmpPdfPath);
+            throw new \RuntimeException('Signed PDF generation failed: TCPDF did not produce an output file.');
+        }
+
+        if (!@rename($tmpPdfPath, $outputPath)) {
+            if (!@copy($tmpPdfPath, $outputPath)) {
+                @unlink($tmpPdfPath);
+                throw new \RuntimeException('Signed PDF generation succeeded but could not replace the existing file at ' . $outputPath . ' — it may be open in another program.');
+            }
+            @unlink($tmpPdfPath);
+        }
 
         return 'assets/agreement_pdfs/' . $filename;
     }
@@ -126,13 +146,15 @@ class AgreementPdfBuilder
                     <span style="color:#e23b3b;font-weight:bold;font-size:9.5px;">CLIENT INFORMATION</span><br><br>
                     Name: ' . esc($agreement['client_name'] ?? '—') . '<br>
                     Phone: ' . esc($agreement['client_phone'] ?? '—') . '<br>
-                    Email: ' . esc($agreement['client_email'] ?? '—') . '
+                    Email: ' . esc($agreement['client_email'] ?? '—') . '<br>
+                    Address: ' . esc($agreement['client_address'] ?: '—') . '
                 </td>
                 <td width="2%"></td>
                 <td width="49%" style="background-color:#fafafa;border:0.5px solid #eceef1;">
                     <span style="color:#e23b3b;font-weight:bold;font-size:9.5px;">RCIC INFORMATION</span><br><br>
                     Name: ' . esc($agreement['consultant_name'] ?: 'Sia Immigration Solutions Inc.') . '<br>
-                    RCIC#: ' . esc($agreement['rcic_number'] ?: '—') . '
+                    RCIC#: ' . esc($agreement['rcic_number'] ?: '—') . '<br>
+                    Address: #304, 8318 120 Street, Surrey, BC V3W 3N4, Canada<br>#301, 246 2 Ave, Kamloops, BC V2C 2C9, Canada
                 </td>
             </tr>
         </table><br>';
@@ -167,26 +189,26 @@ class AgreementPdfBuilder
             $indent = $line['group'] !== null ? 'padding-left:10px;' : '';
             $html .= '<tr><td style="' . $indent . '">' . esc($line['label']) . '</td><td align="right">' . $this->money($agreement, $line['amount']) . '</td></tr>';
         }
-        if ((float) $agreement['other_fee'] > 0) {
-            $html .= '<tr><td>Other Fee</td><td align="right">' . $this->money($agreement, $agreement['other_fee']) . '</td></tr>';
-        }
-        $html .= '<tr style="background-color:#fdf1f1;"><td><b style="color:#e23b3b;">TOTAL PAYABLE</b></td><td align="right"><b style="color:#e23b3b;">' . $this->money($agreement, $agreement['total_amount']) . '</b></td></tr>
-        </table>';
+        $html .= '</table>';
 
         $html .= '<p style="font-size:9.5px;color:#e23b3b;"><b>PAYMENT SCHEDULE / MILESTONES</b></p><table cellpadding="3" style="width:100%;font-size:9px;" border="0.5">
-            <tr><td><b>Milestone</b></td><td><b>Amount (GST Included)</b></td></tr>';
+            <tr><td><b>Milestone</b></td><td><b>Timeline</b></td><td><b>Amount (GST Included)</b></td></tr>';
         foreach ($milestones as $m) {
             $amt = $m['amount'] !== null ? $this->money($agreement, (float) $m['amount'] * 1.05) : 'Included';
-            $html .= '<tr><td>' . esc($m['milestone']) . '</td><td>' . $amt . '</td></tr>';
+            $html .= '<tr><td>' . esc($m['milestone']) . '</td><td>' . (esc($m['due_date']) ?: '—') . '</td><td>' . $amt . '</td></tr>';
         }
         $html .= '</table>';
 
         $html .= '<p style="font-size:9.5px;color:#e23b3b;"><b>ADDITIONAL FEES (IF APPLICABLE)</b></p><table cellpadding="3" style="width:100%;font-size:9px;" border="0.5">
-            <tr><td><b>Description</b></td><td><b>Amount</b></td></tr>';
+            <tr><td><b>Description</b></td><td><b>Amount (GST Included)</b></td></tr>';
         foreach ($additionalFees as $f) {
-            $html .= '<tr><td>' . esc($f['description']) . '</td><td>' . $this->money($agreement, $f['amount']) . '</td></tr>';
+            $html .= '<tr><td>' . esc($f['description']) . '</td><td>' . $this->money($agreement, (float) $f['amount'] * 1.05) . '</td></tr>';
         }
         $html .= '</table>';
+
+        $html .= '<table cellpadding="3" style="width:100%;font-size:9.5px;" border="0.5">
+            <tr style="background-color:#fdf1f1;"><td><b style="color:#e23b3b;">TOTAL PAYABLE</b></td><td align="right"><b style="color:#e23b3b;">' . $this->money($agreement, $agreement['total_amount']) . '</b></td></tr>
+        </table>';
 
         $html .= '<p style="font-size:8.5px;color:#777;">All fees are non-refundable except as outlined in the Refund Policy.</p><br>';
 
@@ -233,10 +255,13 @@ class AgreementPdfBuilder
         $pdf->RoundedRect($x, $y, $w, $h, 1.5, '1111', 'D', ['width' => 0.3, 'color' => [226, 59, 59]]);
 
         if ($initialRow && $initialRow['initial_type'] === 'type' && !empty($initialRow['typed_initials'])) {
-            $pdf->SetFont('helvetica', 'B', 11);
+            // "dancingscriptb" is the Dancing Script webfont (converted for TCPDF), matching
+            // the cursive ".sg-typed-input" style the client actually typed into on sign.php —
+            // plain Helvetica here made the initial look like flat typed letters, not a signature.
+            $pdf->SetFont('dancingscriptb', '', 20);
             $pdf->SetTextColor(226, 59, 59);
-            $pdf->SetXY($x, $y + 2.8);
-            $pdf->Cell($w, 5, strtoupper($initialRow['typed_initials']), 0, 0, 'C');
+            $pdf->SetXY($x, $y);
+            $pdf->Cell($w, $h, strtoupper($initialRow['typed_initials']), 0, 0, 'C');
         } elseif ($initialRow && !empty($initialRow['initial_path'])) {
             $path = './' . ltrim($initialRow['initial_path'], '/');
             if (is_file($path)) {
@@ -293,9 +318,11 @@ class AgreementPdfBuilder
         }
 
         if ($agreement['client_signature_type'] === 'type' && !empty($agreement['client_typed_name'])) {
-            $pdf->SetFont('times', 'BI', 16);
+            // Same "dancingscriptb" script font as the per-page initial box, matching what the
+            // client actually typed into sign.php's cursive ".sg-typed-input" signature field.
+            $pdf->SetFont('dancingscriptb', '', 26);
             $pdf->SetTextColor(30, 30, 30);
-            $pdf->SetXY(110, $sigImgY);
+            $pdf->SetXY(110, $sigImgY - 3);
             $pdf->Cell(80, 8, $agreement['client_typed_name'], 0, 0);
         } elseif (!empty($agreement['client_signature'])) {
             $path = './' . ltrim($agreement['client_signature'], '/');

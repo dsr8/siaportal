@@ -68,7 +68,8 @@ function sia_send_declaration_client_sent_email(array $declaration, string $sign
         $emailSvc = \Config\Services::email();
         $config   = get_smtp_settings();
         $emailSvc->initialize($config);
-        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Sia Immigration Solutions Inc.');
+        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Declaration Consent Sia Immigration');
+        $emailSvc->setCC('no-reply@siaimmigration.com');
         $emailSvc->setReplyTo('consult@siaimmigration.com', 'SIA Immigration');
         $emailSvc->setTo($toEmail);
         $emailSvc->setSubject(sia_declaration_subject('Action Required | Disclaimer / Consent', $declaration));
@@ -102,7 +103,8 @@ function sia_send_declaration_team_sent_email(array $declaration): void
         $emailSvc = \Config\Services::email();
         $config   = get_smtp_settings();
         $emailSvc->initialize($config);
-        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Sia Immigration Solutions Inc.');
+        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Declaration Consent Sia Immigration');
+        $emailSvc->setCC('no-reply@siaimmigration.com');
         $emailSvc->setTo(sia_team_emails());
         $emailSvc->setSubject(sia_declaration_subject('Disclaimer Sent', $declaration));
         $emailSvc->setMessage(sia_appt_html($body));
@@ -133,7 +135,8 @@ function sia_send_declaration_viewed_email(array $declaration): void
         $emailSvc = \Config\Services::email();
         $config   = get_smtp_settings();
         $emailSvc->initialize($config);
-        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Sia Immigration Solutions Inc.');
+        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Declaration Consent Sia Immigration');
+        $emailSvc->setCC('no-reply@siaimmigration.com');
         $emailSvc->setTo(sia_team_emails());
         $emailSvc->setSubject(sia_declaration_subject('Disclaimer Viewed', $declaration));
         $emailSvc->setMessage(sia_appt_html($body));
@@ -168,7 +171,8 @@ function sia_send_declaration_reminder_email(array $declaration, string $signUrl
         $emailSvc = \Config\Services::email();
         $config   = get_smtp_settings();
         $emailSvc->initialize($config);
-        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Sia Immigration Solutions Inc.');
+        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Declaration Consent Sia Immigration');
+        $emailSvc->setCC('no-reply@siaimmigration.com');
         $emailSvc->setReplyTo('consult@siaimmigration.com', 'SIA Immigration');
         $emailSvc->setTo($toEmail);
         $emailSvc->setSubject(sia_declaration_subject('Reminder | Disclaimer / Consent Pending', $declaration));
@@ -211,20 +215,38 @@ function sia_send_declaration_client_signed_email(array $declaration): void
     helper('appointment_email_helper');
 
     $firstName = esc(sia_declaration_first_name($declaration));
+    $downloadUrl = !empty($declaration['sign_token'])
+        ? base_url('declaration/sign/' . $declaration['sign_token'] . '/pdf')
+        : null;
+    $btnStyle = 'display:inline-block;padding:12px 26px;border-radius:4px;font-family:Arial,sans-serif;font-size:14px;text-decoration:none;font-weight:700;background:#27ae60;color:#fff;';
     $body = '
       <h2 style="margin:0 0 14px;color:#1e7e42;">Disclaimer / Consent Successfully Signed</h2>
       <p>Hello ' . $firstName . ',</p>
       <p>Thank you.</p>
       <p>Your Disclaimer / Consent has been successfully signed.</p>
-      <p>A copy of the signed document is attached for your records.</p>
+      <p>A copy of the signed document is attached for your records.</p>';
+    if ($downloadUrl !== null) {
+        $body .= '
+      <table cellpadding="0" cellspacing="0" style="margin:18px 0;"><tr><td>
+        <a href="' . esc($downloadUrl, 'attr') . '" target="_blank" style="' . $btnStyle . '">Download Signed Copy</a>
+      </td></tr></table>
+      <p>If the button does not work, copy and paste this link into your browser:<br>
+      <a href="' . esc($downloadUrl, 'attr') . '">' . esc($downloadUrl) . '</a></p>';
+    }
+    $body .= '
       <p>Regards,<br>' . esc($declaration['consultant_name'] ?: 'Sia Immigration Solutions Inc.') . '<br>Sia Immigration Solutions Inc.</p>
     ';
 
     try {
-        $emailSvc = \Config\Services::email();
+        // Non-shared instance: this function and sia_send_declaration_team_signed_email()
+        // both attach a PDF and run back-to-back in the same request. CI4's Email::initialize()
+        // does not clear attachments by default, so the shared singleton would carry this
+        // email's attachment over into the next one, doubling it up.
+        $emailSvc = \Config\Services::email(null, false);
         $config   = get_smtp_settings();
         $emailSvc->initialize($config);
-        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Sia Immigration Solutions Inc.');
+        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Declaration Consent Sia Immigration');
+        $emailSvc->setCC('no-reply@siaimmigration.com');
         $emailSvc->setReplyTo('consult@siaimmigration.com', 'SIA Immigration');
         $emailSvc->setTo($toEmail);
         $emailSvc->setSubject(sia_declaration_subject('Disclaimer / Consent Successfully Signed', $declaration));
@@ -257,10 +279,13 @@ function sia_send_declaration_team_signed_email(array $declaration): void
     ';
 
     try {
-        $emailSvc = \Config\Services::email();
+        // See note in sia_send_declaration_client_signed_email() — non-shared instance so
+        // this email's attachment can't inherit the client-signed email's PDF.
+        $emailSvc = \Config\Services::email(null, false);
         $config   = get_smtp_settings();
         $emailSvc->initialize($config);
-        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Sia Immigration Solutions Inc.');
+        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Declaration Consent Sia Immigration');
+        $emailSvc->setCC('no-reply@siaimmigration.com');
         $emailSvc->setTo(sia_team_emails());
         $emailSvc->setSubject(sia_declaration_subject('Disclaimer Signed', $declaration));
         $pdfPath = sia_declaration_pdf_disk_path($declaration);
@@ -300,7 +325,8 @@ function sia_send_declaration_declined_email(array $declaration): void
         $emailSvc = \Config\Services::email();
         $config   = get_smtp_settings();
         $emailSvc->initialize($config);
-        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Sia Immigration Solutions Inc.');
+        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Declaration Consent Sia Immigration');
+        $emailSvc->setCC('no-reply@siaimmigration.com');
         $emailSvc->setTo(sia_team_emails());
         $emailSvc->setSubject(sia_declaration_subject('Disclaimer Declined', $declaration));
         $emailSvc->setMessage(sia_appt_html($body));

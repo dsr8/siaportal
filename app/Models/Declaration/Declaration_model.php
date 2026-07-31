@@ -147,9 +147,18 @@ class Declaration_model extends Model
             return null;
         }
 
-        return $this->where('sign_token', $token)
-                    ->where('hide', 0)
-                    ->first();
+        // Joined so type_name/category_name are available to the signing page and the signed
+        // PDF (DeclarationPdfBuilder) without a second lookup — the PDF previously omitted
+        // Application Category/Type entirely because a plain find() never carried them.
+        $row = $this->db->table($this->table . ' a')
+            ->select('a.*, tc.type as type_name, cat.category as category_name')
+            ->join('type_client tc', 'tc.id = a.type_id', 'left')
+            ->join('category cat', 'cat.id = tc.category_id', 'left')
+            ->where('a.sign_token', $token)
+            ->where('a.hide', 0)
+            ->get()->getRowArray();
+
+        return $row ?: null;
     }
 
     // Latest non-hidden declaration per application_id, for status badges on the client list.

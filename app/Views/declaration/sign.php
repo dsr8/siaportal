@@ -23,7 +23,9 @@
             pointer-events: none; z-index: 0;
         }
         .sg-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px 10px; position: relative; z-index: 1; }
-        .sg-header img { height: 36px; }
+        .sg-header-logos { display: flex; align-items: center; gap: 14px; }
+        .sg-header-logos .sg-logo-sia { height: 36px; }
+        .sg-header-logos .sg-logo-rcic { height: 32px; }
         .sg-lock-pill {
             display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: #1e7e42;
             background: #e8f8ee; padding: 5px 11px; border-radius: 20px;
@@ -108,7 +110,10 @@
     <div class="sg-page">
         <div class="sg-gradient-bar"></div>
         <div class="sg-header">
-            <img src="<?php echo base_url('public/assets_client/img/sia_logo.png'); ?>" alt="SIA Immigration">
+            <div class="sg-header-logos">
+                <img src="<?php echo base_url('public/assets_client/img/sia_logo.png'); ?>" alt="SIA Immigration" class="sg-logo-sia">
+                <img src="<?php echo base_url('public/assets_client/img/rcic_logo.png'); ?>" alt="RCIC - Regulated Canadian Immigration Consultant" class="sg-logo-rcic">
+            </div>
             <span class="sg-lock-pill">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 Secure eSign

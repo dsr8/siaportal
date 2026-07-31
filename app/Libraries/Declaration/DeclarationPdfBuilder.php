@@ -40,6 +40,14 @@ class DeclarationPdfBuilder
         $pdf->writeHTML($this->contentHtml($declaration), true, false, true, false, '');
         $this->resetTextState($pdf);
         $this->writeSignatureBlock($pdf, $declaration);
+
+        // Signature Certificate on its own dedicated final page, matching the Agreement
+        // module's PDF (AgreementPdfBuilder) rather than letting it just flow after the
+        // signature block on whatever page that happened to land on.
+        $pdf->AddPage();
+        $this->drawWatermark($pdf);
+        $this->resetTextState($pdf);
+        $pdf->writeHTML('<h1 style="text-align:center;font-size:18px;margin-bottom:10px;">SIGNATURE CERTIFICATE</h1>', true, false, true, false, '');
         $this->resetTextState($pdf);
         $pdf->writeHTML($this->certificateHtml($declaration), true, false, true, false, '');
 
@@ -90,7 +98,9 @@ class DeclarationPdfBuilder
             <tr>
                 <td width="49%" style="background-color:#fafafa;border:0.5px solid #eceef1;">
                     Client: ' . esc($declaration['client_name'] ?? '—') . '<br>
-                    SiaID: ' . (int) ($declaration['prospect_id'] ?? 0) . '
+                    SiaID: ' . (int) ($declaration['prospect_id'] ?? 0) . '<br>
+                    Application Category: ' . esc($declaration['category_name'] ?? '—') . '<br>
+                    Application Type: ' . esc($declaration['type_name'] ?? '—') . '
                 </td>
                 <td width="2%"></td>
                 <td width="49%" style="background-color:#fafafa;border:0.5px solid #eceef1;">
@@ -184,8 +194,7 @@ class DeclarationPdfBuilder
         $viewedOn = !empty($declaration['viewed_at']) ? date('F j, Y \a\t g:i A', strtotime($declaration['viewed_at'])) : '—';
         $certificateId = strtoupper(substr(hash('sha256', $declaration['id'] . '|' . ($declaration['sign_token'] ?? '') . '|' . ($declaration['client_signed_at'] ?? '')), 0, 16));
 
-        $html = '<hr style="border:0.5px solid #eceef1;"><p style="font-size:9.5px;font-weight:bold;color:#e23b3b;">SIGNATURE CERTIFICATE</p>';
-        $html .= '<table cellpadding="4" style="width:100%;font-size:9px;" border="0.5">
+        $html = '<table cellpadding="4" style="width:100%;font-size:9px;" border="0.5">
             <tr><td width="35%"><b>Client Name</b></td><td>' . esc($declaration['client_name'] ?? '—') . '</td></tr>
             <tr><td><b>Client Email</b></td><td>' . esc($declaration['client_email'] ?? '—') . '</td></tr>
             <tr><td><b>Viewed On</b></td><td>' . esc($viewedOn) . '  (IP: ' . esc($declaration['viewed_ip'] ?? '—') . ')</td></tr>

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
   `client_name`    VARCHAR(150) DEFAULT NULL COMMENT 'snapshot at draft creation',
   `client_email`   VARCHAR(100) DEFAULT NULL,
   `client_phone`   VARCHAR(30)  DEFAULT NULL,
+  `client_address` VARCHAR(255) DEFAULT NULL COMMENT 'snapshot at draft creation, from tbl_client_prospect.address + city',
   `category_id`    INT(11)      DEFAULT NULL COMMENT 'snapshot, editable in a later phase',
   `type_id`        INT(11)      DEFAULT NULL COMMENT 'snapshot, editable in a later phase',
   `status`         VARCHAR(20)  NOT NULL DEFAULT 'draft' COMMENT 'draft|sent|viewed|signed|declined|cancelled',
@@ -25,8 +26,8 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
   `government_fee`   DECIMAL(10,2) DEFAULT 0 COMMENT 'auto-summed from the govt_* breakdown fields below',
   `govt_proc_main`         DECIMAL(10,2) DEFAULT 0 COMMENT 'Government processing fee - Main Applicant',
   `govt_proc_spouse`       DECIMAL(10,2) DEFAULT 0 COMMENT 'Government processing fee - Spouse',
-  `govt_proc_dep_above22`  DECIMAL(10,2) DEFAULT 0 COMMENT 'Government processing fee - Dependent child above 22',
-  `govt_proc_dep_under22`  DECIMAL(10,2) DEFAULT 0 COMMENT 'Government processing fee - Dependent child under 22',
+  `govt_proc_dep_above22`  TEXT DEFAULT NULL COMMENT 'Government processing fee - Dependent child(ren) above 22, JSON array of per-child fee amounts e.g. [500,300]; legacy rows may hold a single plain decimal',
+  `govt_proc_dep_under22`  DECIMAL(10,2) DEFAULT 0 COMMENT 'Government processing fee - Dependent child under 22 (retired field, no longer editable in the UI; legacy value kept as-is and unused)',
   `govt_pr_main`           DECIMAL(10,2) DEFAULT 0 COMMENT 'Government Right of Permanent Residence fee - Main Applicant',
   `govt_pr_spouse`         DECIMAL(10,2) DEFAULT 0 COMMENT 'Government Right of Permanent Residence fee - Spouse',
   `govt_pr_pnp`            DECIMAL(10,2) DEFAULT 0 COMMENT 'Government Right of Permanent Residence fee - PNP Govt.',
@@ -36,13 +37,16 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
   `require_consultant_signature` TINYINT(1) DEFAULT 1,
   `email_verification`          TINYINT(1) DEFAULT 1,
   `send_reminder`                TINYINT(1) DEFAULT 1,
-  `reminder_days`    INT(11) DEFAULT 3,
-  `max_reminders`    INT(11) DEFAULT 2,
+  `reminder_days`    INT(11) DEFAULT 3 COMMENT 'retired: reminder timing is now the fixed 24h/3d/7d ladder in Agreement_model::getDueForReminder(), not this per-agreement interval',
+  `max_reminders`    INT(11) DEFAULT 2 COMMENT 'retired: the fixed ladder always tops out at 3 reminders, not this per-agreement cap',
+  `reminders_sent`   INT(11) NOT NULL DEFAULT 0 COMMENT 'how many of the 3 fixed-ladder reminders (24h/3d/7d after last_sent_at) have gone out so far',
+  `last_reminder_at` DATETIME DEFAULT NULL COMMENT 'last reminder send time, informational — the ladder itself is timed from last_sent_at, not this',
   `sign_token`         VARCHAR(64)  DEFAULT NULL COMMENT 'generated lazily when a signing link is first created',
   `sign_password`      VARCHAR(10)  DEFAULT NULL COMMENT '6-digit access PIN emailed to the client, generated lazily alongside sign_token',
   `last_sent_at`       DATETIME     DEFAULT NULL COMMENT 'set on every successful "Send for eSign" email; guards against duplicate sends from rapid double-clicks',
   `viewed_at`          DATETIME     DEFAULT NULL,
   `viewed_ip`          VARCHAR(45)  DEFAULT NULL,
+  `viewed_notified_at` DATETIME DEFAULT NULL COMMENT 'when the Team - Agreement Viewed email actually went out (see App\\Commands\\SendAgreementViewedNotifications) — null means either not yet due, or skipped because the client signed/declined before the debounce window passed',
   `consultant_signature` VARCHAR(255) DEFAULT NULL COMMENT 'file path under public/assets/agreement_signatures/',
   `client_signature`      VARCHAR(255) DEFAULT NULL COMMENT 'file path, current (draft or final) client signature image',
   `client_signature_type` VARCHAR(10)  DEFAULT NULL COMMENT 'draw|type|upload',
@@ -129,7 +133,34 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
 -- ALTER TABLE `tbl_agreement_agreement`
 --   ADD COLUMN `last_sent_at` DATETIME DEFAULT NULL AFTER `sign_password`;
 
+-- Run this ALTER if upgrading an existing table created before the "Dependent Child Above 22"
+-- add-more-children UI. Widens the column from a single DECIMAL to TEXT so it can hold a JSON
+-- array of per-child fees (e.g. "[500,300]"); existing plain-decimal values (e.g. "500.00")
+-- are left as-is and are still read correctly (treated as a single-child list).
+-- `govt_proc_dep_under22` is retired by the same change (the field was removed from the form);
+-- its column is untouched and simply no longer read or written by the app.
+-- ALTER TABLE `tbl_agreement_agreement`
+--   MODIFY COLUMN `govt_proc_dep_above22` TEXT DEFAULT NULL;
+
 -- Run this ALTER if upgrading an existing table created before the per-agreement clause
 -- text editor (clause 6, the fee breakdown, is always auto-generated and never overridable):
 -- ALTER TABLE `tbl_agreement_agreement`
 --   ADD COLUMN `custom_clauses` LONGTEXT DEFAULT NULL AFTER `decline_reason`;
+
+-- Run this ALTER if upgrading an existing table created before the client address snapshot
+-- (auto-filled from tbl_client_prospect.address + city when the draft is first created,
+-- editable afterward like client_name/client_phone):
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `client_address` VARCHAR(255) DEFAULT NULL AFTER `client_phone`;
+
+-- Run this ALTER if upgrading an existing table created before the automatic reminder-email
+-- cron (see App\Commands\SendAgreementReminders): tracks how many of the fixed-ladder
+-- reminders have gone out.
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `reminders_sent` INT(11) NOT NULL DEFAULT 0 AFTER `max_reminders`,
+--   ADD COLUMN `last_reminder_at` DATETIME DEFAULT NULL AFTER `reminders_sent`;
+
+-- Run this ALTER if upgrading an existing table created before the debounced "Team - Agreement
+-- Viewed" notification (see App\Commands\SendAgreementViewedNotifications):
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `viewed_notified_at` DATETIME DEFAULT NULL AFTER `viewed_ip`;

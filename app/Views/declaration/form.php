@@ -38,6 +38,7 @@
                 display: flex; align-items: center; justify-content: center; flex-shrink: 0;
             }
             .dc-title-banner-icon svg { width: 19px; height: 19px; color: #fff; }
+            .dc-title-banner-icon i { font-size: 18px; color: #fff; }
             .dc-title-banner h4 { margin: 0; font-weight: 800; font-size: 18px; color: #fff; }
             .dc-status-badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-left: 10px; vertical-align: middle; }
             .dc-badge-draft { background: rgba(255,255,255,0.9); color: #41464b; }
@@ -93,7 +94,6 @@
             }
             .dc-field input:not(:disabled):focus, .dc-field select:not(:disabled):focus { outline: none; border-color: #e23b3b; box-shadow: 0 0 0 3px rgba(226,59,59,0.08); }
             .dc-field input:disabled, .dc-field select:disabled { background: #f8f9fb; color: #6b7280; }
-            .dc-field-check { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: #1f2430; margin-bottom: 12px; }
             .dc-field-error select, .dc-field-error .select2-selection { border-color: #e23b3b !important; box-shadow: 0 0 0 3px rgba(226,59,59,0.1); }
             .dc-field-error-msg { color: #e23b3b; font-size: 11.5px; font-weight: 600; margin-top: 5px; }
 
@@ -239,7 +239,7 @@
                         <div class="dc-title-banner">
                             <div class="dc-title-banner-left">
                                 <div class="dc-title-banner-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+                                    <i class="fas fa-handshake"></i>
                                 </div>
                                 <h4><?php echo $declaration ? 'Edit Disclaimer / Consent' : 'Create Disclaimer / Consent'; ?>
                                     <?php if ($declaration): ?><span class="dc-status-badge dc-badge-<?php echo esc($status); ?>"><?php echo esc(ucfirst($status)); ?></span><?php endif; ?>
@@ -308,6 +308,10 @@
                         <form id="dcForm" method="post" action="<?php echo $declaration
                             ? base_url('declaration/Declaration/save/' . $declaration['id'])
                             : base_url('declaration/Declaration/store'); ?>">
+                            <input type="hidden" name="send_after_save" id="dc_send_after_save" value="0">
+                            <?php if (!$declaration): ?>
+                            <input type="hidden" name="form_token" value="<?php echo esc($formToken ?? ''); ?>">
+                            <?php endif; ?>
 
                             <div class="dc-grid">
                                 <div class="dc-card">
@@ -397,10 +401,6 @@
                                         <div class="dc-word-count"><span id="dcWordCount">0</span> words</div>
                                     </div>
 
-                                    <label class="dc-field-check"><input type="checkbox" name="require_client_signature" value="1" <?php echo empty($declaration) || !empty($declaration['require_client_signature']) ? 'checked' : ''; ?> <?php echo $isLocked ? 'disabled' : ''; ?>> Require Client Signature</label>
-                                    <label class="dc-field-check"><input type="checkbox" name="require_initials" value="1" <?php echo !empty($declaration['require_initials']) ? 'checked' : ''; ?> <?php echo $isLocked ? 'disabled' : ''; ?>> Require Initials</label>
-                                    <label class="dc-field-check"><input type="checkbox" name="show_consent_checkbox" value="1" <?php echo empty($declaration) || !empty($declaration['show_consent_checkbox']) ? 'checked' : ''; ?> <?php echo $isLocked ? 'disabled' : ''; ?>> Show Consent Checkbox to Client</label>
-
                                     <?php if (!$isLocked): ?>
                                     <div class="dc-btns-row">
                                         <button type="submit" class="dc-btn dc-btn-primary">
@@ -408,12 +408,10 @@
                                             <?php echo $declaration ? 'Save Changes' : 'Save as Draft'; ?>
                                         </button>
                                         <a class="dc-btn dc-btn-secondary" href="<?php echo base_url('declaration/Declaration/dashboard'); ?>">Cancel</a>
-                                        <?php if ($declaration): ?>
-                                        <button type="button" class="dc-btn dc-btn-send" onclick="dcSendForSignature(<?php echo (int) $declaration['id']; ?>)">
+                                        <button type="button" class="dc-btn dc-btn-send" onclick="dcSendForSignature(<?php echo (int) ($declaration['id'] ?? 0); ?>)">
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
                                             Send for Signature
                                         </button>
-                                        <?php endif; ?>
                                     </div>
                                     <?php endif; ?>
                                 </div>
@@ -499,6 +497,19 @@
                 }, 10000);
             });
 
+            // "Send for Signature" redirects back to this exact same URL — the browser's own
+            // scroll restoration then re-applies whatever scroll position the page was at
+            // BEFORE the submit (e.g. mid-page, wherever the admin was editing), landing the
+            // flash banner above the visible viewport even though it's rendered at the top of
+            // the page. Force it back to the top whenever a flash message is present so it's
+            // always seen.
+            if (document.querySelector('.dc-flash')) {
+                if ('scrollRestoration' in history) {
+                    history.scrollRestoration = 'manual';
+                }
+                window.scrollTo(0, 0);
+            }
+
             var dcEditor = null;
             var dcLastAppliedClientName = null; // tracks what [Client Name] was last replaced with, so switching clients re-replaces the right text
             ClassicEditor.create(document.getElementById('dc_content'))
@@ -509,6 +520,16 @@
                     dcUpdatePreview();
                 })
                 .catch(function (err) { console.error(err); });
+
+            // ClassicEditor replaces #dc_content with its own editing UI but never writes the
+            // live-edited HTML back into that textarea's actual value — without this, the form
+            // silently posts whatever HTML was there at page load (the old/default text) no
+            // matter what's typed into the editor. Sync it just before the browser submits.
+            document.getElementById('dcForm').addEventListener('submit', function () {
+                if (dcEditor) {
+                    document.getElementById('dc_content').value = dcEditor.getData();
+                }
+            });
 
             function dcUpdatePreview() {
                 var html = dcEditor ? dcEditor.getData() : '';
@@ -694,6 +715,18 @@
             });
             <?php endif; ?>
 
+            // Guards against a double-click (or an impatient second click while the request is
+            // still in flight) firing two separate submissions — which, on the create page,
+            // would insert two separate declaration rows and send duplicate emails, since
+            // there's no server-side dedup on a brand-new row the way generate_link() has for
+            // resends via last_sent_at. Checks e.defaultPrevented so a validation failure above
+            // (which calls preventDefault but doesn't stop this listener from also running)
+            // doesn't leave the buttons stuck disabled.
+            document.getElementById('dcForm').addEventListener('submit', function (e) {
+                if (e.defaultPrevented) return;
+                document.querySelectorAll('.dc-btns-row button').forEach(function (b) { b.disabled = true; });
+            });
+
             function dcSendForSignature(id) {
                 Swal.fire({
                     title: 'Send for signature?',
@@ -706,6 +739,15 @@
                     reverseButtons: true
                 }).then(function (result) {
                     if (!result.value) return;
+                    if (!id) {
+                        // Not saved yet (create page): submit the main form with a flag so the
+                        // server creates the draft and immediately sends it, in one step —
+                        // requestSubmit() (not submit()) so the existing client/application
+                        // picker validation listener on #dcForm still runs first.
+                        document.getElementById('dc_send_after_save').value = '1';
+                        document.getElementById('dcForm').requestSubmit();
+                        return;
+                    }
                     var form = document.getElementById('dcSendForm');
                     form.action = DC_BASE + 'declaration/Declaration/generate_link/' + id;
                     form.submit();

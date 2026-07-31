@@ -272,11 +272,13 @@
                                     <div>Name: <?php echo esc($agreement['client_name']); ?></div>
                                     <div>Phone: <?php echo esc($agreement['client_phone']); ?></div>
                                     <div>Email: <?php echo esc($agreement['client_email']); ?></div>
+                                    <div>Address: <?php echo esc($agreement['client_address']) ?: '—'; ?></div>
                                 </div>
                                 <div class="sg-info-box">
                                     <div class="h"><span class="badge-icon">&#128737;&#65039;</span> RCIC INFORMATION</div>
                                     <div>Name: <?php echo esc($agreement['consultant_name'] ?: 'Sia Immigration Solutions Inc.'); ?></div>
                                     <div>RCIC#: <?php echo esc($agreement['rcic_number'] ?: '—'); ?></div>
+                                    <div>Address: #304, 8318 120 Street, Surrey, BC V3W 3N4, Canada<br>#301, 246 2 Ave, Kamloops, BC V2C 2C9, Canada</div>
                                 </div>
                             </div>
 
@@ -294,26 +296,27 @@
                                             <?php endif; ?>
                                             <tr><td style="<?php echo $line['group'] !== null ? 'padding-left:20px;color:#555;' : ''; ?>"><?php echo esc($line['label']); ?></td><td>$<?php echo number_format($line['amount'], 2); ?></td></tr>
                                         <?php endforeach; ?>
-                                        <tr><td>Other Fee (If Any)</td><td>$<?php echo number_format((float) $agreement['other_fee'], 2); ?></td></tr>
-                                        <tr class="total"><td>TOTAL PAYABLE</td><td>$<?php echo number_format((float) $agreement['total_amount'], 2); ?></td></tr>
                                     </table>
                                     <div class="sg-preview-title">PAYMENT SCHEDULE / MILESTONES</div>
                                     <table class="sg-mini-table">
-                                        <thead><tr><th>Milestone</th><th>Amount (GST Included)</th></tr></thead>
+                                        <thead><tr><th>Milestone</th><th>Timeline</th><th>Amount (GST Included)</th></tr></thead>
                                         <tbody>
                                         <?php foreach ($milestones as $m): ?>
-                                            <tr><td><?php echo esc($m['milestone']); ?></td><td><?php echo $m['amount'] !== null ? '$' . number_format((float) $m['amount'] * 1.05, 2) : 'Included'; ?></td></tr>
+                                            <tr><td><?php echo esc($m['milestone']); ?></td><td><?php echo esc($m['due_date']) ?: '—'; ?></td><td><?php echo $m['amount'] !== null ? '$' . number_format((float) $m['amount'] * 1.05, 2) : 'Included'; ?></td></tr>
                                         <?php endforeach; ?>
                                         </tbody>
                                     </table>
                                     <div class="sg-preview-title">ADDITIONAL FEES (IF APPLICABLE)</div>
                                     <table class="sg-mini-table">
-                                        <thead><tr><th>Description</th><th>Amount</th></tr></thead>
+                                        <thead><tr><th>Description</th><th>Amount (GST Included)</th></tr></thead>
                                         <tbody>
                                         <?php foreach ($additionalFees as $f): ?>
-                                            <tr><td><?php echo esc($f['description']); ?></td><td>$<?php echo number_format((float) $f['amount'], 2); ?></td></tr>
+                                            <tr><td><?php echo esc($f['description']); ?></td><td>$<?php echo number_format((float) $f['amount'] * 1.05, 2); ?></td></tr>
                                         <?php endforeach; ?>
                                         </tbody>
+                                    </table>
+                                    <table class="sg-fee-table">
+                                        <tr class="total"><td>TOTAL PAYABLE</td><td>$<?php echo number_format((float) $agreement['total_amount'], 2); ?></td></tr>
                                     </table>
                                 </div>
 
@@ -640,9 +643,14 @@
                 for (var p = n + 1; p <= sgRequiredInitialPages; p++) {
                     if (!sgInitialedPages[p]) { next = p; break; }
                 }
-                var target = document.getElementById('page-' + (next || sgTotalPages));
+                // The next initial box sits at the BOTTOM of its page card, after the clause
+                // text — landing on the page's top (old behaviour) left the client still
+                // needing to scroll further to reach it. Target the initial box itself instead.
+                var target = next
+                    ? (document.querySelector('[data-init-typed="' + next + '"]') || document.getElementById('page-' + next))
+                    : document.getElementById('page-' + sgTotalPages);
                 if (!target) return;
-                setTimeout(function () { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 400);
+                setTimeout(function () { target.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 400);
             }
 
             // --- Reusable canvas drawing (used by every page's initial canvas and the final-signature canvas) ---

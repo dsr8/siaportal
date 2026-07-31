@@ -7,7 +7,7 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Agreement Dashboard - Siaportal</title>
-        <link rel="icon" type="image/png" href="<?php echo base_url();?>/public/assets_client/img/favicon.png" />
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e23b3b' d='M6 2h7l7 7v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z'/%3E%3Cpath fill='%23ffffff' fill-opacity='0.85' d='M13 2v6a1 1 0 0 0 1 1h6z'/%3E%3Cpath fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' d='M6.5 16.5c1.2-1.6 2.2-1.6 3.2 0s2 1.6 3.2 0 2-1.6 3.2 0'/%3E%3C/svg%3E" />
         <link href="<?php echo base_url();?>/public/dist/css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -418,7 +418,7 @@
                                             <td><div class="ag-client-id">#<?php echo (int) $row['id']; ?> &nbsp;<?php echo esc($row['client_name']); ?></div><div class="ag-client-sia">SiaID: <?php echo (int) $row['prospect_id']; ?></div></td>
                                             <td><?php echo esc($typeLabel); ?></td>
                                             <td>$<?php echo number_format((float) $row['service_fee'] + (float) $row['gst_amount'], 2); ?></td>
-                                            <td>$<?php echo number_format((float) $row['government_fee'], 2); ?></td>
+                                            <td>$<?php echo number_format(\App\Libraries\Agreement\AgreementClauses::governmentFeeTotal($row), 2); ?></td>
                                             <td>$<?php echo number_format((float) $row['total_amount'], 2); ?></td>
                                             <td><span class="ag-badge <?php echo $badgeClass; ?>"><?php echo esc($badgeLabel); ?></span></td>
                                             <td><?php echo !empty($sentAt) ? esc(date('d M Y', strtotime($sentAt))) : '&ndash;'; ?></td>
@@ -525,7 +525,6 @@
         <div id="agMenuPanel" class="ag-menu-panel">
             <a href="#" id="agMenuEditAgreement">Edit Agreement</a>
             <a href="#" id="agMenuEdit">Edit Clause Text</a>
-            <a href="#" id="agMenuDuplicate" onclick="agComingSoon('Duplicate is coming soon.'); return false;">Duplicate</a>
             <a href="#" id="agMenuPdf" target="_blank">Download Signed PDF</a>
             <a href="#" id="agMenuArchive"></a>
         </div>

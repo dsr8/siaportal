@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_template` (
   `government_fee` DECIMAL(10,2) DEFAULT 0 COMMENT 'auto-summed from the govt_* breakdown fields below',
   `govt_proc_main`         DECIMAL(10,2) DEFAULT 0,
   `govt_proc_spouse`       DECIMAL(10,2) DEFAULT 0,
-  `govt_proc_dep_above22`  DECIMAL(10,2) DEFAULT 0,
-  `govt_proc_dep_under22`  DECIMAL(10,2) DEFAULT 0,
+  `govt_proc_dep_above22`  TEXT DEFAULT NULL COMMENT 'JSON array of per-child fee amounts e.g. [500,300]; legacy rows may hold a single plain decimal',
+  `govt_proc_dep_under22`  DECIMAL(10,2) DEFAULT 0 COMMENT 'retired field, no longer editable in the UI; legacy value kept as-is and unused',
   `govt_pr_main`           DECIMAL(10,2) DEFAULT 0,
   `govt_pr_spouse`         DECIMAL(10,2) DEFAULT 0,
   `govt_pr_pnp`            DECIMAL(10,2) DEFAULT 0,
@@ -29,3 +29,8 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_template` (
 --   ADD COLUMN `govt_pr_main`          DECIMAL(10,2) DEFAULT 0 AFTER `govt_proc_dep_under22`,
 --   ADD COLUMN `govt_pr_spouse`        DECIMAL(10,2) DEFAULT 0 AFTER `govt_pr_main`,
 --   ADD COLUMN `govt_pr_pnp`           DECIMAL(10,2) DEFAULT 0 AFTER `govt_pr_spouse`;
+
+-- Run this ALTER if upgrading an existing table created before the "Dependent Child Above 22"
+-- add-more-children UI (see matching note in tbl_agreement_agreement.sql):
+-- ALTER TABLE `tbl_agreement_template`
+--   MODIFY COLUMN `govt_proc_dep_above22` TEXT DEFAULT NULL;

@@ -231,11 +231,20 @@ class Declaration extends BaseController
             $prefillProspect = $Prospect->getpost_id($prefillProspectId)[0] ?? null;
         }
 
+        // One-time-use token so a resubmitted/replayed POST of this exact form (e.g. a slow
+        // request retried by the browser or a proxy while waiting on the "Send for Signature"
+        // email to go out) can't insert a second row — store() below rejects any POST whose
+        // token doesn't match what's currently in session, and invalidates it immediately on
+        // first use.
+        $formToken = bin2hex(random_bytes(16));
+        session()->set('dc_create_token', $formToken);
+
         return view('declaration/form', [
             'declaration'   => null,
             'consentType'   => 'sent',
             'consultantDefault' => trim((string) session()->get('firstname') . ' ' . (string) session()->get('lastname')),
             'prefillProspect' => $prefillProspect,
+            'formToken'     => $formToken,
         ]);
     }
 
@@ -250,6 +259,18 @@ class Declaration extends BaseController
         }
 
         $post = $this->request->getPost();
+
+        // Reject a replayed/duplicate POST of the same create-form submission (see create()) —
+        // must be checked and invalidated before anything else so a resubmission can never slip
+        // through and insert a second row / send a second email.
+        $expectedToken = session()->get('dc_create_token');
+        $postedToken   = trim((string) ($post['form_token'] ?? ''));
+        if ($expectedToken === null || $postedToken === '' || !hash_equals($expectedToken, $postedToken)) {
+            return redirect()->to(base_url('declaration/Declaration/create'))
+                ->with('error', 'This form was already submitted (or expired) — please fill it out again.');
+        }
+        session()->remove('dc_create_token');
+
         $applicationId = (int) ($post['application_id'] ?? 0);
 
         if (!$applicationId) {
@@ -294,12 +315,19 @@ class Declaration extends BaseController
             'consent_date'    => trim((string) ($post['consent_date'] ?? '')) ?: date('Y-m-d'),
             'status'          => 'draft',
             'hide'            => 0,
-            'require_client_signature' => !empty($post['require_client_signature']) ? 1 : 0,
-            'require_initials'         => !empty($post['require_initials']) ? 1 : 0,
-            'show_consent_checkbox'    => !empty($post['show_consent_checkbox']) ? 1 : 0,
+            'require_client_signature' => 1,
+            'require_initials'         => 0,
+            'show_consent_checkbox'    => 1,
             'created_by'      => session()->get('id'),
             'insert_on'       => date('Y-m-d H:i:s'),
         ]);
+
+        // "Send for Signature" on the create page (no saved record yet) submits this same
+        // form with this flag set, so the newly-created draft is sent immediately instead of
+        // requiring a separate manual send afterward.
+        if (!empty($post['send_after_save'])) {
+            return $this->generate_link($id);
+        }
 
         return redirect()->to(base_url('declaration/Declaration/detail/' . $id))->with('message', 'Disclaimer saved as draft successfully.');
     }
@@ -361,9 +389,9 @@ class Declaration extends BaseController
             'content'         => $content,
             'consultant_name' => trim((string) ($post['consultant_name'] ?? '')) ?: $declaration['consultant_name'],
             'consent_date'    => trim((string) ($post['consent_date'] ?? '')) ?: $declaration['consent_date'],
-            'require_client_signature' => !empty($post['require_client_signature']) ? 1 : 0,
-            'require_initials'         => !empty($post['require_initials']) ? 1 : 0,
-            'show_consent_checkbox'    => !empty($post['show_consent_checkbox']) ? 1 : 0,
+            'require_client_signature' => 1,
+            'require_initials'         => 0,
+            'show_consent_checkbox'    => 1,
             'update_on'       => date('Y-m-d H:i:s'),
         ]);
 

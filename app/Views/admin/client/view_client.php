@@ -349,7 +349,7 @@ where tbl_client_application.`siaportalid` =$ddd ";
        <div class="col-xl-3 col-md-3"  data-toggle="tooltip" title="<?php echo $GetData['apps'];?>">
 <div style="background-color:#d64161;font-size: 13px;color:#fff;">
   
-        <i style="color:#fff;margin-left:1px;" class="fa fa-bullhorn" aria-hidden="true"></i> <?php echo substr($GetData['apps'], 0, 15);?>
+        <i style="color:#fff;margin-left:1px;" class="fa fa-bullhorn" aria-hidden="true"></i> <?php echo substr((string) ($GetData['apps'] ?? ''), 0, 15);?>
       
 </div>
       </div>

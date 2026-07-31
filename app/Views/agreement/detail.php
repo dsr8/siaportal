@@ -38,6 +38,7 @@
             .ca-table th { text-align: left; font-size: 11.5px; color: #6b7280; padding: 6px 8px; border-bottom: 1px solid #eef0f2; }
             .ca-table td { padding: 5px 6px; border-bottom: 1px solid #f4f4f6; }
             .ca-table td input { width: 100%; padding: 6px 8px; border: 1px solid #d8dce1; border-radius: 5px; font-size: 13px; }
+            .ca-gst-hint { font-size: 11px; color: #8e44ad; font-weight: 700; margin-top: 3px; min-height: 13px; }
             .ca-table td.ca-actions { white-space: nowrap; text-align: center; }
             .ca-table td.ca-actions button { border: none; background: none; cursor: pointer; color: #e74c3c; font-size: 14px; }
             .ca-date-input-wrap { position: relative; }
@@ -45,6 +46,7 @@
             .ca-date-input-wrap .ca-date-icon { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #9aa0aa; font-size: 12px; pointer-events: none; }
 
             .ca-btn-add { background: none; border: 1px dashed #cfd4da; color: #1a73e8; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+            .ca-btn-remove-child { border: none; background: none; cursor: pointer; color: #e74c3c; font-size: 14px; flex: 0 0 auto; padding: 6px 8px; }
 
             .ca-total-box { background: #fdecec; color: #e23b3b; border-radius: 8px; padding: 12px 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
             .ca-total-box .amt { font-size: 20px; }
@@ -55,7 +57,6 @@
             .ca-actions-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
             .ca-actions-row button { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; }
             .ca-btn-draft { background: #f1f2f4; color: #1f2430; }
-            .ca-btn-save { background: #fff; color: #1f2430; border: 1px solid #d8dce1 !important; }
             .ca-btn-send { background: #e23b3b; color: #fff; padding: 16px 34px; font-size: 17px; border-radius: 10px; box-shadow: 0 4px 14px rgba(226,59,59,0.35); }
             .ca-btn-send:hover { background: #c92f2f; }
 
@@ -177,6 +178,12 @@
                                         </div>
                                     </div>
                                     <div class="ca-row">
+                                        <div class="ca-field" style="flex:1 1 100%;">
+                                            <label>Client Address</label>
+                                            <input type="text" name="client_address" id="f_client_address" value="<?php echo esc($agreement['client_address'] ?? ''); ?>">
+                                        </div>
+                                    </div>
+                                    <div class="ca-row">
                                         <div class="ca-field">
                                             <label>Consultant Name</label>
                                             <input type="text" id="f_consultant_name" value="<?php echo esc($agreement['consultant_name']); ?>" readonly>
@@ -189,11 +196,11 @@
                                 </div>
 
                                 <div class="ca-card">
-                                    <h5><span class="ca-card-icon" style="background:#f4eafb;color:#8e44ad;"><i class="fas fa-file-invoice-dollar"></i></span> Application &amp; Fees</h5>
+                                    <h5><span class="ca-card-icon" style="background:#f4eafb;color:#8e44ad;"><i class="fas fa-file-invoice-dollar"></i></span> Professional Fees &amp; Govt Fees</h5>
                                     <div class="ca-row">
                                         <div class="ca-field">
                                             <label>Professional Service Fee (<span class="ca-cur-label">CAD</span>)</label>
-                                            <input type="number" step="0.01" name="service_fee" id="f_service_fee" value="<?php echo esc($agreement['service_fee']); ?>">
+                                            <input type="number" step="0.01" name="service_fee" id="f_service_fee" value="<?php echo esc($agreement['service_fee']); ?>" required>
                                         </div>
                                         <input type="hidden" id="f_gst_rate" value="5">
                                         <div class="ca-field">
@@ -209,7 +216,7 @@
                                     <div class="ca-row">
                                         <div class="ca-field">
                                             <label>Main Applicant (<span class="ca-cur-label">CAD</span>)</label>
-                                            <input type="number" step="0.01" name="govt_proc_main" id="f_govt_proc_main" value="<?php echo esc($agreement['govt_proc_main'] ?? 0); ?>">
+                                            <input type="number" step="0.01" name="govt_proc_main" id="f_govt_proc_main" value="<?php echo esc($agreement['govt_proc_main'] ?? 0); ?>" required>
                                         </div>
                                         <div class="ca-field">
                                             <label>Spouse (<span class="ca-cur-label">CAD</span>)</label>
@@ -217,45 +224,39 @@
                                         </div>
                                     </div>
                                     <div class="ca-row">
-                                        <div class="ca-field">
-                                            <label>Dependent Child Above 22 (<span class="ca-cur-label">CAD</span>)</label>
-                                            <input type="number" step="0.01" name="govt_proc_dep_above22" id="f_govt_proc_dep_above22" value="<?php echo esc($agreement['govt_proc_dep_above22'] ?? 0); ?>">
-                                        </div>
-                                        <div class="ca-field">
-                                            <label>Dependent Child Under 22 (<span class="ca-cur-label">CAD</span>)</label>
-                                            <input type="number" step="0.01" name="govt_proc_dep_under22" id="f_govt_proc_dep_under22" value="<?php echo esc($agreement['govt_proc_dep_under22'] ?? 0); ?>">
+                                        <div class="ca-field" style="flex:1 1 100%;max-width:400px;">
+                                            <label>Dependent Child (<span class="ca-cur-label">CAD</span>)</label>
+                                            <div id="depAbove22Rows">
+                                                <?php foreach ($depAbove22Fees as $i => $fee): ?>
+                                                <div class="ca-dep-child-row" style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+                                                    <input type="number" step="0.01" name="govt_proc_dep_above22[]" class="dep-above22-fee" value="<?php echo esc($fee); ?>" style="flex:1;">
+                                                    <?php if ($i > 0): ?>
+                                                    <button type="button" class="ca-btn-remove-child" onclick="caRemoveDepAbove22Child(this)">&#128465;</button>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                            <button type="button" class="ca-btn-add" onclick="caAddDepAbove22Child()">+ Add Child</button>
                                         </div>
                                     </div>
 
-                                    <div class="ca-subsection-title">Government Right of Permanent Residence fee</div>
+                                    <div class="ca-subsection-title">Other govt fee</div>
                                     <div class="ca-row">
                                         <div class="ca-field">
-                                            <label>Main Applicant (<span class="ca-cur-label">CAD</span>)</label>
-                                            <input type="number" step="0.01" name="govt_pr_main" id="f_govt_pr_main" value="<?php echo esc($agreement['govt_pr_main'] ?? 0); ?>">
-                                        </div>
-                                        <div class="ca-field">
-                                            <label>Spouse (<span class="ca-cur-label">CAD</span>)</label>
-                                            <input type="number" step="0.01" name="govt_pr_spouse" id="f_govt_pr_spouse" value="<?php echo esc($agreement['govt_pr_spouse'] ?? 0); ?>">
-                                        </div>
-                                        <div class="ca-field">
-                                            <label>PNP Govt. (<span class="ca-cur-label">CAD</span>)</label>
+                                            <label>PNP Govt. Main Applicant (<span class="ca-cur-label">CAD</span>)</label>
                                             <input type="number" step="0.01" name="govt_pr_pnp" id="f_govt_pr_pnp" value="<?php echo esc($agreement['govt_pr_pnp'] ?? 0); ?>">
                                         </div>
                                     </div>
 
                                     <div class="ca-row">
                                         <div class="ca-field">
-                                            <label>Government / Application Fee — Total (auto-calculated) (<span class="ca-cur-label">CAD</span>)</label>
-                                            <input type="text" id="f_government_fee_display" readonly>
-                                        </div>
-                                        <div class="ca-field">
                                             <label>Other Fee (If Any) (<span class="ca-cur-label">CAD</span>)</label>
                                             <input type="number" step="0.01" name="other_fee" id="f_other_fee" value="<?php echo esc($agreement['other_fee']); ?>">
                                         </div>
-                                    </div>
-                                    <div class="ca-total-box">
-                                        <span>Total Payable (<span class="ca-cur-label">CAD</span>)</span>
-                                        <span class="amt" id="f_total_display">$0.00</span>
+                                        <div class="ca-field">
+                                            <label>Government / Application Fee — Total (auto-calculated) (<span class="ca-cur-label">CAD</span>)</label>
+                                            <input type="text" id="f_government_fee_display" readonly>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -263,13 +264,14 @@
                                     <h5><span class="ca-card-icon" style="background:#eaf1fb;color:#3498db;"><i class="fas fa-calendar-alt"></i></span> Payment Schedule / Milestones</h5>
                                     <table class="ca-table" id="milestoneTable">
                                         <thead>
-                                            <tr><th style="width:26%;">Milestone</th><th style="width:18%;">Amount (GST Included)</th><th>Included Services</th><th style="width:36px;"></th></tr>
+                                            <tr><th style="width:22%;">Milestone</th><th style="width:16%;">Timeline</th><th style="width:16%;">Amount (before GST)</th><th>Included Services</th><th style="width:36px;"></th></tr>
                                         </thead>
                                         <tbody id="milestoneBody">
                                             <?php foreach ($milestones as $i => $m): ?>
                                             <tr>
                                                 <td><input type="text" name="milestones[<?php echo $i; ?>][milestone]" value="<?php echo esc($m['milestone']); ?>"></td>
-                                                <td><input type="number" step="0.01" name="milestones[<?php echo $i; ?>][amount]" value="<?php echo esc($m['amount']); ?>" placeholder="Included"></td>
+                                                <td><input type="text" name="milestones[<?php echo $i; ?>][due_date]" value="<?php echo esc($m['due_date']); ?>" placeholder="e.g. Within 7 days"></td>
+                                                <td><input type="number" step="0.01" name="milestones[<?php echo $i; ?>][amount]" value="<?php echo esc($m['amount']); ?>" placeholder="Included"><div class="ca-gst-hint"></div></td>
                                                 <td><input type="text" name="milestones[<?php echo $i; ?>][included_services]" value="<?php echo esc($m['included_services']); ?>"></td>
                                                 <td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>
                                             </tr>
@@ -283,19 +285,23 @@
                                     <h5><span class="ca-card-icon" style="background:#fdf1e3;color:#e08e2b;"><i class="fas fa-folder-plus"></i></span> Additional Fees (If Applicable)</h5>
                                     <table class="ca-table" id="feeTable">
                                         <thead>
-                                            <tr><th>Description</th><th style="width:20%;">Amount</th><th style="width:36px;"></th></tr>
+                                            <tr><th>Description</th><th style="width:20%;">Amount (before GST)</th><th style="width:36px;"></th></tr>
                                         </thead>
                                         <tbody id="feeBody">
                                             <?php foreach ($additionalFees as $i => $f): ?>
                                             <tr>
                                                 <td><input type="text" name="additional_fees[<?php echo $i; ?>][description]" value="<?php echo esc($f['description']); ?>"></td>
-                                                <td><input type="number" step="0.01" name="additional_fees[<?php echo $i; ?>][amount]" value="<?php echo esc($f['amount']); ?>"></td>
+                                                <td><input type="number" step="0.01" name="additional_fees[<?php echo $i; ?>][amount]" value="<?php echo esc($f['amount']); ?>"><div class="ca-gst-hint"></div></td>
                                                 <td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>
                                             </tr>
                                             <?php endforeach; ?>
                                         </tbody>
                                     </table>
                                     <button type="button" class="ca-btn-add" onclick="caAddFee()">+ Add Additional Fee</button>
+                                    <div class="ca-total-box">
+                                        <span>Total Payable (<span class="ca-cur-label">CAD</span>)</span>
+                                        <span class="amt" id="f_total_display">$0.00</span>
+                                    </div>
                                 </div>
                                 </fieldset>
 
@@ -305,7 +311,6 @@
                                     <div class="ca-actions-row">
                                         <button type="button" class="ca-btn-draft" onclick="document.getElementById('caEditForm').submit();">Save as Draft</button>
                                         <button type="button" class="ca-btn-draft" onclick="caSaveAsTemplate();">Save as Template</button>
-                                        <button type="button" class="ca-btn-save" onclick="document.getElementById('caEditForm').submit();">Save &amp; Generate Preview</button>
                                         <button type="button" class="ca-btn-send" id="caSendBtn" onclick="caSendForEsign();">Send for eSign</button>
                                     </div>
                                     <div class="ca-actions-row" style="margin-top:10px;">
@@ -330,10 +335,13 @@
                                     <?php if (!empty($agreement['pdf_path'])): ?>
                                     <div class="ca-note" style="background:#eafaf0;margin-top:10px;">
                                         <strong>Signed PDF</strong> — available any time, no client link/access code needed.
-                                        <div style="margin-top:8px;">
+                                        <div style="margin-top:8px;display:flex;gap:8px;">
                                             <a href="<?php echo base_url('agreement/Agreement/pdf/' . $agreement['id']); ?>" target="_blank" class="ca-btn-add" style="text-decoration:none;display:inline-block;">View / Download Signed PDF</a>
+                                            <button type="button" class="ca-btn-add" onclick="caRegeneratePdf();">Regenerate PDF</button>
                                         </div>
+                                        <div style="font-size:11px;color:#6b7280;margin-top:6px;">Re-renders the PDF from the current template (e.g. after a wording/layout fix) — the signature and signed date are unaffected.</div>
                                     </div>
+                                    <form id="caRegenPdfForm" method="post" action="<?php echo base_url('agreement/Agreement/regenerate_pdf/' . $agreement['id']); ?>" style="display:none;"></form>
                                     <?php endif; ?>
                                 </div>
 
@@ -361,11 +369,13 @@
                                             <div>Name: <span id="p_client_name">—</span></div>
                                             <div>Phone: <span id="p_client_phone">—</span></div>
                                             <div>Email: <span id="p_client_email">—</span></div>
+                                            <div>Address: <span id="p_client_address">—</span></div>
                                         </div>
                                         <div class="ca-info-box">
                                             <div class="h"><span class="badge-icon">&#128737;&#65039;</span> RCIC INFORMATION</div>
                                             <div>Name: <span id="p_consultant_name">—</span></div>
                                             <div>RCIC#: <span id="p_rcic_number">—</span></div>
+                                            <div>Address: #304, 8318 120 Street, Surrey, BC V3W 3N4, Canada<br>#301, 246 2 Ave, Kamloops, BC V2C 2C9, Canada</div>
                                         </div>
                                     </div>
                                     <div class="ca-preview-section-title">FEES &amp; PAYMENT SUMMARY</div>
@@ -373,18 +383,19 @@
                                         <tr><td>Professional Service Fee</td><td id="p_service_fee">$0.00</td></tr>
                                         <tr><td>GST (<span id="p_gst_rate">0</span>%) on Service Fee</td><td id="p_gst_amount">$0.00</td></tr>
                                         <tbody id="p_govt_fee_rows"></tbody>
-                                        <tr><td>Other Fee (If Any)</td><td id="p_other_fee">$0.00</td></tr>
-                                        <tr class="total"><td>TOTAL PAYABLE</td><td id="p_total">$0.00</td></tr>
                                     </table>
                                     <div class="ca-preview-section-title">PAYMENT SCHEDULE / MILESTONES</div>
                                     <table class="ca-preview-mini-table">
-                                        <thead><tr><th>Milestone</th><th>Amount (GST Included)</th></tr></thead>
+                                        <thead><tr><th>Milestone</th><th>Timeline</th><th>Amount (GST Included)</th></tr></thead>
                                         <tbody id="p_milestones"></tbody>
                                     </table>
                                     <div class="ca-preview-section-title">ADDITIONAL FEES (IF APPLICABLE)</div>
                                     <table class="ca-preview-mini-table">
                                         <thead><tr><th>Description</th><th>Amount</th></tr></thead>
                                         <tbody id="p_additional_fees"></tbody>
+                                    </table>
+                                    <table class="ca-fee-table">
+                                        <tr class="total"><td>TOTAL PAYABLE</td><td id="p_total">$0.00</td></tr>
                                     </table>
                                     <div class="ca-sig-row">
                                         <div class="ca-sig-box">
@@ -417,6 +428,7 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="<?php echo base_url();?>/public/assets_client/js/plugins/sweetalert2.js"></script>
         <script src="<?php echo base_url();?>/public/dist/js/scripts.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
         <script>
             var caTypeOptions = <?php echo json_encode($typeOptions); ?>;
             var caMilestoneCounter = <?php echo count($milestones); ?>;
@@ -435,25 +447,51 @@
                 document.getElementById('p_agreement_type').textContent = label;
             }
 
-            // The 7 itemized government-fee inputs (Government processing fee: Main Applicant/
-            // Spouse/Dependent above+under 22; Government Right of Permanent Residence fee: Main
-            // Applicant/Spouse/PNP Govt.) auto-sum into the single "Government / Application Fee"
-            // total used everywhere else (page-1 summary, total payable) — no manual entry for it.
+            // The itemized government-fee inputs (Government processing fee: Main Applicant/
+            // Spouse + one row per "Dependent Child" added; Other govt fee: PNP Govt. Main
+            // Applicant) auto-sum into the single "Government / Application Fee" total used
+            // everywhere else (page-1 summary, total payable) — no manual entry for it.
             function caGovtFeeIds() {
-                return ['f_govt_proc_main', 'f_govt_proc_spouse', 'f_govt_proc_dep_above22', 'f_govt_proc_dep_under22',
-                        'f_govt_pr_main', 'f_govt_pr_spouse', 'f_govt_pr_pnp'];
+                return ['f_govt_proc_main', 'f_govt_proc_spouse', 'f_govt_pr_pnp'];
+            }
+
+            function caDepAbove22Fees() {
+                var fees = [];
+                document.querySelectorAll('.dep-above22-fee').forEach(function (input) {
+                    fees.push(parseFloat(input.value) || 0);
+                });
+                return fees;
+            }
+
+            function caDepAbove22Total() {
+                return caDepAbove22Fees().reduce(function (sum, fee) { return sum + fee; }, 0);
+            }
+
+            function caAdditionalFeesTotal() {
+                var gstRate = parseFloat(document.getElementById('f_gst_rate').value) || 0;
+                var total = 0;
+                document.querySelectorAll('#feeBody tr').forEach(function (row) {
+                    var inputs = row.querySelectorAll('input');
+                    total += (parseFloat(inputs[1].value) || 0) * (1 + gstRate / 100);
+                });
+                return total;
             }
 
             function caUpdateFees() {
                 var service = parseFloat(document.getElementById('f_service_fee').value) || 0;
                 var gstRate = parseFloat(document.getElementById('f_gst_rate').value) || 0;
-                var govt = caGovtFeeIds().reduce(function (sum, id) {
+                var itemizedGovt = caGovtFeeIds().reduce(function (sum, id) {
                     return sum + (parseFloat(document.getElementById(id).value) || 0);
-                }, 0);
+                }, 0) + caDepAbove22Total();
                 var other = parseFloat(document.getElementById('f_other_fee').value) || 0;
+                // "Other Fee (If Any)" is folded into this total (and into the itemized rows
+                // below) rather than being added as a separate line — see AgreementClauses::
+                // governmentFeeLines() (PHP), which this mirrors.
+                var govt = itemizedGovt + other;
+                var additionalFeesTotal = caAdditionalFeesTotal();
                 var gstAmount = Math.round(service * gstRate) / 100;
                 var serviceTotal = service + gstAmount;
-                var total = serviceTotal + govt + other;
+                var total = serviceTotal + govt + additionalFeesTotal;
 
                 document.getElementById('f_gst_amount_display').value = caFmt(gstAmount);
                 document.getElementById('f_service_total_display').value = caFmt(serviceTotal);
@@ -464,26 +502,22 @@
                 document.getElementById('p_gst_rate').textContent = gstRate;
                 document.getElementById('p_gst_amount').textContent = caFmt(gstAmount);
                 caUpdateGovtFeeRows();
-                document.getElementById('p_other_fee').textContent = caFmt(other);
                 document.getElementById('p_total').textContent = caFmt(total);
             }
 
             // Mirrors AgreementClauses::governmentFeeLines() (PHP) so the live preview matches
             // the client-facing "Fees & Payment Summary" table exactly: one grouped sub-heading
-            // row per non-zero government-fee category, or a single legacy total line if none
-            // of the 7 breakdown fields have been filled in yet.
+            // row per non-zero government-fee category (including one row per "Dependent Child"
+            // added), a single legacy total line if none of the breakdown fields have been filled
+            // in yet, and an ungrouped "Other Fee" row folded in at the end whenever it's set.
             function caUpdateGovtFeeRows() {
                 var groups = [
                     { group: 'Government Processing Fee', items: [
                         ['Main Applicant', 'f_govt_proc_main'],
-                        ['Spouse', 'f_govt_proc_spouse'],
-                        ['Dependent Child Above 22 Years of Age', 'f_govt_proc_dep_above22'],
-                        ['Dependent Child Under 22 Years of Age', 'f_govt_proc_dep_under22']
+                        ['Spouse', 'f_govt_proc_spouse']
                     ] },
-                    { group: 'Government Right of Permanent Residence Fee', items: [
-                        ['Main Applicant', 'f_govt_pr_main'],
-                        ['Spouse', 'f_govt_pr_spouse'],
-                        ['PNP Govt.', 'f_govt_pr_pnp']
+                    { group: 'Other Govt Fee', items: [
+                        ['PNP Govt. Main Applicant', 'f_govt_pr_pnp']
                     ] }
                 ];
 
@@ -497,6 +531,15 @@
                             rows += '<tr><td style="padding-left:10px;color:#555;">' + item[0] + '</td><td>' + caFmt(amt) + '</td></tr>';
                         }
                     });
+                    if (g.group === 'Government Processing Fee') {
+                        var depFees = caDepAbove22Fees().filter(function (fee) { return fee > 0; });
+                        depFees.forEach(function (amt, i) {
+                            var label = depFees.length > 1
+                                ? 'Dependent Child (Child ' + (i + 1) + ')'
+                                : 'Dependent Child';
+                            rows += '<tr><td style="padding-left:10px;color:#555;">' + label + '</td><td>' + caFmt(amt) + '</td></tr>';
+                        });
+                    }
                     if (rows) {
                         any = true;
                         html += '<tr><td colspan="2" style="font-weight:700;color:#e23b3b;padding-top:6px;">' + g.group + '</td></tr>' + rows;
@@ -504,10 +547,17 @@
                 });
 
                 if (!any) {
-                    var total = caGovtFeeIds().reduce(function (sum, id) {
+                    var legacyTotal = caGovtFeeIds().reduce(function (sum, id) {
                         return sum + (parseFloat(document.getElementById(id).value) || 0);
-                    }, 0);
-                    html = '<tr><td>Government / Application Fee</td><td>' + caFmt(total) + '</td></tr>';
+                    }, 0) + caDepAbove22Total();
+                    if (legacyTotal > 0) {
+                        html = '<tr><td>Government / Application Fee</td><td>' + caFmt(legacyTotal) + '</td></tr>';
+                    }
+                }
+
+                var other = parseFloat(document.getElementById('f_other_fee').value) || 0;
+                if (other > 0) {
+                    html += '<tr><td>Other Fee</td><td>' + caFmt(other) + '</td></tr>';
                 }
 
                 document.getElementById('p_govt_fee_rows').innerHTML = html;
@@ -517,6 +567,7 @@
                 document.getElementById('p_client_name').textContent = document.getElementById('f_client_name').value || '—';
                 document.getElementById('p_client_phone').textContent = document.getElementById('f_client_phone').value || '—';
                 document.getElementById('p_client_email').textContent = document.getElementById('f_client_email').value || '—';
+                document.getElementById('p_client_address').textContent = document.getElementById('f_client_address').value || '—';
                 document.getElementById('p_consultant_name').textContent = document.getElementById('f_consultant_name').value || '—';
                 document.getElementById('p_rcic_number').textContent = document.getElementById('f_rcic_number').value || '—';
                 document.getElementById('p_date').textContent = document.getElementById('f_agreement_date').value || '—';
@@ -529,22 +580,33 @@
                 var html = '';
                 rows.forEach(function (row) {
                     var inputs = row.querySelectorAll('input');
-                    var m = inputs[0].value, amtStr = inputs[1].value;
+                    var m = inputs[0].value, timeline = inputs[1].value, amtStr = inputs[2].value;
+                    var hint = row.querySelector('.ca-gst-hint');
+                    if (hint) {
+                        hint.textContent = amtStr ? '= ' + caFmt((parseFloat(amtStr) || 0) * 1.05) + ' incl. GST' : '';
+                    }
                     if (!m) return;
                     var display = amtStr ? caFmt((parseFloat(amtStr) || 0) * 1.05) : 'Included';
-                    html += '<tr><td>' + m + '</td><td>' + display + '</td></tr>';
+                    html += '<tr><td>' + m + '</td><td>' + (timeline || '—') + '</td><td>' + display + '</td></tr>';
                 });
                 document.getElementById('p_milestones').innerHTML = html;
             }
 
+            // Additional fee amounts are entered pre-GST, same as Milestones — the preview
+            // (and the client-facing document) always shows amount + 5% GST.
             function caUpdateFeesPreview() {
+                var gstRate = parseFloat(document.getElementById('f_gst_rate').value) || 0;
                 var rows = document.querySelectorAll('#feeBody tr');
                 var html = '';
                 rows.forEach(function (row) {
                     var inputs = row.querySelectorAll('input');
                     var d = inputs[0].value, amt = inputs[1].value;
+                    var hint = row.querySelector('.ca-gst-hint');
+                    if (hint) {
+                        hint.textContent = amt ? '= ' + caFmt((parseFloat(amt) || 0) * (1 + gstRate / 100)) + ' incl. GST' : '';
+                    }
                     if (!d) return;
-                    html += '<tr><td>' + d + '</td><td>' + caFmt(amt) + '</td></tr>';
+                    html += '<tr><td>' + d + '</td><td>' + caFmt((parseFloat(amt) || 0) * (1 + gstRate / 100)) + '</td></tr>';
                 });
                 document.getElementById('p_additional_fees').innerHTML = html;
             }
@@ -562,12 +624,39 @@
                 caUpdatePreview();
             }
 
+            // The first row (container empty when this is called) never gets a delete icon —
+            // only rows added via "+ Add Child" can be removed.
+            function caAddDepAbove22Child(fee) {
+                var container = document.getElementById('depAbove22Rows');
+                var isFirst = container.children.length === 0;
+                var row = document.createElement('div');
+                row.className = 'ca-dep-child-row';
+                row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;';
+                row.innerHTML =
+                    '<input type="number" step="0.01" name="govt_proc_dep_above22[]" class="dep-above22-fee" value="' + (fee || 0) + '" style="flex:1;">' +
+                    (isFirst ? '' : '<button type="button" class="ca-btn-remove-child" onclick="caRemoveDepAbove22Child(this)">&#128465;</button>');
+                container.appendChild(row);
+                caUpdatePreview();
+            }
+
+            // Always leaves at least one (blank) row so the field never disappears entirely.
+            function caRemoveDepAbove22Child(btn) {
+                var container = document.getElementById('depAbove22Rows');
+                if (container.children.length <= 1) {
+                    container.querySelector('.dep-above22-fee').value = 0;
+                } else {
+                    btn.closest('.ca-dep-child-row').remove();
+                }
+                caUpdatePreview();
+            }
+
             function caAddMilestone() {
                 var idx = caMilestoneCounter++;
                 var tr = document.createElement('tr');
                 tr.innerHTML =
                     '<td><input type="text" name="milestones[' + idx + '][milestone]"></td>' +
-                    '<td><input type="number" step="0.01" name="milestones[' + idx + '][amount]" placeholder="Included"></td>' +
+                    '<td><input type="text" name="milestones[' + idx + '][due_date]" placeholder="e.g. Within 7 days"></td>' +
+                    '<td><input type="number" step="0.01" name="milestones[' + idx + '][amount]" placeholder="Included"><div class="ca-gst-hint"></div></td>' +
                     '<td><input type="text" name="milestones[' + idx + '][included_services]"></td>' +
                     '<td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>';
                 document.getElementById('milestoneBody').appendChild(tr);
@@ -578,7 +667,7 @@
                 var tr = document.createElement('tr');
                 tr.innerHTML =
                     '<td><input type="text" name="additional_fees[' + idx + '][description]"></td>' +
-                    '<td><input type="number" step="0.01" name="additional_fees[' + idx + '][amount]"></td>' +
+                    '<td><input type="number" step="0.01" name="additional_fees[' + idx + '][amount]"><div class="ca-gst-hint"></div></td>' +
                     '<td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>';
                 document.getElementById('feeBody').appendChild(tr);
             }
@@ -601,6 +690,22 @@
                 var form = document.getElementById('caEditForm');
                 form.action = CA_BASE + 'agreement/Agreement/generate_link/' + CA_AGREEMENT_ID;
                 form.submit();
+            }
+
+            function caRegeneratePdf() {
+                Swal.fire({
+                    title: 'Regenerate PDF?',
+                    text: 'This re-renders the signed PDF from the current template and overwrites the existing file. The signature and signed date are unaffected.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Regenerate',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#4c3ff5',
+                    reverseButtons: true
+                }).then(function (result) {
+                    if (!result.value) return;
+                    document.getElementById('caRegenPdfForm').submit();
+                });
             }
 
             // caSending guards against a rapid double-click firing two Swal confirms / two
@@ -645,10 +750,11 @@
                 document.getElementById('f_service_fee').value = tpl.service_fee || 0;
                 document.getElementById('f_govt_proc_main').value = tpl.govt_proc_main || 0;
                 document.getElementById('f_govt_proc_spouse').value = tpl.govt_proc_spouse || 0;
-                document.getElementById('f_govt_proc_dep_above22').value = tpl.govt_proc_dep_above22 || 0;
-                document.getElementById('f_govt_proc_dep_under22').value = tpl.govt_proc_dep_under22 || 0;
-                document.getElementById('f_govt_pr_main').value = tpl.govt_pr_main || 0;
-                document.getElementById('f_govt_pr_spouse').value = tpl.govt_pr_spouse || 0;
+
+                document.getElementById('depAbove22Rows').innerHTML = '';
+                var depFees = (tpl.govt_proc_dep_above22 && tpl.govt_proc_dep_above22.length) ? tpl.govt_proc_dep_above22 : [0];
+                depFees.forEach(function (fee) { caAddDepAbove22Child(fee); });
+
                 document.getElementById('f_govt_pr_pnp').value = tpl.govt_pr_pnp || 0;
                 document.getElementById('f_other_fee').value = tpl.other_fee || 0;
 
@@ -659,7 +765,8 @@
                     var tr = document.createElement('tr');
                     tr.innerHTML =
                         '<td><input type="text" name="milestones[' + idx + '][milestone]" value="' + (m.milestone || '') + '"></td>' +
-                        '<td><input type="number" step="0.01" name="milestones[' + idx + '][amount]" value="' + (m.amount || '') + '" placeholder="Included"></td>' +
+                        '<td><input type="text" name="milestones[' + idx + '][due_date]" value="' + (m.due_date || '') + '" placeholder="e.g. Within 7 days"></td>' +
+                        '<td><input type="number" step="0.01" name="milestones[' + idx + '][amount]" value="' + (m.amount || '') + '" placeholder="Included"><div class="ca-gst-hint"></div></td>' +
                         '<td><input type="text" name="milestones[' + idx + '][included_services]" value="' + (m.included_services || '') + '"></td>' +
                         '<td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>';
                     document.getElementById('milestoneBody').appendChild(tr);
@@ -672,7 +779,7 @@
                     var tr = document.createElement('tr');
                     tr.innerHTML =
                         '<td><input type="text" name="additional_fees[' + idx + '][description]" value="' + (f.description || '') + '"></td>' +
-                        '<td><input type="number" step="0.01" name="additional_fees[' + idx + '][amount]" value="' + (f.amount || '') + '"></td>' +
+                        '<td><input type="number" step="0.01" name="additional_fees[' + idx + '][amount]" value="' + (f.amount || '') + '"><div class="ca-gst-hint"></div></td>' +
                         '<td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>';
                     document.getElementById('feeBody').appendChild(tr);
                 });
@@ -691,6 +798,18 @@
             document.getElementById('caEditForm').addEventListener('input', caUpdatePreview);
             document.getElementById('caEditForm').addEventListener('change', caUpdatePreview);
             caUpdatePreview();
+
+            $('#caEditForm').validate({
+                rules: {
+                    service_fee:     { required: true },
+                    govt_proc_main:  { required: true }
+                },
+                messages: {
+                    service_fee:     'Professional Service Fee cannot be blank',
+                    govt_proc_main:  'Government processing fee - Main Applicant cannot be blank'
+                },
+                errorElement: 'label'
+            });
 
             <?php if ($flashMessage = session()->getFlashdata('message')): ?>
                 caShowToast(<?php echo json_encode($flashMessage); ?>, 'success');

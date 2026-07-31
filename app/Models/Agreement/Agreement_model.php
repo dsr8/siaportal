@@ -9,7 +9,7 @@ class Agreement_model extends Model
     protected $returnType = 'array';
 
     protected $allowedFields = [
-        'application_id', 'prospect_id', 'client_name', 'client_email', 'client_phone',
+        'application_id', 'prospect_id', 'client_name', 'client_email', 'client_phone', 'client_address',
         'category_id', 'type_id', 'status', 'hide', 'created_by', 'insert_on', 'update_on',
         'reference_number', 'agreement_date', 'consultant_name', 'rcic_number', 'currency', 'template_name',
         'service_fee', 'gst_rate', 'gst_amount', 'government_fee',
@@ -17,8 +17,8 @@ class Agreement_model extends Model
         'govt_pr_main', 'govt_pr_spouse', 'govt_pr_pnp',
         'other_fee', 'total_amount',
         'require_client_signature', 'require_consultant_signature', 'email_verification',
-        'send_reminder', 'reminder_days', 'max_reminders',
-        'sign_token', 'last_sent_at', 'viewed_at', 'viewed_ip', 'consultant_signature',
+        'send_reminder', 'reminder_days', 'max_reminders', 'reminders_sent', 'last_reminder_at',
+        'sign_token', 'last_sent_at', 'viewed_at', 'viewed_ip', 'viewed_notified_at', 'consultant_signature',
         'client_signature', 'client_signature_type', 'client_typed_name', 'consent_accepted',
         'client_signed_at', 'client_signed_ip', 'client_signed_device',
         'declined_at', 'decline_reason', 'custom_clauses', 'pdf_path',
@@ -103,6 +103,42 @@ class Agreement_model extends Model
         $agreement['sign_token'] = $token;
 
         return $agreement;
+    }
+
+    // Agreements due for an automatic reminder email (see App\Commands\SendAgreementReminders):
+    // still actionable (sent/viewed — never signed/declined/hidden, which is what "stop all
+    // reminders immediately after Signed or Declined" comes down to, since those statuses
+    // simply fall outside this WHERE), reminders opted in, and due for the next rung of the
+    // fixed ladder — 1st at 24h, 2nd at 3 days, 3rd at 7 days after the original send —
+    // measured from last_sent_at regardless of when the previous reminder actually went out.
+    // reminder_days/max_reminders are retired in favour of this fixed schedule (see column
+    // comments in tbl_agreement_agreement.sql) but left in place, unread, for old data.
+    public function getDueForReminder(): array
+    {
+        $sql = "SELECT * FROM {$this->table}
+                WHERE hide = 0
+                  AND status IN ('sent', 'viewed')
+                  AND send_reminder = 1
+                  AND sign_token IS NOT NULL
+                  AND (
+                    (reminders_sent = 0 AND TIMESTAMPDIFF(HOUR, last_sent_at, NOW()) >= 24)
+                    OR (reminders_sent = 1 AND TIMESTAMPDIFF(DAY, last_sent_at, NOW()) >= 3)
+                    OR (reminders_sent = 2 AND TIMESTAMPDIFF(DAY, last_sent_at, NOW()) >= 7)
+                  )";
+
+        return $this->db->query($sql)->getResultArray();
+    }
+
+    // Agreements whose "viewed" state has sat long enough (debounce window, see
+    // App\Commands\SendAgreementViewedNotifications) that the client evidently isn't about to
+    // sign right away — status = 'viewed' already excludes anything since signed/declined.
+    public function getDueForViewedNotification(int $debounceMinutes): array
+    {
+        return $this->where('hide', 0)
+                    ->where('status', 'viewed')
+                    ->where('viewed_notified_at', null)
+                    ->where('viewed_at <=', date('Y-m-d H:i:s', time() - $debounceMinutes * 60))
+                    ->findAll();
     }
 
     // Dashboard stat cards. "Pending Signature" means the client actually has something to

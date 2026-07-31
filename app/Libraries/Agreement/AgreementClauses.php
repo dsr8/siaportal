@@ -9,12 +9,9 @@ class AgreementClauses
     // bullet list sits between its opening paragraph and the "Estimated timelines" ones).
     // Block shapes: ['type' => 'p', 'text' => '...'], ['type' => 'h', 'text' => '...'],
     // ['type' => 'bullets', 'items' => ['...', '...']].
-    // $agreement supplies the itemized government-fee breakdown (govt_proc_*/govt_pr_*) baked
-    // into clause 6's text — the only clause whose content isn't fixed legal boilerplate.
     //
-    // Clauses other than clause 6 can additionally carry a per-agreement admin-edited override
-    // (see $agreement['custom_clauses'], applied below) — clause 6 is deliberately excluded
-    // since it must always exactly reflect the real fee numbers, never stale edited text.
+    // Every clause can carry a per-agreement admin-edited override (see
+    // $agreement['custom_clauses'], applied below).
     public static function all(array $agreement = []): array
     {
         return self::applyCustomOverrides(self::defaults($agreement), $agreement);
@@ -104,14 +101,13 @@ class AgreementClauses
                     ['type' => 'p', 'text' => 'AC/ 5225229 | TRANSIT NO. 07900 | SWIFT CODE: TDOMCATTTOR | INSTITUTION 004'],
                     ['type' => 'p', 'text' => '*All Fees shall be made in Canadian Dollar Currency.'],
                     ['type' => 'h', 'text' => '5.1 Professional Fees Excludes'],
-                    ['type' => 'p', 'text' => 'Professional fee of RCIC outlined in clause 6 of this agreement exclude translation costs, courier costs, medical examination costs, fax costs and bank transfer costs.'],
+                    ['type' => 'p', 'text' => 'Professional fee of RCIC outlined in this agreement excludes translation costs, courier costs, medical examination costs, fax costs and bank transfer costs.'],
                 ],
             ],
-            self::paymentTermsClause($agreement),
             [
-                'title'  => '7. REFUND POLICY',
+                'title'  => '6. REFUND POLICY',
                 'blocks' => [
-                    ['type' => 'p', 'text' => '10.1 The CLIENT acknowledges that granting of a visa or status and the time required for processing this application is at the sole discretion of the government and not the RCIC. Therefore, in the event of a refusal of the application due to no fault of the RCIC, there are no refunds. If however, the application is denied because of an error or omission on the part of the RCIC or professional staff, the RCIC will refund all professional fees collected except the first payment stated in clause 7 and any sums paid under clause 8.1. The said fees are non-refundable whatsoever. The government fees under clause 6 are not refundable.'],
+                    ['type' => 'p', 'text' => '10.1 The CLIENT acknowledges that granting of a visa or status and the time required for processing this application is at the sole discretion of the government and not the RCIC. Therefore, in the event of a refusal of the application due to no fault of the RCIC, there are no refunds. If however, the application is denied because of an error or omission on the part of the RCIC or professional staff, the RCIC will refund all professional fees collected except the first payment stated in clause 7 and any sums paid under clause 8.1. The said fees are non-refundable whatsoever. Government fees are not refundable.'],
                     ['type' => 'p', 'text' => '10.2 The CLIENT agrees that the fees paid are for services indicated above, and any refund is strictly limited to the amount of fees paid less the non-refundable fees.'],
                     ['type' => 'p', 'text' => '10.3 The RCIC will not refund any of the professional fees charged and shall be entitled to full payment of professional fee as per this agreement if:'],
                     ['type' => 'bullets', 'items' => [
@@ -126,14 +122,14 @@ class AgreementClauses
                 ],
             ],
             [
-                'title'  => '8. CHANGE POLICY',
+                'title'  => '7. CHANGE POLICY',
                 'blocks' => [
                     ['type' => 'p', 'text' => '7.1 The CLIENT acknowledge that if the RCIC is asked to act on the CLIENT’s behalf on matters other than those outlined above in this Agreement, or because of a material change in the CLIENT circumstances, or because of material facts not disclosed at the outset of the application, or because of a change in government legislation regarding the processing of immigration-related applications, the Agreement can be modified accordingly upon mutual agreement.'],
                     ['type' => 'p', 'text' => '7.2 Such mutual agreement shall be put down in writing and signed by the parties.'],
                 ],
             ],
             [
-                'title'  => '9. OTHER',
+                'title'  => '8. OTHER',
                 'blocks' => [
                     ['type' => 'p', 'text' => '8.1 In the event Citizenship and Immigration Canada (CIC) or Human Resources Skills and Development Canada (HRSDC) or any other related Canadian authority should contact the CLIENT directly; the CLIENT are instructed to notify the RCIC immediately.'],
                     ['type' => 'p', 'text' => '8.2 The CLIENT is to immediately advise the RCIC of any change in the marital, family, or civil status or change of physical address or contact information for any person included in the application.'],
@@ -142,7 +138,7 @@ class AgreementClauses
                 ],
             ],
             [
-                'title'  => '10. CONFIDENTIALITY & NOTICE',
+                'title'  => '9. CONFIDENTIALITY & NOTICE',
                 'blocks' => [
                     ['type' => 'p', 'text' => '9.1 Any notice or other communication between the parties under or in connection with this Agreement shall be in writing, addressed via email or any other platform of communication regularly used by the Parties.'],
                     ['type' => 'p', 'text' => '9.2 All information or material in oral, visual, written, electronic or other tangible or intangible form collected by the RCIC from the CLIENT shall be deemed to be Confidential Information and strictly protected indefinitely under the Code of Professional Conduct.'],
@@ -151,7 +147,7 @@ class AgreementClauses
                 ],
             ],
             [
-                'title'  => '11. DISCHARGE & TERMINATION',
+                'title'  => '10. DISCHARGE & TERMINATION',
                 'blocks' => [
                     ['type' => 'p', 'text' => '10.1 This agreement is considered discharged upon completion of tasks identified under clause 3 & 4 of this agreement.'],
                     ['type' => 'p', 'text' => '10.2 This agreement may be terminated by the CLIENT under the applicable Canadian laws within the jurisdiction of the RCIC, at which time any outstanding fees or disbursements will be refunded by the RCIC to the CLIENTs/any outstanding fees or disbursements will be remitted by the CLIENT to the RCIC.'],
@@ -173,7 +169,7 @@ class AgreementClauses
                 ],
             ],
             [
-                'title'  => '12. DISPUTES & COMPLAINTS',
+                'title'  => '11. DISPUTES & COMPLAINTS',
                 'blocks' => [
                     ['type' => 'p', 'text' => '11.1 Any controversy or dispute between the Parties to this agreement involving the construction or application of any of the terms, provisions or conditions of this Agreement, shall first be attempted to be resolved by the RCIC.'],
                     ['type' => 'p', 'text' => '11.2 Where the parties cannot reach a resolution, the CLIENT shall provide the RCIC with a formal written complaint and allow the RCIC reasonable time to respond to the complaint.'],
@@ -181,7 +177,7 @@ class AgreementClauses
                 ],
             ],
             [
-                'title'  => '13. MISCELLANEOUS',
+                'title'  => '12. MISCELLANEOUS',
                 'blocks' => [
                     ['type' => 'p', 'text' => 'Integration. This Agreement expresses the complete understanding of the Parties with respect to the subject matter contained herein and supersedes all prior proposals, agreements, representations and understandings relating to this subject matter.'],
                     ['type' => 'p', 'text' => 'Amendment. This Agreement may be amended by the parties in writing and the newly amended Agreement shall be signed and dated by the parties.'],
@@ -192,69 +188,101 @@ class AgreementClauses
         ];
     }
 
+    // Decodes govt_proc_dep_above22 into a list of per-child fee amounts. The column stores a
+    // JSON array (e.g. "[500,300]") once saved through the multi-child "+ Add Child" UI;
+    // agreements saved before that existed still have a plain decimal value (e.g. "500.00"),
+    // which is treated as a single-child list so old data keeps rendering correctly.
+    public static function depAbove22Fees(array $agreement): array
+    {
+        $raw = $agreement['govt_proc_dep_above22'] ?? null;
+        if ($raw === null || $raw === '') {
+            return [];
+        }
+        $decoded = json_decode((string) $raw, true);
+        $fees = is_array($decoded) ? $decoded : [$raw];
+        return array_map('floatval', $fees);
+    }
+
+    // Normalizes a raw posted fee-list (array of strings/numbers from the "+ Add Child" rows,
+    // or a single legacy scalar) into a clean list of positive floats, ready to be
+    // json_encode()'d into govt_proc_dep_above22. Shared by Agreement::save() and Template::save().
+    public static function sanitizeFeeList($raw): array
+    {
+        $rows = is_array($raw) ? $raw : [$raw];
+        $fees = array_map('floatval', $rows);
+        return array_values(array_filter($fees, fn ($fee) => $fee > 0));
+    }
+
     // Ordered non-zero government-fee line items — ['group' => sub-heading or null, 'label' =>
-    // ..., 'amount' => float] — shared by clause 6's itemized text and the "Fees & Payment
-    // Summary" table (sign.php / AgreementPdfBuilder), so both always agree. Falls back to a
+    // ..., 'amount' => float] — used by the "Fees & Payment Summary" table (sign.php /
+    // AgreementPdfBuilder). Falls back to a
     // single ungrouped "Government / Application Fee" line for agreements saved before this
-    // breakdown existed, so neither place ever renders empty.
+    // breakdown existed. "Other Fee (If Any)" is folded into this same list (as an ungrouped
+    // line, no sub-heading) rather than being shown as its own separate row elsewhere, so the
+    // Government / Application Fee total the admin sees on the edit form always matches what's
+    // itemized here.
     public static function governmentFeeLines(array $agreement): array
     {
+        $depAbove22Fees = self::depAbove22Fees($agreement);
         $procRows = [
             'Main Applicant' => (float) ($agreement['govt_proc_main'] ?? 0),
             'Spouse' => (float) ($agreement['govt_proc_spouse'] ?? 0),
-            'Dependent Child Above 22 Years of Age' => (float) ($agreement['govt_proc_dep_above22'] ?? 0),
-            'Dependent Child Under 22 Years of Age' => (float) ($agreement['govt_proc_dep_under22'] ?? 0),
         ];
         $prRows = [
-            'Main Applicant' => (float) ($agreement['govt_pr_main'] ?? 0),
-            'Spouse' => (float) ($agreement['govt_pr_spouse'] ?? 0),
-            'PNP Govt.' => (float) ($agreement['govt_pr_pnp'] ?? 0),
+            'PNP Govt. Main Applicant' => (float) ($agreement['govt_pr_pnp'] ?? 0),
         ];
-        $hasProc = array_sum($procRows) > 0;
+        $otherFee = (float) ($agreement['other_fee'] ?? 0);
+        $hasProc = array_sum($procRows) > 0 || array_sum($depAbove22Fees) > 0;
         $hasPr = array_sum($prRows) > 0;
 
-        if (!$hasProc && !$hasPr) {
-            return [['group' => null, 'label' => 'Government / Application Fee', 'amount' => (float) ($agreement['government_fee'] ?? 0)]];
-        }
-
         $lines = [];
-        if ($hasProc) {
-            foreach ($procRows as $label => $amount) {
-                if ($amount > 0) {
+        if (!$hasProc && !$hasPr) {
+            $legacyAmount = (float) ($agreement['government_fee'] ?? 0);
+            if ($legacyAmount > 0) {
+                $lines[] = ['group' => null, 'label' => 'Government / Application Fee', 'amount' => $legacyAmount];
+            }
+        } else {
+            if ($hasProc) {
+                foreach ($procRows as $label => $amount) {
+                    if ($amount > 0) {
+                        $lines[] = ['group' => 'Government Processing Fee', 'label' => $label, 'amount' => $amount];
+                    }
+                }
+                $nonZeroDepFees = array_values(array_filter($depAbove22Fees, fn ($amount) => $amount > 0));
+                $depCount = count($nonZeroDepFees);
+                foreach ($nonZeroDepFees as $i => $amount) {
+                    $label = $depCount > 1
+                        ? 'Dependent Child (Child ' . ($i + 1) . ')'
+                        : 'Dependent Child';
                     $lines[] = ['group' => 'Government Processing Fee', 'label' => $label, 'amount' => $amount];
                 }
             }
-        }
-        if ($hasPr) {
-            foreach ($prRows as $label => $amount) {
-                if ($amount > 0) {
-                    $lines[] = ['group' => 'Government Right of Permanent Residence Fee', 'label' => $label, 'amount' => $amount];
+            if ($hasPr) {
+                foreach ($prRows as $label => $amount) {
+                    if ($amount > 0) {
+                        $lines[] = ['group' => 'Other Govt Fee', 'label' => $label, 'amount' => $amount];
+                    }
                 }
             }
         }
+
+        if ($otherFee > 0) {
+            $lines[] = ['group' => null, 'label' => 'Other Fee', 'amount' => $otherFee];
+        }
+
         return $lines;
     }
 
-    // Builds clause 6 from governmentFeeLines(), grouping consecutive lines under one 'h'
-    // sub-heading whenever the group changes.
-    private static function paymentTermsClause(array $agreement): array
+    // Sum of governmentFeeLines() — i.e. itemized government fees + Other Fee. This is what
+    // "Government / Application Fee — Total (auto-calculated)" shows on the edit form and what
+    // the PDF/sign-page breakdown adds up to. Deliberately NOT the same as the raw
+    // agreement['government_fee'] column, which stays itemized-only (no Other Fee) so the
+    // legacy-fallback branch above keeps working for agreements saved before this breakdown
+    // existed. Use this — not the raw column — anywhere "Government Fee" is displayed as a
+    // single number (e.g. the "Send for eSign" email), so it always matches the form/PDF.
+    public static function governmentFeeTotal(array $agreement): float
     {
-        $blocks = [
-            ['type' => 'p', 'text' => 'The CLIENT agrees to pay the following government fees, in addition to the professional service fee, as part of this Retainer Agreement:'],
-        ];
-
-        $currentGroup = false; // false (not null) so the first line's group always triggers a heading, even when it's null
-        foreach (self::governmentFeeLines($agreement) as $line) {
-            if ($line['group'] !== $currentGroup && $line['group'] !== null) {
-                $blocks[] = ['type' => 'h', 'text' => $line['group'] . ':'];
-            }
-            $currentGroup = $line['group'];
-            $blocks[] = ['type' => 'p', 'text' => $line['label'] . ': ' . self::money($agreement, $line['amount'])];
-        }
-
-        $blocks[] = ['type' => 'p', 'text' => 'These government fees are set by the relevant government authority, are subject to change without notice, and are non-refundable once submitted with an application.'];
-
-        return ['title' => '6. PAYMENT TERMS AND CONDITIONS', 'blocks' => $blocks];
+        return array_sum(array_column(self::governmentFeeLines($agreement), 'amount'));
     }
 
     private static function money(array $agreement, $amount): string
@@ -262,16 +290,13 @@ class AgreementClauses
         return '$' . number_format((float) $amount, 2) . ' ' . ($agreement['currency'] ?? 'CAD');
     }
 
-    // 0-based position of clause 6 (Payment Terms) in the array — never overridable, see all().
-    public const FEE_CLAUSE_INDEX = 5;
-
     // Replaces a clause's blocks with the admin's saved rich-text override, when one exists
     // for that index. $agreement['custom_clauses'] is a JSON object: {"<index>": "<html>"}.
     private static function applyCustomOverrides(array $clauses, array $agreement): array
     {
         $overrides = self::decodeOverrides($agreement);
         foreach ($overrides as $index => $html) {
-            if ($index === self::FEE_CLAUSE_INDEX || !isset($clauses[$index]) || $html === '') {
+            if (!isset($clauses[$index]) || $html === '') {
                 continue;
             }
             $clauses[$index]['blocks'] = [['type' => 'html', 'html' => $html]];
