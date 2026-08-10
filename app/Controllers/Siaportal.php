@@ -2502,6 +2502,7 @@ if ($this->request->getMethod()=='post'){
     
 	'heading'=>$this->request->getPost('name'),
 	'number'=>$this->request->getPost('contact'),
+	'cc'=>$this->request->getPost('cc'),
 	'alt_mobile_no'=>$this->request->getPost('alt_mobile_no'),
 
 	'email'=>$this->request->getPost('email'),
@@ -6850,7 +6851,6 @@ $Prospect = new Prospect_model();
 
  $num=$this->request->getPost('number');
 $coc=$this->request->getPost('cc');
- $ph=$coc.$num;
 
 
 $insert=$Prospect->insert([
@@ -6858,7 +6858,8 @@ $insert=$Prospect->insert([
 	'news_image1'  => $this->request->getPost('news_image1')   ?? '',
 	'heading'      => $this->request->getPost('heading')       ?? '',
 	'typee'        => $this->request->getPost('typee')         ?? '',
-	'number'       => $ph,
+	'number'       => $num,
+	'cc'           => $coc,
 	'agent_name'   => $this->request->getPost('agent_name')    ?? '',
 	'team_member'  => $this->request->getPost('team_member')   ?? '',
 	'email'        => $this->request->getPost('email')         ?? '',
@@ -9280,6 +9281,41 @@ public function view_client_login()
 		return view('admin/client_login/view_client',$data);
 	}
 
+	// AJAX endpoint backing the "Change Password" modal on the (modernized) view_team_login()
+	// team list — updates both `password` and `pass` (login check in Siaportal::login()
+	// compares against `pass`; edit_team() has always written both together, so this keeps
+	// the same convention).
+	public function change_team_password($id = null)
+	{
+		if (session()->get('isLoggedIn') !=true) {
+			return $this->response->setJSON(['success' => false, 'error' => 'Unauthorized']);
+		}
+		if ($this->request->getMethod() !== 'post') {
+			return $this->response->setJSON(['success' => false, 'error' => 'Invalid request']);
+		}
+
+		$id = (int) $id;
+		$newPassword = trim((string) $this->request->getPost('new_password'));
+
+		if ($newPassword === '' || strlen($newPassword) < 6) {
+			return $this->response->setJSON(['success' => false, 'error' => 'Password must be at least 6 characters.']);
+		}
+
+		$Team = new Team_model();
+		$member = $Team->find($id);
+		if (!$member) {
+			return $this->response->setJSON(['success' => false, 'error' => 'Team member not found.']);
+		}
+
+		$Team->update($id, [
+			'password'   => $newPassword,
+			'pass'       => $newPassword,
+			'updated_at' => date('Y-m-d H:i:s'),
+		]);
+
+		return $this->response->setJSON(['success' => true]);
+	}
+
 
 		public function view_app_finder()
 	{
@@ -9370,15 +9406,22 @@ if ($this->request->getMethod()=='post'){
 	'lastname'=>$this->request->getPost('lastname'),
 	'email'=>$this->request->getPost('email'),
 	'mobile_no'=>$this->request->getPost('mobile_no'),
-	'password'=>$this->request->getPost('password'),
-	'pass'=>$this->request->getPost('password'),
 	'type'=>$this->request->getPost('type'),
 	'status'=>$this->request->getPost('status'),
-	
+
 	'updated_at'=>date( 'Y-m-d H:i:s' )
 ];
 
-$Team = new Team_model(); 
+// Password field is optional here — Change Password on view_team_login() is the dedicated
+// flow for that now. Only touch password/pass if the admin actually typed a new one, so
+// leaving it blank while editing name/email/etc. doesn't wipe the existing password.
+$newPass = trim((string) $this->request->getPost('password'));
+if ($newPass !== '') {
+	$data['password'] = $newPass;
+	$data['pass']     = $newPass;
+}
+
+$Team = new Team_model();
 $updatee=$Team->update($id, $data);
 if($updatee){
 

@@ -107,6 +107,62 @@ class AgreementPdfBuilder
         return esc($agreement['currency'] ?? 'CAD') . ' $' . number_format((float) $amount, 2);
     }
 
+    // Renders cursive script text to a transparent PNG via GD/FreeType, for the typed
+    // initials/signature text. TCPDF's own TrueType embedding (SetFont() + Cell()) corrupts
+    // this specific font's glyph data into unrelated garbage characters — reproducible even
+    // with a completely independently reconverted copy of the font, so the bug is in TCPDF's
+    // decade-old TTF parser, not the font file. GD's FreeType-based text rendering (the same
+    // engine underlying most system/browser text rendering) draws it correctly, so the typed
+    // text is rendered to an image here and placed into the PDF via Image() instead of Cell().
+    private function cursiveTextImage(string $text, array $rgb, int $fontSizePx = 70): ?array
+    {
+        $ttf = FCPATH . 'app/Libraries/TCPDF/fonts/dancingscript-bold-raw.ttf';
+        $text = trim($text);
+        if ($text === '' || !is_file($ttf) || !function_exists('imagettftext')) {
+            return null;
+        }
+
+        $bbox = imagettfbbox($fontSizePx, 0, $ttf, $text);
+        $minX = min($bbox[0], $bbox[2], $bbox[4], $bbox[6]);
+        $maxX = max($bbox[0], $bbox[2], $bbox[4], $bbox[6]);
+        $minY = min($bbox[1], $bbox[3], $bbox[5], $bbox[7]);
+        $maxY = max($bbox[1], $bbox[3], $bbox[5], $bbox[7]);
+        $pad = (int) round($fontSizePx * 0.15);
+        $imgW = ($maxX - $minX) + ($pad * 2);
+        $imgH = ($maxY - $minY) + ($pad * 2);
+        if ($imgW <= 0 || $imgH <= 0) {
+            return null;
+        }
+
+        $img = imagecreatetruecolor($imgW, $imgH);
+        imagesavealpha($img, true);
+        imagefill($img, 0, 0, imagecolorallocatealpha($img, 255, 255, 255, 127));
+        $color = imagecolorallocate($img, $rgb[0], $rgb[1], $rgb[2]);
+        imagettftext($img, $fontSizePx, 0, $pad - $minX, $pad - $minY, $color, $ttf, $text);
+
+        $tmpPath = sys_get_temp_dir() . '/agreement_cursive_' . uniqid('', true) . '.png';
+        imagepng($img, $tmpPath);
+        imagedestroy($img);
+
+        return ['path' => $tmpPath, 'width' => $imgW, 'height' => $imgH];
+    }
+
+    // Places a cursiveTextImage() result into the PDF, scaled down (never up) to fit within
+    // the given box, and cleans up the temp file afterward.
+    private function placeCursiveImage(AgreementPdf $pdf, array $img, float $x, float $y, float $maxW, float $maxH, string $align = 'left'): void
+    {
+        $dpi = 200;
+        $wMm = $img['width'] / $dpi * 25.4;
+        $hMm = $img['height'] / $dpi * 25.4;
+        $scale = min($maxW / $wMm, $maxH / $hMm, 1);
+        $drawW = $wMm * $scale;
+        $drawH = $hMm * $scale;
+        $drawX = $align === 'center' ? $x + (($maxW - $drawW) / 2) : $x;
+        $drawY = $y + (($maxH - $drawH) / 2);
+        $pdf->Image($img['path'], $drawX, $drawY, $drawW, $drawH, 'PNG', '', '', false, 300);
+        @unlink($img['path']);
+    }
+
     // writeHTML() styling (e.g. the fee table's red "TOTAL PAYABLE" row) can leave TCPDF's
     // internal font/colour state changed after the call returns; call this before writing
     // plain body content so it always starts from the same clean baseline.
@@ -255,13 +311,14 @@ class AgreementPdfBuilder
         $pdf->RoundedRect($x, $y, $w, $h, 1.5, '1111', 'D', ['width' => 0.3, 'color' => [226, 59, 59]]);
 
         if ($initialRow && $initialRow['initial_type'] === 'type' && !empty($initialRow['typed_initials'])) {
-            // "dancingscriptb" is the Dancing Script webfont (converted for TCPDF), matching
-            // the cursive ".sg-typed-input" style the client actually typed into on sign.php —
-            // plain Helvetica here made the initial look like flat typed letters, not a signature.
-            $pdf->SetFont('dancingscriptb', '', 20);
-            $pdf->SetTextColor(226, 59, 59);
-            $pdf->SetXY($x, $y);
-            $pdf->Cell($w, $h, strtoupper($initialRow['typed_initials']), 0, 0, 'C');
+            // Cursive "Dancing Script" rendering, matching the ".sg-typed-input" style the
+            // client actually typed into on sign.php — plain Helvetica here made the initial
+            // look like flat typed letters, not a signature. Rendered via GD (see
+            // cursiveTextImage()), not TCPDF's own font engine — see that method for why.
+            $img = $this->cursiveTextImage(strtoupper($initialRow['typed_initials']), [226, 59, 59]);
+            if ($img) {
+                $this->placeCursiveImage($pdf, $img, $x + 2, $y + 1, $w - 4, $h - 2, 'center');
+            }
         } elseif ($initialRow && !empty($initialRow['initial_path'])) {
             $path = './' . ltrim($initialRow['initial_path'], '/');
             if (is_file($path)) {
@@ -318,12 +375,13 @@ class AgreementPdfBuilder
         }
 
         if ($agreement['client_signature_type'] === 'type' && !empty($agreement['client_typed_name'])) {
-            // Same "dancingscriptb" script font as the per-page initial box, matching what the
-            // client actually typed into sign.php's cursive ".sg-typed-input" signature field.
-            $pdf->SetFont('dancingscriptb', '', 26);
-            $pdf->SetTextColor(30, 30, 30);
-            $pdf->SetXY(110, $sigImgY - 3);
-            $pdf->Cell(80, 8, $agreement['client_typed_name'], 0, 0);
+            // Same cursive rendering as the per-page initial box (see cursiveTextImage()),
+            // matching what the client actually typed into sign.php's cursive
+            // ".sg-typed-input" signature field.
+            $img = $this->cursiveTextImage($agreement['client_typed_name'], [30, 30, 30], 90);
+            if ($img) {
+                $this->placeCursiveImage($pdf, $img, 110, $sigImgY - 3, 75, 12, 'left');
+            }
         } elseif (!empty($agreement['client_signature'])) {
             $path = './' . ltrim($agreement['client_signature'], '/');
             if (is_file($path)) {

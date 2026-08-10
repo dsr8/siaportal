@@ -419,8 +419,11 @@ class Appoint extends BaseController
             $preferred = $this->request->getPost('preferred_date') . ' ' . $this->request->getPost('preferred_time');
             $notes     = $this->request->getPost('notes');
             $siaId     = 'SIA-' . ($appt['prospect_id'] ?: $id);
-            $subject   = 'Reschedule Request – ' . $appt['client_name'] . ' – ' . $siaId;
-            $body      = '
+
+            $dedupeKey = "resched_req_{$id}";
+            if (! cache($dedupeKey)) {
+                $subject = 'Reschedule Request – ' . $appt['client_name'] . ' – ' . $siaId;
+                $body    = '
 <p><strong>Reschedule Request received from client</strong></p>
 <p><strong>Reference: ' . $siaId . '</strong></p>
 ' . sia_details_table([
@@ -432,7 +435,9 @@ class Appoint extends BaseController
     'Client Notes'     => $notes ?: '—',
 ]) . '
 <p>Please update the appointment in CRM accordingly.</p>';
-            sia_send_email(sia_team_emails(), $subject, sia_appt_html($body));
+                sia_send_email(sia_team_emails(), $subject, sia_appt_html($body));
+                cache()->save($dedupeKey, 1, 300);
+            }
 
             return $this->response->setBody('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Request Sent</title></head><body style="font-family:Arial,sans-serif;text-align:center;padding:60px;background:#f5f5f5;">
 <div style="background:#fff;border-radius:12px;padding:40px;max-width:480px;margin:0 auto;box-shadow:0 4px 20px rgba(0,0,0,.1);">
@@ -459,7 +464,7 @@ input,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;f
     <strong>Current Appointment:</strong><br>
     ' . date('F j, Y', strtotime($appt['appointment_date'])) . ' at ' . date('g:i A', strtotime($appt['appointment_time'])) . ' (PST)
   </div>
-  <form method="post">
+  <form method="post" onsubmit="this.querySelector(\'button\').disabled=true;">
     <label>Preferred Date</label>
     <input type="date" name="preferred_date" required min="' . date('Y-m-d') . '">
     <label>Preferred Time</label>
@@ -487,8 +492,11 @@ input,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;f
         if ($this->request->getMethod() === 'post') {
             $reason = $this->request->getPost('reason');
             $siaId  = 'SIA-' . ($appt['prospect_id'] ?: $id);
-            $subject = 'Cancellation Request – ' . $appt['client_name'] . ' – ' . $siaId;
-            $body    = '
+
+            $dedupeKey = "cancel_req_{$id}";
+            if (! cache($dedupeKey)) {
+                $subject = 'Cancellation Request – ' . $appt['client_name'] . ' – ' . $siaId;
+                $body    = '
 <p><strong>Cancellation Request received from client</strong></p>
 <p><strong>Reference: ' . $siaId . '</strong></p>
 ' . sia_details_table([
@@ -499,7 +507,9 @@ input,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;f
     'Reason'     => $reason ?: '—',
 ]) . '
 <p>Please update the appointment status in CRM accordingly.</p>';
-            sia_send_email(sia_team_emails(), $subject, sia_appt_html($body));
+                sia_send_email(sia_team_emails(), $subject, sia_appt_html($body));
+                cache()->save($dedupeKey, 1, 300);
+            }
 
             return $this->response->setBody('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cancelled</title></head><body style="font-family:Arial,sans-serif;text-align:center;padding:60px;background:#f5f5f5;">
 <div style="background:#fff;border-radius:12px;padding:40px;max-width:480px;margin:0 auto;box-shadow:0 4px 20px rgba(0,0,0,.1);">
@@ -526,7 +536,7 @@ textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-si
     <strong>Appointment to Cancel:</strong><br>
     ' . date('F j, Y', strtotime($appt['appointment_date'])) . ' at ' . date('g:i A', strtotime($appt['appointment_time'])) . ' (PST)
   </div>
-  <form method="post">
+  <form method="post" onsubmit="this.querySelector(\'button\').disabled=true;">
     <label>Reason for Cancellation (optional)</label>
     <textarea name="reason" rows="3" placeholder="Please let us know why..."></textarea>
     <button type="submit" class="btn">Confirm Cancellation Request</button>

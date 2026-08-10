@@ -37,6 +37,21 @@
   color: #FF4D5A; font-size: 18px;
   display: flex; align-items: center; justify-content: center;
 }
+.topbar-bell {
+  position: relative; color: #9CA3AF; font-size: 17px; text-decoration: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.topbar-bell:hover { color: #fff; }
+.topbar-bell .bell-badge {
+  position: absolute; top: -6px; right: -8px; background: #FF4D5A; color: #fff;
+  font-size: 10px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; padding: 0 3px; line-height: 1;
+}
+.topbar-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: #4CAF50; color: #fff;
+  font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
 /* ── Dark Sidebar ── */
 #layoutSidenav_nav .sb-sidenav {
   background: #111827 !important;
@@ -96,12 +111,18 @@
     <div class="brand-logo-circle"><img src="<?php echo base_url(); ?>/public/assets_client/img/sia_icon.png" alt="Siaportal"></div>
     Siaportal
   </a>
-  <ul class="navbar-nav ml-auto" style="display:flex;align-items:center;gap:14px;">
+  <ul class="navbar-nav ml-auto" style="display:flex;align-items:center;gap:18px;">
+    <li class="nav-item">
+      <a class="topbar-bell" href="#" title="Notifications">
+        <i class="fas fa-bell"></i>
+      </a>
+    </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" id="welcomeUserDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display:flex;align-items:center;">
         <div class="welcome-user">
           Welcome <?php echo session()->get('firstname'); ?>
-          <span class="user-avatar"><i class="fas fa-user-circle"></i></span>
+          <?php $initial = strtoupper(substr((string) session()->get('firstname'), 0, 1)) ?: 'U'; ?>
+          <span class="topbar-avatar"><?php echo esc($initial); ?></span>
         </div>
       </a>
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="welcomeUserDropdown">

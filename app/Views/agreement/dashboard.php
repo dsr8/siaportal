@@ -136,6 +136,14 @@
             .ag-client-id { font-weight: 700; color: #1f2430; }
             .ag-client-sia { font-size: 12px; color: #9aa0aa; margin-top: 2px; }
 
+            /* CRM status (client_prospect.entery_status) at the time the dashboard is viewed —
+               distinct from the agreement's own status badge — so staff can tell whether an
+               agreement was sent to someone still a Prospect vs. an already-converted Client. */
+            .ag-entry-badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; margin-left: 6px; vertical-align: 1px; text-decoration: none; cursor: pointer; transition: filter .15s ease; }
+            .ag-entry-badge:hover { filter: brightness(0.93); }
+            .ag-entry-client   { background: #d4edda; color: #1e7e34; }
+            .ag-entry-prospect { background: #fff3cd; color: #856404; }
+
             /* Same per-status color coding as the "Agreement: {status}" badge on
                Siaportal/view_client, so an agreement's status reads identically everywhere
                in the app instead of the dashboard's own bucketed Draft/Pending/Signed/Declined. */
@@ -413,9 +421,13 @@
                                         // for a fact they WERE sent), fall back to the first-viewed timestamp so
                                         // the column doesn't show a nonsensical "–" next to a Signed badge.
                                         $sentAt = $row['last_sent_at'] ?: ($row['status'] !== 'draft' ? ($row['viewed_at'] ?: $row['insert_on']) : null);
+                                        $entryStatus = $row['prospect_entery_status'] ?? '';
+                                        $entryBadgeClass = $entryStatus === 'prospect' ? 'ag-entry-prospect' : 'ag-entry-client';
+                                        $entryBadgeLabel = $entryStatus === 'prospect' ? 'Prospect' : 'Client';
+                                        $entryBadgeUrl = base_url($entryStatus === 'prospect' ? 'Siaportal/view_prospect' : 'Siaportal/view_client');
                                         ?>
                                         <tr>
-                                            <td><div class="ag-client-id">#<?php echo (int) $row['id']; ?> &nbsp;<?php echo esc($row['client_name']); ?></div><div class="ag-client-sia">SiaID: <?php echo (int) $row['prospect_id']; ?></div></td>
+                                            <td><div class="ag-client-id">#<?php echo (int) $row['id']; ?> &nbsp;<?php echo esc($row['client_name']); ?></div><div class="ag-client-sia">SiaID: <?php echo (int) $row['prospect_id']; ?><a href="<?php echo $entryBadgeUrl; ?>" class="ag-entry-badge <?php echo $entryBadgeClass; ?>"><?php echo esc($entryBadgeLabel); ?></a></div></td>
                                             <td><?php echo esc($typeLabel); ?></td>
                                             <td>$<?php echo number_format((float) $row['service_fee'] + (float) $row['gst_amount'], 2); ?></td>
                                             <td>$<?php echo number_format(\App\Libraries\Agreement\AgreementClauses::governmentFeeTotal($row), 2); ?></td>

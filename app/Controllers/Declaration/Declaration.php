@@ -198,7 +198,7 @@ class Declaration extends BaseController
             'client_phone'    => $this->composePhone($prospect),
             'category_id'     => $application['category'],
             'type_id'         => $application['type'],
-            'title'           => 'Untitled Disclaimer / Consent',
+            'title'           => 'Disclaimer / Consent',
             'content'         => "Dear [Client Name],\n\nThis declaration is to inform you of the potential consequences related to your application due to the following issue(s)...\n\nI have read and understand the above declaration.",
             'consultant_name' => trim((string) session()->get('firstname') . ' ' . (string) session()->get('lastname')),
             'consent_date'    => date('Y-m-d'),

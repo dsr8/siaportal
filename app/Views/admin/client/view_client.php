@@ -377,31 +377,13 @@ if(in_array($block,$allid)){ ?>
         <div class="col-xl-2 col-md-2"  >
         <?php
           $agAppId = (int) $GetData['id'];
-          $agRow = $agreementStatus[$agAppId] ?? null;
-          if ($agRow):
-              $agBadgeColors = [
-                  'draft'     => ['#e2e3e5', '#41464b'],
-                  'sent'      => ['#fff3cd', '#856404'],
-                  'viewed'    => ['#cfe2ff', '#084298'],
-                  'signed'    => ['#d1e7dd', '#0f5132'],
-                  'declined'  => ['#f8d7da', '#842029'],
-                  'cancelled' => ['#f8d7da', '#842029'],
-              ];
-              [$agBg, $agFg] = $agBadgeColors[$agRow['status']] ?? ['#e2e3e5', '#41464b'];
+          echo view('admin/partials/agreement_card', [
+              'agRow'         => $agreementStatus[$agAppId] ?? null,
+              'applicationId' => $agAppId,
+              'categoryLabel' => $GetData['cat'] ?? '',
+              'typeLabel'     => $GetData['ttyy'] ?? '',
+          ]);
         ?>
-          <span style="display:inline-block;background:<?php echo $agBg; ?>;color:<?php echo $agFg; ?>;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;">
-            &#128196; Agreement: <?php echo ucfirst($agRow['status']); ?>
-          </span><br>
-          <a target="_blank" href="<?php echo base_url(); ?>/agreement/Agreement/detail/<?php echo $agRow['id']; ?>" style="font-size:11px;">View</a>
-        <?php else: ?>
-          <form method="post" target="_blank" action="<?php echo base_url(); ?>/agreement/Agreement/start_from_application/<?php echo $agAppId; ?>" style="margin:0;"
-                onsubmit="this.querySelector('button').disabled = true;">
-            <button type="submit"
-               style="display:inline-block;background:#e23b3b;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;border:none;cursor:pointer;">
-              Start E-Sign
-            </button>
-          </form>
-        <?php endif; ?>
        </div>
 
         <div class="col-xl-2 col-md-2"  >

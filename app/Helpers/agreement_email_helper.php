@@ -56,7 +56,12 @@ function sia_agreement_send($to, string $subject, string $html, ?string $attachP
     helper('smtp_helper');
 
     try {
+        // Services::email() returns a shared instance, and CI4's clear()/send(autoClear:true)
+        // never wipe $attachments unless told to — so without this, attachments pile up across
+        // the client/team/accounting emails sent back-to-back from sia_send_signed_agreement_email(),
+        // and the last one in the chain ends up with duplicate copies of the same PDF.
         $emailSvc = \Config\Services::email();
+        $emailSvc->clear(true);
         $config   = get_smtp_settings();
         $emailSvc->initialize($config);
         $emailSvc->setFrom(SIA_AGREEMENT_FROM_EMAIL, SIA_AGREEMENT_FROM_NAME);
@@ -519,8 +524,11 @@ function sia_send_agreement_team_signed_email(array $agreement): void
         'consultant'   => $agreement['consultant_name'] ?? 'Sia Immigration',
     ]);
 
+    // Accounting is added here only — the "Agreement Signed" team email specifically —
+    // not to sia_team_emails() itself, which is shared by the other team notifications
+    // (Sent/Declined/reminders) that accounting should not be copied on.
     sia_agreement_send(
-        sia_team_emails(),
+        array_merge(sia_team_emails(), [SIA_AGREEMENT_ACCOUNTING_EMAIL]),
         sia_agreement_subject('Agreement Signed', $agreement, $typeLabel),
         $html,
         sia_agreement_pdf_disk_path($agreement)

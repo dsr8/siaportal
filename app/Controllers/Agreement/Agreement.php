@@ -9,7 +9,6 @@ use App\Models\Client_application_model;
 use App\Models\Prospect_model;
 use App\Models\Type_client_model;
 use App\Models\Category_model;
-use App\Models\Status_model;
 use App\Libraries\Agreement\AgreementClauses;
 use App\Libraries\Agreement\AgreementHtmlPdfBuilder;
 use App\Libraries\Agreement\AgreementPdfBuilder;
@@ -224,18 +223,10 @@ class Agreement extends BaseController
             return $this->response->setJSON(['results' => []]);
         }
 
-        $StatusModel = new Status_model();
-        $rows = $StatusModel->where('type_id', (int) $typeId)->findAll();
-        if (empty($rows)) {
-            // Many types have no seeded per-type statuses — fall back to the same generic
-            // "Ready to Apply" default Siaportal::gettype_status() always shows, so the
-            // form never dead-ends with an empty dropdown.
-            $rows = $StatusModel->where('app_status', 'Ready to Apply')->findAll(1);
-        }
-        $results = [];
-        foreach ($rows as $r) {
-            $results[] = ['id' => $r['id'], 'text' => $r['app_status']];
-        }
+        // Siaportal::gettype_status() (add_client_application's Status field) doesn't actually
+        // query by type — it always shows the single hardcoded option id=35 "Ready to Apply".
+        // Matched here so a quick-added application looks identical to one made through that form.
+        $results = [['id' => 35, 'text' => 'Ready to Apply']];
 
         return $this->response->setJSON(['results' => $results]);
     }
@@ -266,6 +257,18 @@ class Agreement extends BaseController
         }
 
         $ApplicationModel = new Client_application_model();
+
+        // Same client already has an application in this exact category+type — block the
+        // duplicate instead of silently creating a second identical one (which produced two
+        // indistinguishable "AINP — NA" entries in the Application dropdown).
+        $duplicate = $ApplicationModel->where('siaportalid', $prospectId)
+            ->where('category', $categoryId)
+            ->where('type', $typeId)
+            ->first();
+        if ($duplicate) {
+            return $this->response->setJSON(['success' => false, 'error' => 'This client already has an application in that category and type.']);
+        }
+
         $newId = $ApplicationModel->insert([
             'siaportalid'         => $prospectId,
             'category'            => $categoryId,
@@ -363,8 +366,12 @@ class Agreement extends BaseController
 
         $data['agreement']       = $agreement;
         $data['typeOptions']     = $TypeClient->getpost();
-        $data['milestones']      = $MilestoneModel->getByAgreementId($agreement['id']);
-        $data['additionalFees']  = $AdditionalFeeModel->getByAgreementId($agreement['id']);
+        // Default to one blank starting row (same pattern as depAbove22Fees below) so the
+        // tables aren't empty-with-just-an-Add-button on a brand-new agreement.
+        $data['milestones']      = $MilestoneModel->getByAgreementId($agreement['id'])
+            ?: [['milestone' => '', 'due_date' => '', 'amount' => null, 'included_services' => '']];
+        $data['additionalFees']  = $AdditionalFeeModel->getByAgreementId($agreement['id'])
+            ?: [['description' => '', 'amount' => null]];
         $data['signUrl']         = !empty($agreement['sign_token']) ? base_url('agreement/sign/' . $agreement['sign_token']) : null;
         $data['templates']       = $TemplateModel->getAll();
         $data['depAbove22Fees']  = AgreementClauses::depAbove22Fees($agreement) ?: [0.0];
@@ -523,7 +530,7 @@ class Agreement extends BaseController
             }
 
             $successMsg = $wasFirstSend ? 'Agreement sent successfully.' : 'Agreement resent successfully.';
-            return redirect()->to(base_url('agreement/Agreement/detail/' . $id))->with('message', $successMsg);
+            return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('message', $successMsg);
         }
 
         return redirect()->to(base_url('agreement/Agreement/detail/' . $id))->with('message', 'Signing link generated.');

@@ -17,9 +17,15 @@ class Sign extends BaseController
 
     private const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
 
-    // Page 1 is the cover/fees page, pages 2-14 are the numbered clauses — all require an
-    // initial; page 15 (the final signature page) uses the full signature instead.
-    private const REQUIRED_INITIAL_PAGES = 14;
+    // Page 1 is the cover/fees page, the numbered clauses follow — all require an initial;
+    // the final signature page after them uses the full signature instead. Derived from
+    // AgreementClauses::all() (currently 12 clauses -> pages 1-13 need an initial) rather
+    // than hardcoded, after a hardcoded 14 went stale when a clause was removed and made
+    // "Please initial every page before signing" impossible to clear.
+    private function requiredInitialPages(): int
+    {
+        return count(AgreementClauses::all()) + 1;
+    }
 
     private function loadAgreement(string $token): ?array
     {
@@ -85,7 +91,7 @@ class Sign extends BaseController
         }
 
         $pageNumber = (int) $this->request->getPost('page_number');
-        if ($pageNumber < 1 || $pageNumber > self::REQUIRED_INITIAL_PAGES) {
+        if ($pageNumber < 1 || $pageNumber > $this->requiredInitialPages()) {
             return $this->response->setJSON(['ok' => false, 'error' => 'Invalid page.'])->setStatusCode(422);
         }
 
@@ -141,7 +147,7 @@ class Sign extends BaseController
         // page_number comes back from the DB as a numeric string, not an int, so cast before
         // the strict in_array check below — otherwise 1 !== "1" fails for every page.
         $initialedPages = array_map('intval', array_column((new Agreement_page_initial_model())->getByAgreementId($agreement['id']), 'page_number'));
-        for ($p = 1; $p <= self::REQUIRED_INITIAL_PAGES; $p++) {
+        for ($p = 1; $p <= $this->requiredInitialPages(); $p++) {
             if (!in_array($p, $initialedPages, true)) {
                 return redirect()->to(base_url('agreement/sign/' . $token))
                     ->with('sign_error', 'Please initial every page before signing.');
@@ -286,6 +292,14 @@ class Sign extends BaseController
 
         if ($type === 'type') {
             $name = trim((string) $this->request->getPost('typed_name'));
+            // Free-typed on a phone keyboard with no client-side restriction — autocorrect/
+            // predictive text or a stray tap into a symbol/emoji picker can drop unrelated
+            // characters in here, which then get rendered as-is in the PDF's cursive signature
+            // font (showing up as garbled symbols). Keep letters (incl. accented), spaces, and
+            // the punctuation real names use; drop everything else and cap the length.
+            $name = preg_replace('/[^\p{L}\p{M}\s\'\.\-]/u', '', $name);
+            $name = trim(preg_replace('/\s+/', ' ', (string) $name));
+            $name = mb_substr($name, 0, 60);
             if ($name === '') {
                 return null;
             }

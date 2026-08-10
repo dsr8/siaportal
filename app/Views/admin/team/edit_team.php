@@ -8,343 +8,171 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAUlL6ANPK/ACAY/8Ae17/AJ+K/wAAAO0ALwD/AKWR/wDq5v8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmgAAAAACGYGaAAAUAAIZgZoAABQAAhmBmgAZmZgCGYGaAVmZnUIZgZok2FhY5hmBmiUVmZUmGYGaAAEZAAIZgZoAAhoAAhmBmgAACAACGYGaAAAAAAIZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAH/EAAB7xAAAe8QAAGDEAABARAAAAAQAAAAEAABxxAAAccQAAHvEAAB/xAAD//wAA//8AAP//AAD//wAA" rel="icon" type="image/x-icon" />
-        <title>Siaportal</title>
+        <title>Siaportal - Edit Team Member</title>
         <link href="<?php echo base_url();?>/public/dist/css/styles.css" rel="stylesheet" />
-        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+        <style>
+            .et-wrap { padding: 4px 4px 30px; font-family: 'Segoe UI', Arial, sans-serif; max-width: 780px; margin: 0 auto; }
 
-         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+            .et-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+            .et-avatar {
+                width: 52px; height: 52px; border-radius: 15px; flex-shrink: 0; color: #fff; font-weight: 800; font-size: 17px;
+                display: flex; align-items: center; justify-content: center; letter-spacing: .02em;
+                background: linear-gradient(135deg, #7c4dd6, #5a2fa8); box-shadow: 0 6px 16px rgba(111,66,193,0.3);
+            }
+            .et-title h1 { font-size: 20px; font-weight: 800; color: #1f2430; margin: 0; }
+            .et-title p { font-size: 13px; color: #8a8f98; margin: 3px 0 0; }
 
-          <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+            .et-back { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: #6f42c1; text-decoration: none; margin-bottom: 14px; }
+            .et-back:hover { text-decoration: underline; }
+            .et-back svg { width: 14px; height: 14px; }
 
-     <style>
-  label.error {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-  padding:1px 20px 1px 20px;
-}
-  </style>
+            .et-card { background: #fff; border-radius: 18px; box-shadow: 0 4px 20px rgba(20,20,43,0.07); border: 1px solid #f0f1f4; overflow: hidden; }
+            .et-section { padding: 24px 26px; }
+            .et-section + .et-section { border-top: 1px solid #f0f1f4; }
+            .et-section-title { font-size: 12px; font-weight: 800; color: #6f42c1; text-transform: uppercase; letter-spacing: .04em; margin: 0 0 16px; display: flex; align-items: center; gap: 7px; }
+            .et-section-title svg { width: 14px; height: 14px; }
+
+            .et-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+            @media (max-width: 620px) { .et-grid { grid-template-columns: 1fr; } }
+
+            .et-field { margin-bottom: 16px; }
+            .et-field:last-child { margin-bottom: 0; }
+            .et-field label { font-weight: 700; margin-bottom: 6px; display: block; font-size: 11.5px; color: #6b7280; text-transform: uppercase; letter-spacing: .03em; }
+            .et-field input, .et-field select {
+                width: 100%; padding: 11px 13px; border: 1.5px solid #e0e3e8; border-radius: 10px; font-size: 13.5px;
+                box-sizing: border-box; color: #1f2430; background: #fff; transition: border-color .15s ease, box-shadow .15s ease;
+            }
+            .et-field input:focus, .et-field select:focus { outline: none; border-color: #6f42c1; box-shadow: 0 0 0 3px rgba(111,66,193,0.1); }
+            .et-field select { appearance: none; -webkit-appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa0aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+                background-repeat: no-repeat; background-position: right 12px center; background-size: 15px; padding-right: 34px;
+            }
+            .et-hint { font-size: 11.5px; color: #9aa0aa; margin-top: 6px; }
+            label.error { color: #a71d2a; font-size: 11.5px; font-weight: 600; display: block; margin-top: 5px; }
+
+            .et-pass-field { position: relative; }
+            .et-pass-field .et-eye { position: absolute; right: 10px; top: 34px; cursor: pointer; color: #9aa0aa; background: none; border: none; padding: 4px; }
+            .et-pass-field .et-eye:hover { color: #6f42c1; }
+            .et-pass-note { background: #f4f0fc; border: 1px solid #e2d6f7; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #6f42c1; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+            .et-pass-note svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+            .et-footer { padding: 18px 26px; background: #fafbfc; border-top: 1px solid #f0f1f4; display: flex; gap: 10px; justify-content: flex-end; }
+            .et-btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 22px; border-radius: 10px; font-size: 13.5px; font-weight: 700; border: none; cursor: pointer; text-decoration: none; transition: transform .12s ease, box-shadow .15s ease, background .15s ease; }
+            .et-btn svg { width: 14px; height: 14px; }
+            .et-btn-save { background: linear-gradient(135deg, #7c4dd6, #6f42c1); color: #fff; box-shadow: 0 4px 12px rgba(111,66,193,0.3); }
+            .et-btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(111,66,193,0.4); }
+            .et-btn-cancel { background: #f1f2f4; color: #1f2430; }
+            .et-btn-cancel:hover { background: #e8e9ec; }
+        </style>
     </head>
     <body class="sb-nav-fixed">
         <?= view ('admininclude/header.php'); ?>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
-                
-
 <?= view('admininclude/admin_nav'); ?>
-
-                 
             </div>
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
-                        <h1 class="mt-4">Edit Team Member</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">
+                        <div class="et-wrap">
+                            <a class="et-back" href="<?php echo base_url();?>/Siaportal/view_team_login">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                                Back to Team Login
+                            </a>
 
-                            </li>
-                        </ol>
-
-                       <form id="myform" method="post" action="<?php echo base_url();?>/Siaportal/edit_team/<?php echo $team['0']['id'];?>"> 
-
-
-<?php if (isset($validation)){ ?>
-            <div class="col-12">
-              <div class="alert alert-danger" role="alert">
-                <?php $validation->listErrors() ?>
-              </div>
-            </div>
-          <?php } ?>
-
-
-                        <div class="row">
-                            <div class="col-xl-6 col-md-6">
-                                
-<div class="form-group"><label class="small mb-1" for="inputFirstName">First Name</label>
-    <input class="form-control py-4" name="firstname" id="firstname" type="text" placeholder="Enter first name" value="<?php echo $team['0']['firstname']; ?>"/></div>
-<div class="form-group"><label class="small mb-1" for="inputFirstName">Last Name</label>
-    <input class="form-control py-4" name="lastname" id="lastname" type="text" placeholder="Enter last name" value="<?php echo $team['0']['lastname']; ?>"/></div>
-<div class="form-group"><label class="small mb-1" for="inputFirstName">Email</label>
-    <input class="form-control py-4"name="email" id="email" type="text" placeholder="Enter email" value="<?php echo $team['0']['email']; ?>" /></div>
-
-
-<div class="row">
-                <div class="col-md-6">
-                     <label class="small mb-1">Country code</label>
-                    <select class="form-control" name="cc" id="cc" style="height: 36px;">
-                         <option value="" selected="selected">Please select</option>
-                    <option value="93">Afghanistan</option>
-                    <option value="355">Albania</option>
-                    <option value="213">Algeria</option>
-                    <option value="1684">American Samoa</option><!--1-684-->
-                    <option value="376">Andorra</option>
-                    <option value="244">Angola</option>
-                    <option value="1264">Anguilla</option>
-                    <option value="672">Antarctica</option>
-                    <option value="1268">Antigua and Barbuda</option>
-                    <option value="54">Argentina</option>
-                    <option value="374">Armenia</option>
-                    <option value="297">Aruba</option>
-                    <option value="61">Australia</option>
-                    <option value="43">Austria</option>
-                    <option value="994">Azerbaijan</option>
-                    <option value="1242">Bahamas</option>
-                    <option value="973">Bahrain</option>
-                    <option value="880">Bangladesh</option>
-                    <option value="1246">Barbados</option>
-                    <option value="375">Belarus</option>
-                    <option value="32">Belgium</option>
-                    <option value="501">Belize</option>
-                    <option value="229">Benin</option>
-                    <option value="1441">Bermuda</option>
-                    <option value="975">Bhutan</option>
-                    <option value="591">Bolivia</option>
-                    <option value="387">Bosnia and Herzegovina</option>
-                    <option value="267">Botswana</option>
-                    <option value="55">Brazil</option>
-                    <option value="246">British Indian Ocean Territory</option>
-                    <option value="1284">British Virgin Islands</option>
-                    <option value="673">Brunei</option>
-                    <option value="359">Bulgaria</option>
-                    <option value="226">Burkina Faso</option>
-                    <option value="257">Burundi</option>
-                    <option value="855">Cambodia</option>
-                    <option value="237">Cameroon</option>
-                    <option value="1">Canada</option>
-                    <option value="238">Cape Verde</option>
-                    <option value="1345">Cayman Islands</option>
-                    <option value="236">Central African Republic</option>
-                    <option value="235">Chad</option>
-                    <option value="56">Chile</option>
-                    <option value="86">China</option>
-                    <option value="61">Christmas Island</option>
-                    <option value="61">Cocos Islands</option>
-                    <option value="57">Colombia</option>
-                    <option value="269">Comoros</option>
-                    <option value="682">Cook Islands</option>
-                    <option value="506">Costa Rica</option>
-                    <option value="385">Croatia</option>
-                    <option value="53">Cuba</option>
-                    <option value="599">Curacao</option>
-                    <option value="357">Cyprus</option>
-                    <option value="420">Czech Republic</option>
-                    <option value="243">Democratic Republic of the Congo</option>
-                    <option value="45">Denmark</option>
-                    <option value="253">Djibouti</option>
-                    <option value="1767">Dominica</option>
-                    <option value="670">East Timor</option>
-                    <option value="593">Ecuador</option>
-                    <option value="20">Egypt</option>
-                    <option value="503">El Salvador</option>
-                    <option value="240">Equatorial Guinea</option>
-                    <option value="291">Eritrea</option>
-                    <option value="372">Estonia</option>
-                    <option value="251">Ethiopia</option>
-                    <option value="500">Falkland Islands</option>
-                    <option value="298">Faroe Islands</option>
-                    <option value="679">Fiji</option>
-
-                    <option value="358">Finland</option>
-                    <option value="33">France</option>
-                    <option value="689">French Polynesia</option>
-                    <option value="241">Gabon</option>
-                    <option value="220">Gambia</option>
-                    <option value="995">Georgia</option>
-                    <option value="49">Germany</option>
-                    <option value="233">Ghana</option>
-
-                    <option value="350">Gibraltar</option>
-                    <option value="30">Greece</option>
-                    <option value="299">Greenland</option>
-                    <option value="1473">Grenada</option>
-                    <option value="1671">Guam</option>
-
-                    <option value="502">Guatemala</option>
-                    <option value="441481">Guernsey</option>
-                    <option value="224">Guinea</option>
-                    <option value="245">Guinea-Bissau</option>
-                    <option value="592">Guyana</option>
-                    <option value="509">Haiti</option>
-                    <option value="504">Honduras</option>
-                    <option value="852">Hong Kong</option>
-                    <option value="36">Hungary</option>
-                    <option value=" 354">Iceland</option>
-                    <option value="91">India</option>
-                    <option value="62">Indonesia</option>
-                    <option value="98">Iran</option>
-                    <option value="964">Iraq</option>
-                    <option value="353">Ireland</option>
-                    <option value="441624">Isle of Man</option>
-                    <option value="972">Israel</option>
-                    <option value="39">Italy</option>
-                    <option value="225">Ivory Coast</option>
-                    <option value="1876">Jamaica</option>
-                    <option value="81">Japan</option>
-                    <option value="441534">Jersey</option>
-                    <option value="962">Jordan</option>
-                    <option value="7">Kazakhstan</option>
-                    <option value="254">Kenya</option>
-                    <option value="686">Kiribati</option>
-                    <option value="383">Kosovo</option>
-                    <option value="965">Kuwait</option>
-                    <option value="996">Kyrgyzstan</option>
-                    <option value="856">Laos</option>
-                    <option value="371">Latvia</option>
-                    <option value="961">Lebanon</option>
-                    <option value="266">Lesotho</option>
-                    <option value="231">Liberia</option>
-                    <option value="218">Libya</option>
-                    <option value="423">Liechtenstein</option>
-                    <option value="370">Lithuania</option>
-                    <option value="352">Luxembourg</option>
-                    <option value="853">Macau</option>
-                    <option value="389">Macedonia</option>
-                    <option value="261">Madagascar</option>
-                    <option value="265">Malawi</option>
-                    <option value="60">Malaysia</option>
-                    <option value="960">Maldives</option>
-                    <option value="223">Mali</option>
-                    <option value="356">Malta</option>
-                    <option value="692">Marshall Islands</option>
-                    <option value="222">Mauritania</option>
-                    <option value="230">Mauritius</option>
-                    <option value="262">Mayotte</option>
-                    <option value="52">Mexico</option>
-                    <option value="691">Micronesia</option>
-                    <option value="373">Moldova</option>
-                    <option value="377">Monaco</option>
-                    <option value="976">Mongolia</option>
-                    <option value="382">Montenegro</option>
-                    <option value="1664">Montserrat</option>
-                    <option value="212">Morocco</option>
-                    <option value="258">Mozambique</option>
-                    <option value="95">Myanmar</option>
-                    <option value="264">Namibia</option>
-                    <option value="674">Nauru</option>
-                    <option value="977">Nepal</option>
-                    <option value="31">Netherlands</option>
-                    <option value="599">Netherlands Antilles</option>
-                    <option value="687">New Caledonia</option>
-                    <option value="64">New Zealand/option>
-                    <option value="505">Nicaragua</option>
-                    <option value="227">Niger</option>
-                    <option value="234">Nigeria</option>
-                    <option value="683">Niue</option>
-                    <option value="850">North Korea</option>
-                    <option value="47">Norway</option>
-                    <option value="968">Oman</option>
-                    <option value="92">Pakistan</option>
-                    <option value="680">Palau</option>
-                    <option value="970">Palestine</option>
-                    <option value="507">Panama</option>
-                    <option value="675">Papua New Guinea</option>
-                    <option value="595">Paraguay</option>
-                    <option value="51">Peru</option>
-                    <option value="63">Philippines</option>
-                    <option value="64">Pitcairn</option>
-                    <option value="48">Poland</option>
-                    <option value="351">Portugal</option>
-                    <option value="974">Qatar</option>
-                    <option value="242">Republic of the Congo</option>
-                    <option value="262">Reunion</option>
-                    <option value="40">Romania</option>
-                    <option value="7">Russia</option>
-                    <option value="250">Rwanda</option>
-                    <option value="590">Saint Barthelemy</option>
-                    <option value="290">Saint Helena</option>
-                    <option value="1869">Saint Kitts and Nevis</option>
-                    <option value="1758">Saint Lucia</option>
-                    <option value="590">Saint Martin</option>
-                    <option value="508">Saint Pierre and Miquelon</option>
-                    <option value="685">Samoa</option>
-                    <option value="378">San Marino</option>
-                    <option value="966">Saudi Arabia</option>
-                    <option value="221">Senegal</option>
-                    <option value="381">Serbia</option>
-                    <option value="248">Seychelles</option>
-                    <option value="232">Sierra Leone</option>
-                    <option value="65">Singapore</option>
-                    <option value="252">Somalia</option>
-                    <option value="27">South Africa</option>
-                    <option value="82">South Korea</option>
-                    <option value="211">South Sudan</option>
-                    <option value="34">Spain</option>
-                     <option value="94">Sri Lanka</option>
-                    <option value="249">Sudan</option>
-                    <option value="597">Suriname</option>
-                     <option value="268">Swaziland</option>
-                    <option value="46">Sweden</option>
-                    <option value="41">Switzerland</option>
-                     <option value="963">Syria</option>
-                    <option value="886">Taiwan</option>
-                    <option value="66">Thailand</option>
-                     <option value="971">United Arab Emirates</option>
-                    <option value="44">United Kingdom</option>
-                    <option value="1">United States</option>
-                     <option value="379">Vatican</option>
-                    <option value="260">Zambia</option>
-                    <option value="263">Zimbabwe</option>
-                  
-                    </select>
-
-                </div>
-
- <div class="col-md-6">
-
-
-
-
-    <div class="form-group"><label class="small mb-1" for="inputFirstName">Mobile Number</label>
-    <input class="form-control py-4"name="mobile_no" id="mobile_no" type="text" placeholder="Enter Mobile Number" value="<?php echo $team['0']['mobile_no']; ?>" />
-  </div>
-   </div>
-    </div>
-    
- 
-
-
+                            <?php
+                                $fullName = trim(($team['0']['firstname'] ?? '') . ' ' . ($team['0']['lastname'] ?? ''));
+                                $initials = strtoupper(substr($team['0']['firstname'] ?? '?', 0, 1) . substr($team['0']['lastname'] ?? '', 0, 1));
+                            ?>
+                            <div class="et-header">
+                                <div class="et-avatar"><?php echo esc($initials); ?></div>
+                                <div class="et-title">
+                                    <h1>Edit Team Member</h1>
+                                    <p><?php echo esc($fullName ?: 'Team member'); ?></p>
+                                </div>
                             </div>
-                            <div class="col-xl-6 col-md-6">
-                               
-<div class="form-group"><label class="small mb-1" for="inputFirstName">Password</label><input class="form-control py-4" id="password" type="text" name="password" placeholder="Enter password" required="required" value="<?php echo $team['0']['pass']; ?>"/></div>
-<div class="form-group"><label class="small mb-1" for="inputFirstName">Type</label>
-<select class="form-control " name="type" style="font-size: 10px;">
-    <option value="">Select Type</option>
-    
-    <!---option value="client" <?php if($team['0']['type'] == 'client'){ echo 'selected';} ?>>Client</option-->
-    <option value="Admin" <?php if($team['0']['type'] == 'Admin'){ echo 'selected';} ?>>Admin</option>
-     <option value="Employe" <?php if($team['0']['type'] == 'Employee'){ echo 'selected';} ?>>Employee</option>
 
-</select>
-
-</div>
-<div class="form-group"><label class="small mb-1" for="inputFirstName">Status</label>
-<select class="form-control" name="status" style="font-size: 10px;">
-     <option value="">Select Status</option>
-    <option value="1" <?php if($team['0']['status'] == '1'){ echo 'selected';} ?>>Active</option>
-    <option value="0" <?php if($team['0']['status'] == '0'){ echo 'selected';} ?>>Deactive</option>
-     
-
-</select>
-
-</div>
-
-<div class="form-group">
- <input type="submit" class="form-control py-4" style="background-color: green;text-align: center;color: white" name="submit" value="Submit">
-</div>
-
-
-
-
-                               
+                            <?php if (isset($validation)): ?>
+                            <div class="alert alert-danger" role="alert" style="border-radius:10px;margin-bottom:16px;">
+                                <?php $validation->listErrors() ?>
                             </div>
-        
+                            <?php endif; ?>
 
-         </form>                   
-                           
+                            <form id="myform" method="post" action="<?php echo base_url();?>/Siaportal/edit_team/<?php echo $team['0']['id'];?>">
+                                <div class="et-card">
+                                    <div class="et-section">
+                                        <div class="et-section-title">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                            Profile
+                                        </div>
+                                        <div class="et-grid">
+                                            <div class="et-field">
+                                                <label>First Name</label>
+                                                <input name="firstname" id="firstname" type="text" placeholder="Enter first name" value="<?php echo esc($team['0']['firstname'] ?? '', 'attr'); ?>">
+                                            </div>
+                                            <div class="et-field">
+                                                <label>Last Name</label>
+                                                <input name="lastname" id="lastname" type="text" placeholder="Enter last name" value="<?php echo esc($team['0']['lastname'] ?? '', 'attr'); ?>">
+                                            </div>
+                                            <div class="et-field">
+                                                <label>Email</label>
+                                                <input name="email" id="email" type="text" placeholder="Enter email" value="<?php echo esc($team['0']['email'] ?? '', 'attr'); ?>">
+                                            </div>
+                                            <div class="et-field">
+                                                <label>Mobile Number</label>
+                                                <input name="mobile_no" id="mobile_no" type="text" placeholder="Enter mobile number" value="<?php echo esc($team['0']['mobile_no'] ?? '', 'attr'); ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="et-section">
+                                        <div class="et-section-title">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                            Account
+                                        </div>
+                                        <div class="et-grid">
+                                            <div class="et-field">
+                                                <label>Type</label>
+                                                <select name="type" id="type">
+                                                    <option value="">Select Type</option>
+                                                    <option value="Admin" <?php echo ($team['0']['type'] == 'Admin') ? 'selected' : ''; ?>>Admin</option>
+                                                    <option value="Employee" <?php echo ($team['0']['type'] == 'Employee') ? 'selected' : ''; ?>>Employee</option>
+                                                </select>
+                                            </div>
+                                            <div class="et-field">
+                                                <label>Status</label>
+                                                <select name="status" id="status">
+                                                    <option value="">Select Status</option>
+                                                    <option value="1" <?php echo ($team['0']['status'] == '1') ? 'selected' : ''; ?>>Active</option>
+                                                    <option value="0" <?php echo ($team['0']['status'] == '0') ? 'selected' : ''; ?>>Deactive</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="et-pass-note">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                            Password changes now happen from <a href="<?php echo base_url();?>/Siaportal/view_team_login" style="color:#6f42c1;font-weight:700;">Team Login &rarr; Change Password</a>. Leave the field below blank to keep the current password.
+                                        </div>
+                                        <div class="et-field et-pass-field">
+                                            <label>New Password (optional)</label>
+                                            <input class="form-control" id="password" type="password" name="password" placeholder="Leave blank to keep current password" autocomplete="new-password">
+                                            <button type="button" class="et-eye" onclick="etToggleEye()">&#128065;</button>
+                                            <div class="et-hint">Only fill this in if you want to change the password from here too.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="et-footer">
+                                        <a class="et-btn et-btn-cancel" href="<?php echo base_url();?>/Siaportal/view_team_login">Cancel</a>
+                                        <button type="submit" class="et-btn et-btn-save">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                      
+                    </div>
                 </main>
                  <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid">
@@ -352,7 +180,6 @@
                             <div class="text-muted"></div>
                             <div>
                                 <a href="#"></a>
-                               
                                 <a href="#"></a>
                             </div>
                         </div>
@@ -363,71 +190,35 @@
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="<?php echo base_url();?>/public/dist/js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="<?php echo base_url();?>/public/dist/assets/demo/chart-area-demo.js"></script>
-        <script src="<?php echo base_url();?>/public/dist/assets/demo/chart-bar-demo.js"></script>
-        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-        <script src="<?php echo base_url();?>/public/dist/assets/demo/datatables-demo.js"></script>
-
-
-        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
-    
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
         <script>
+            function etToggleEye() {
+                var field = document.getElementById('password');
+                field.type = field.type === 'password' ? 'text' : 'password';
+            }
 
-$(document).ready(function () {
-
-    $('#myform').validate({ // initialize the plugin
-        rules: {
-            firstname: {
-                required: true
-               
-            },
-            lastname: {
-                required: true
-               
-            },
-             email: {
-                required: true
-               
-            },
-            mobile_no: {
-                required: true
-               
-            },
-             type: {
-                required: true
-               
-            },
-            status: {
-                required: true
-               
-            },
-             password: {
-                required: true
-               
-            },
-           
-        },
-        messages: {
-        firstname: "First name Is required",
-         lastname: "Last name Is required",
-          email: "Email Is required",
-           mobile_no: "Mobile Number Is required",
-            type: "Type Is required",
-             status: "Status Is required",
-              password: "Password Is required",
-              
-       
-         }
-        
-    });
-
-});
-</script>
-
+            $(document).ready(function () {
+                $('#myform').validate({
+                    rules: {
+                        firstname: { required: true },
+                        lastname: { required: true },
+                        email: { required: true },
+                        mobile_no: { required: true },
+                        type: { required: true },
+                        status: { required: true }
+                        // password is intentionally NOT required — see the note above the field.
+                    },
+                    messages: {
+                        firstname: "First name is required",
+                        lastname: "Last name is required",
+                        email: "Email is required",
+                        mobile_no: "Mobile number is required",
+                        type: "Type is required",
+                        status: "Status is required"
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

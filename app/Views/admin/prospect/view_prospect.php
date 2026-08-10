@@ -145,6 +145,87 @@ function add_status(id,st)
             .select2-container--default .select2-results__option--highlighted[aria-selected] { background: #6f42c1; }
             #baBox .select2-container { width: 100% !important; margin-bottom: 10px; }
         </style>
+        <style>
+            /* ── Modern restyle: scoped to this page only (.vp-page), doesn't touch
+               shared Bootstrap classes used elsewhere in the app. ── */
+            .vp-page h1.mt-4 { font-size: 22px; font-weight: 800; color: #1f2430; display: flex; align-items: center; gap: 10px; }
+            .vp-page h1.mt-4::before {
+                content: ''; width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+                background: linear-gradient(135deg, #4CAF50, #3d9140);
+                -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M23 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E") center/20px no-repeat;
+                mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M23 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E") center/20px no-repeat;
+            }
+            .vp-page .breadcrumb { display: none; }
+
+            .vp-search-row > div.vp-icon-field { position: relative; }
+            .vp-search-row > div.vp-icon-field i,
+            .vp-search-row > div.vp-icon-field svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #9aa0aa; font-size: 13px; width: 13px; height: 13px; pointer-events: none; }
+            .vp-search-row > div.vp-icon-field .form-control { padding-left: 34px; }
+
+            .vp-card { border: 1px solid #f0f1f4; border-radius: 18px !important; box-shadow: 0 4px 20px rgba(20,20,43,0.07); overflow: hidden; }
+            .vp-card > .card-header { display: none; }
+            .vp-card > .card-body { padding: 22px 24px; }
+
+            .vp-search-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 18px; }
+            .vp-search-row .form-control {
+                border: 1.5px solid #e0e3e8; border-radius: 10px; font-size: 13.5px; height: 42px;
+                transition: border-color .15s ease, box-shadow .15s ease;
+            }
+            .vp-search-row .form-control:focus { outline: none; border-color: #6f42c1; box-shadow: 0 0 0 3px rgba(111,66,193,0.1); border-color: #6f42c1; }
+            .vp-search-row > div { flex: 1 1 160px; min-width: 140px; }
+            .vp-search-row > div.vp-search-btns { flex: 0 0 auto; display: flex; gap: 8px; min-width: 0; }
+            .vp-btn-search { background: linear-gradient(135deg, #4CAF50, #3d9140); border: none; color: #fff; font-weight: 700; border-radius: 10px; padding: 10px 20px; font-size: 13.5px; box-shadow: 0 3px 10px rgba(76,175,80,0.3); display: inline-flex; align-items: center; gap: 7px; }
+            .vp-btn-search:hover { color: #fff; opacity: .92; }
+            .vp-btn-reset { background: #f1f2f4; border: none; color: #1f2430; font-weight: 700; border-radius: 10px; padding: 10px 18px; font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; }
+            .vp-btn-reset:hover { background: #e8e9ec; color: #1f2430; text-decoration: none; }
+
+            .vp-table thead th { background: #fafbfc !important; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; letter-spacing: .03em; border-bottom: 1px solid #eef0f2 !important; }
+            .vp-table td { border-color: #f1f2f4 !important; vertical-align: top; }
+            .vp-table tbody tr:hover { background: #fafbfc; }
+
+            /* Action-button column ("Email/SMS") — restyles the existing .on buttons without
+               touching their onclick/href logic. */
+            .vp-actions .on { border-radius: 9px !important; border: none !important; box-shadow: none !important; font-weight: 700 !important; text-align: center !important; }
+            .vp-actions a.on[href*="immigration_enquiry_mail"] { background: linear-gradient(135deg, #4CAF50, #3d9140) !important; color: #fff !important; }
+            .vp-actions a.on[href*="edit_prospect"] { background: #1f2430 !important; color: #fff !important; }
+            .vp-actions a.on[onclick*="move_to_client"] { background: #2d3340 !important; color: #fff !important; }
+
+            /* Team status column */
+            .vp-status-box select#pstatus { width: 100%; border: 1.5px solid #e0e3e8; border-radius: 8px; padding: 6px 8px; font-size: 12.5px; }
+            .vp-status-box textarea#ppstatus { border: 1.5px solid #e0e3e8; border-radius: 8px; font-size: 12.5px; padding: 8px; }
+
+            .vp-plain-cell { font-size: 12.5px; color: #4b5160; }
+
+            @media (max-width: 700px) {
+                .vp-card > .card-body { padding: 16px 14px; }
+                .vp-search-row { flex-direction: column; align-items: stretch; }
+                .vp-search-row > div { flex: 1 1 auto; min-width: 0; width: 100%; }
+                .vp-search-row .vp-search-btns { flex-direction: row; width: 100%; }
+                .vp-btn-search, .vp-btn-reset { flex: 1; text-align: center; }
+
+                /* Table → stacked cards, using each td's data-label as the row's mini-heading,
+                   instead of forcing a sideways-scrolling 7-column table on a phone screen. */
+                .vp-table { border: none !important; }
+                .vp-table thead { display: none; }
+                .vp-table, .vp-table tbody, .vp-table tr { display: block; width: 100%; }
+                .vp-table tr {
+                    margin-bottom: 16px; border: 1px solid #eef0f2 !important; border-radius: 14px;
+                    box-shadow: 0 2px 10px rgba(20,20,43,0.06); overflow: hidden;
+                }
+                .vp-table td {
+                    display: block; width: 100% !important; max-width: none !important; min-width: 0 !important;
+                    box-sizing: border-box; border: none !important; border-bottom: 1px solid #f4f5f7 !important;
+                    padding: 12px 14px !important;
+                }
+                .vp-table tr td:last-child { border-bottom: none !important; }
+                .vp-table td[data-label]::before {
+                    content: attr(data-label);
+                    display: block; font-size: 10.5px; font-weight: 800; color: #6f42c1;
+                    text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
+                }
+                .vp-actions .on { width: 100% !important; box-sizing: border-box; }
+            }
+        </style>
     </head>
     <body class="sb-nav-fixed">
             <?= view ('admininclude/header.php'); ?>
@@ -158,28 +239,32 @@ function add_status(id,st)
             </div>
             <div id="layoutSidenav_content">
                 <main>
-                    <div class="container-fluid">
+                    <div class="container-fluid vp-page">
                         <h1 class="mt-4">View Prospect</h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active"></li>
                         </ol>
-                        
-                       
-                        <div class="card mb-4">
+
+
+                        <div class="card mb-4 vp-card">
                             <div class="card-header"><i class="fas fa-table mr-1"></i></div>
                             <div class="card-body">
                                 <form method="post" action="<?php echo base_url('Siaportal/view_prospect');?>" class="mb-3">
-                                    <div class="row">
-                                        <div class="col-md-2">
+                                    <div class="vp-search-row">
+                                        <div class="vp-icon-field">
+                                            <i class="fas fa-hashtag"></i>
                                             <input type="number" name="search_id" class="form-control" placeholder="Search by ID" value="<?php echo isset($search_id) ? htmlspecialchars($search_id) : ''; ?>">
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="vp-icon-field">
+                                            <i class="fas fa-user"></i>
                                             <input type="text" name="search_name" class="form-control" placeholder="Search by Name" value="<?php echo isset($search_name) ? htmlspecialchars($search_name) : ''; ?>">
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="vp-icon-field">
+                                            <i class="fas fa-phone"></i>
                                             <input type="text" name="search_phone" class="form-control" placeholder="Search by Phone No" value="<?php echo isset($search_phone) ? htmlspecialchars($search_phone) : ''; ?>">
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="vp-icon-field">
+                                            <i class="fas fa-filter"></i>
                                             <select name="search_status" class="form-control">
                                                 <option value="">-- Team Status --</option>
                                                 <option value="Retainer_sent_but_waiting_for_signatures" <?php echo (isset($search_status) && $search_status=='Retainer_sent_but_waiting_for_signatures') ? 'selected' : ''; ?>>Retainer sent but waiting for signatures</option>
@@ -195,29 +280,29 @@ function add_status(id,st)
                                                 <option value="Done_Delete" <?php echo (isset($search_status) && $search_status=='Done_Delete') ? 'selected' : ''; ?>>Done/Delete</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-2 mt-1">
-                                            <button type="submit" class="btn btn-primary">Search</button>
-                                            <a href="<?php echo base_url('Siaportal/view_prospect');?>" class="btn btn-secondary">Reset</a>
+                                        <div class="vp-search-btns">
+                                            <button type="submit" class="vp-btn-search"><i class="fas fa-search"></i> Search</button>
+                                            <a href="<?php echo base_url('Siaportal/view_prospect');?>" class="vp-btn-reset"><i class="fas fa-redo"></i> Reset</a>
                                         </div>
                                     </div>
                                 </form>
                                 <div class="table-responsive" style="max-height:75vh; overflow-y:auto; overflow-x:auto;">
-                                    <table class="table table-bordered" id="dataTable1" width="50%" cellspacing="0">
+                                    <table class="table table-bordered vp-table" id="dataTable1" width="50%" cellspacing="0">
                                         <thead style="position:sticky;top:0;z-index:10;background:#fff;">
                                             <tr>
-                                                 <th>Id</th>
+                                                 <th><i class="fas fa-hashtag" style="color:#9aa0aa;margin-right:5px;"></i>Id</th>
 
-                <th >Voice / Name</th>
-                 <th>Email/SMS</th>
+                <th ><i class="fas fa-user" style="color:#9aa0aa;margin-right:5px;"></i>Voice / Name</th>
+                 <th><i class="fas fa-bolt" style="color:#9aa0aa;margin-right:5px;"></i>Email/SMS</th>
 
                 <!--th >Add on Date</th-->
-                 <th >Team status</th>
+                 <th ><i class="fas fa-tasks" style="color:#9aa0aa;margin-right:5px;"></i>Team status</th>
 
-                <th >Team Mamber Name/Number </th>
+                <th ><i class="fas fa-id-badge" style="color:#9aa0aa;margin-right:5px;"></i>Team Mamber Name/Number </th>
                 <!--th >Number</th-->
-              
-                <th >Admin Status</th>
-                <th >Agreement / Consent</th>
+
+                <th ><i class="fas fa-shield-alt" style="color:#9aa0aa;margin-right:5px;"></i>Admin Status</th>
+                <th ><i class="fas fa-file-signature" style="color:#9aa0aa;margin-right:5px;"></i>Agreement / Consent</th>
 
 
 
@@ -227,7 +312,7 @@ function add_status(id,st)
                                         <tbody>
                                              <?php foreach($prospect as $allcat){ ?>
                                             <tr>
-                                                 <td style="min-width:170px;max-width:210px;word-break:break-word;">
+                                                 <td data-label="Id" style="min-width:170px;max-width:210px;word-break:break-word;">
                                                     <a href="<?php echo base_url('Siaportal/hide_prospect/'.$allcat['id']);?>" onclick="return confirm('Hide this record?');" style="background:red;color:white;padding:2px 7px;font-size:11px;border-radius:3px;text-decoration:none;display:inline-block;">Hide</a>
                                                     <?php $pid = (int)$allcat['id']; ?>
                                                     <?php if (!empty($dupProspectIds[$pid])): ?>
@@ -285,9 +370,9 @@ function add_status(id,st)
                                                         class="btn btn-xs btn-warning" title="Copy All" style="padding:1px 6px;margin-top:3px;font-size:10px;">Copy All</button>
                                                 </td>
                                                 <?php if ($allcat['from_web']!=''){ ?>
-                  <td style="color:red">
+                  <td data-label="Voice / Name" style="color:red">
               <?php } else { ?>
-<td>
+<td data-label="Voice / Name">
           <?php } ?>
                     <?php if($allcat['news_image1']==""){ ?>
                           <label style="color:#aaa;font-size:11px;">No recording</label>
@@ -329,11 +414,11 @@ function add_status(id,st)
 </td>
 
 
- <td> <a  class="on" style="background:lightgreen;margin-bottom: 5px;color:black; width: 177px;
+ <td class="vp-actions" data-label="Email / SMS"> <a  class="on" style="background:lightgreen;margin-bottom: 5px;color:black; width: 177px;
     font-size: 13px;" href="<?php echo base_url();?>/Siaportal/immigration_enquiry_mail/<?php echo $allcat['id'];?>/<?php echo $allcat['mail_send'];?>"><i class="fa fa-envelope" aria-hidden="true"></i>Send Follow Up Email(<?php echo $allcat['mail_send'];?>)(<?php echo $allcat['mail_send_on'];?>)</a><br>
 
                     <a  style="color:white; margin-bottom: 5px; width: 177px;
-    font-size: 13px;" class="on" target="_blank" href="<?php echo base_url();?>/Siaportal/edit_prospect/<?php echo $allcat['id'];?>">Edit</a><br>
+    font-size: 13px;" class="on" target="_blank" href="<?php echo base_url();?>/Siaportal/edit_prospect/<?php echo $allcat['id'];?>"><i class="fas fa-pen" style="margin-right:5px;"></i>Edit</a><br>
 
     <!--a onclick="sms(<?php echo $allcat['id'];?>)"  class="on" style="background: blue;margin-bottom: 5px;color:white;  width: 177px;
     font-size: 13px;" ><i class="fa fa-comment"></i>(<?php echo $allcat['sms_send'];?>)(<?php echo $allcat['sms_send_on'];?>)</a-->
@@ -345,7 +430,7 @@ function add_status(id,st)
                                                  
                                                  
                                                    <a href="#" style="color:white;  width: 177px;
-    font-size: 13px;"class="on" onclick="move_to_client(<?php echo $allcat['id'];?>,<?php echo $allcat['number'];?>)"  style="background: black;margin-bottom: 5px;color:white; ">Move To client</a>
+    font-size: 13px;"class="on" onclick="move_to_client(<?php echo $allcat['id'];?>,<?php echo $allcat['number'];?>)"  style="background: black;margin-bottom: 5px;color:white; "><i class="fas fa-user-check" style="margin-right:5px;"></i>Move To client</a>
 
     <?php if (!empty($bookedIds[(int)$allcat['id']])): ?>
     <button type="button"
@@ -371,8 +456,8 @@ function add_status(id,st)
 
                                                 <!--td ><?php echo $allcat['insert_on'];?></hr></td-->
 
- <td>
-                                                
+ <td class="vp-status-box" data-label="Team Status">
+
                           <select style="line-height: 3;" onchange="st_change(<?php echo $allcat['id'];?>,this.value)" id="pstatus" name="pstatus">
                             <?php if($allcat['pstatus']=='') {?>
                             <option value="">Select value</option>
@@ -403,11 +488,12 @@ function add_status(id,st)
                                               </td>
 
 
-                                                <td><?php echo $allcat['team_member'];?></td>    
-                                               
-                                             
-                                               <td><?php echo $allcat['admin_status'];?></td>
-                                               <td style="min-width:210px;">
+                                                <td class="vp-plain-cell" data-label="Team Member"><?php if (!empty($allcat['team_member'])): ?><i class="fas fa-id-badge" style="color:#6f42c1;margin-right:5px;"></i><?php endif; ?><?php echo $allcat['team_member'];?></td>
+
+
+
+                                               <td class="vp-plain-cell" data-label="Admin Status"><?php if (!empty($allcat['admin_status'])): ?><i class="fas fa-shield-alt" style="color:#6f42c1;margin-right:5px;"></i><?php endif; ?><?php echo $allcat['admin_status'];?></td>
+                                               <td data-label="Agreement / Consent" style="min-width:210px;">
                                                     <?php $prospectApps = $applicationsByProspect[(int) $allcat['id']] ?? []; ?>
                                                     <?php if (empty($prospectApps)): ?>
                                                     <div style="border:1px dashed #ccc;border-radius:8px;background:#fafafa;padding:14px 10px;text-align:center;">
@@ -432,15 +518,12 @@ function add_status(id,st)
                                                             <?php echo htmlspecialchars($pApp['ct'] ?? 'Uncategorized'); ?> — <?php echo htmlspecialchars($pApp['ty'] ?? ''); ?>
                                                         </div>
 
-                                                        <?php $pAgRow = $agreementStatus[(int) $pApp['id']] ?? null; ?>
-                                                        <?php if ($pAgRow): [$pAgBg, $pAgFg] = $vpBadgeColors[$pAgRow['status']] ?? ['#e2e3e5', '#41464b']; ?>
-                                                            <span style="display:inline-block;background:<?php echo $pAgBg; ?>;color:<?php echo $pAgFg; ?>;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;">&#128196; Agreement: <?php echo ucfirst($pAgRow['status']); ?></span>
-                                                            <a target="_blank" href="<?php echo base_url(); ?>/agreement/Agreement/detail/<?php echo $pAgRow['id']; ?>" style="font-size:11px;">View</a><br>
-                                                        <?php else: ?>
-                                                            <form method="post" target="_blank" action="<?php echo base_url(); ?>/agreement/Agreement/start_from_application/<?php echo (int) $pApp['id']; ?>" style="margin:2px 0;" onsubmit="this.querySelector('button').disabled = true;">
-                                                                <button type="submit" style="display:inline-block;background:#e23b3b;color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;border:none;cursor:pointer;">Start E-Sign</button>
-                                                            </form>
-                                                        <?php endif; ?>
+                                                        <?php echo view('admin/partials/agreement_card', [
+                                                            'agRow'         => $agreementStatus[(int) $pApp['id']] ?? null,
+                                                            'applicationId' => (int) $pApp['id'],
+                                                            'categoryLabel' => $pApp['ct'] ?? '',
+                                                            'typeLabel'     => $pApp['ty'] ?? '',
+                                                        ]); ?>
 
                                                         <?php $pDcRow = $declarationStatus[(int) $pApp['id']] ?? null; ?>
                                                         <?php if ($pDcRow): [$pDcBg, $pDcFg] = $vpBadgeColors[$pDcRow['status']] ?? ['#e2e3e5', '#41464b']; ?>

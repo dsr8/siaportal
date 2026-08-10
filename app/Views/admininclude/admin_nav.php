@@ -628,7 +628,8 @@
 
  <a class="nav-link" href="<?php echo base_url();?>/Siaportal/add_client_login">Client login</a>
                                      <a class="nav-link" href="<?php echo base_url();?>/Siaportal/view_client_login">view Client login</a>
-                                    
+                                     <a class="nav-link" href="<?php echo base_url();?>/Siaportal/view_team_login">Team login</a>
+
   <a class="nav-link" href="<?php echo base_url();?>/Siaportal/view_invoice">View Invoice</a>
          <a class="nav-link" href="<?php echo base_url();?>/Siaportal/add_student_need_job">Add Student need job</a>
 

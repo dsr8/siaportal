@@ -293,71 +293,7 @@
 
 <div class="form-group"><label class="small mb-1">Contact Number</label>
     <div style="display:flex; gap:8px; align-items:center;">
-        <select name="cc" id="cc" style="flex:0 0 48%;">
-            <option value="">Country Code</option>
-            <optgroup label="⭐ Suggested">
-                <option value="1" <?php echo (($client['0']['cc'] ?? '') == '1') ? 'selected' : ''; ?>>🇨🇦 Canada (+1)</option>
-            </optgroup>
-            <optgroup label="All Countries">
-                <option value="93" <?php echo (($client['0']['cc'] ?? '') == '93') ? 'selected' : ''; ?>>🇦🇫 Afghanistan (+93)</option>
-                <option value="355" <?php echo (($client['0']['cc'] ?? '') == '355') ? 'selected' : ''; ?>>🇦🇱 Albania (+355)</option>
-                <option value="213" <?php echo (($client['0']['cc'] ?? '') == '213') ? 'selected' : ''; ?>>🇩🇿 Algeria (+213)</option>
-                <option value="54" <?php echo (($client['0']['cc'] ?? '') == '54') ? 'selected' : ''; ?>>🇦🇷 Argentina (+54)</option>
-                <option value="61" <?php echo (($client['0']['cc'] ?? '') == '61') ? 'selected' : ''; ?>>🇦🇺 Australia (+61)</option>
-                <option value="43" <?php echo (($client['0']['cc'] ?? '') == '43') ? 'selected' : ''; ?>>🇦🇹 Austria (+43)</option>
-                <option value="880" <?php echo (($client['0']['cc'] ?? '') == '880') ? 'selected' : ''; ?>>🇧🇩 Bangladesh (+880)</option>
-                <option value="32" <?php echo (($client['0']['cc'] ?? '') == '32') ? 'selected' : ''; ?>>🇧🇪 Belgium (+32)</option>
-                <option value="55" <?php echo (($client['0']['cc'] ?? '') == '55') ? 'selected' : ''; ?>>🇧🇷 Brazil (+55)</option>
-                <option value="1" <?php echo (($client['0']['cc'] ?? '') == '1') ? 'selected' : ''; ?>>🇨🇦 Canada (+1)</option>
-                <option value="56" <?php echo (($client['0']['cc'] ?? '') == '56') ? 'selected' : ''; ?>>🇨🇱 Chile (+56)</option>
-                <option value="86" <?php echo (($client['0']['cc'] ?? '') == '86') ? 'selected' : ''; ?>>🇨🇳 China (+86)</option>
-                <option value="57" <?php echo (($client['0']['cc'] ?? '') == '57') ? 'selected' : ''; ?>>🇨🇴 Colombia (+57)</option>
-                <option value="20" <?php echo (($client['0']['cc'] ?? '') == '20') ? 'selected' : ''; ?>>🇪🇬 Egypt (+20)</option>
-                <option value="33" <?php echo (($client['0']['cc'] ?? '') == '33') ? 'selected' : ''; ?>>🇫🇷 France (+33)</option>
-                <option value="49" <?php echo (($client['0']['cc'] ?? '') == '49') ? 'selected' : ''; ?>>🇩🇪 Germany (+49)</option>
-                <option value="233" <?php echo (($client['0']['cc'] ?? '') == '233') ? 'selected' : ''; ?>>🇬🇭 Ghana (+233)</option>
-                <option value="91" <?php echo (($client['0']['cc'] ?? '') == '91') ? 'selected' : ''; ?>>🇮🇳 India (+91)</option>
-                <option value="62" <?php echo (($client['0']['cc'] ?? '') == '62') ? 'selected' : ''; ?>>🇮🇩 Indonesia (+62)</option>
-                <option value="98" <?php echo (($client['0']['cc'] ?? '') == '98') ? 'selected' : ''; ?>>🇮🇷 Iran (+98)</option>
-                <option value="964" <?php echo (($client['0']['cc'] ?? '') == '964') ? 'selected' : ''; ?>>🇮🇶 Iraq (+964)</option>
-                <option value="353" <?php echo (($client['0']['cc'] ?? '') == '353') ? 'selected' : ''; ?>>🇮🇪 Ireland (+353)</option>
-                <option value="972" <?php echo (($client['0']['cc'] ?? '') == '972') ? 'selected' : ''; ?>>🇮🇱 Israel (+972)</option>
-                <option value="39" <?php echo (($client['0']['cc'] ?? '') == '39') ? 'selected' : ''; ?>>🇮🇹 Italy (+39)</option>
-                <option value="81" <?php echo (($client['0']['cc'] ?? '') == '81') ? 'selected' : ''; ?>>🇯🇵 Japan (+81)</option>
-                <option value="962" <?php echo (($client['0']['cc'] ?? '') == '962') ? 'selected' : ''; ?>>🇯🇴 Jordan (+962)</option>
-                <option value="254" <?php echo (($client['0']['cc'] ?? '') == '254') ? 'selected' : ''; ?>>🇰🇪 Kenya (+254)</option>
-                <option value="965" <?php echo (($client['0']['cc'] ?? '') == '965') ? 'selected' : ''; ?>>🇰🇼 Kuwait (+965)</option>
-                <option value="961" <?php echo (($client['0']['cc'] ?? '') == '961') ? 'selected' : ''; ?>>🇱🇧 Lebanon (+961)</option>
-                <option value="60" <?php echo (($client['0']['cc'] ?? '') == '60') ? 'selected' : ''; ?>>🇲🇾 Malaysia (+60)</option>
-                <option value="52" <?php echo (($client['0']['cc'] ?? '') == '52') ? 'selected' : ''; ?>>🇲🇽 Mexico (+52)</option>
-                <option value="212" <?php echo (($client['0']['cc'] ?? '') == '212') ? 'selected' : ''; ?>>🇲🇦 Morocco (+212)</option>
-                <option value="977" <?php echo (($client['0']['cc'] ?? '') == '977') ? 'selected' : ''; ?>>🇳🇵 Nepal (+977)</option>
-                <option value="31" <?php echo (($client['0']['cc'] ?? '') == '31') ? 'selected' : ''; ?>>🇳🇱 Netherlands (+31)</option>
-                <option value="64" <?php echo (($client['0']['cc'] ?? '') == '64') ? 'selected' : ''; ?>>🇳🇿 New Zealand (+64)</option>
-                <option value="234" <?php echo (($client['0']['cc'] ?? '') == '234') ? 'selected' : ''; ?>>🇳🇬 Nigeria (+234)</option>
-                <option value="47" <?php echo (($client['0']['cc'] ?? '') == '47') ? 'selected' : ''; ?>>🇳🇴 Norway (+47)</option>
-                <option value="92" <?php echo (($client['0']['cc'] ?? '') == '92') ? 'selected' : ''; ?>>🇵🇰 Pakistan (+92)</option>
-                <option value="63" <?php echo (($client['0']['cc'] ?? '') == '63') ? 'selected' : ''; ?>>🇵🇭 Philippines (+63)</option>
-                <option value="48" <?php echo (($client['0']['cc'] ?? '') == '48') ? 'selected' : ''; ?>>🇵🇱 Poland (+48)</option>
-                <option value="974" <?php echo (($client['0']['cc'] ?? '') == '974') ? 'selected' : ''; ?>>🇶🇦 Qatar (+974)</option>
-                <option value="7" <?php echo (($client['0']['cc'] ?? '') == '7') ? 'selected' : ''; ?>>🇷🇺 Russia (+7)</option>
-                <option value="966" <?php echo (($client['0']['cc'] ?? '') == '966') ? 'selected' : ''; ?>>🇸🇦 Saudi Arabia (+966)</option>
-                <option value="65" <?php echo (($client['0']['cc'] ?? '') == '65') ? 'selected' : ''; ?>>🇸🇬 Singapore (+65)</option>
-                <option value="27" <?php echo (($client['0']['cc'] ?? '') == '27') ? 'selected' : ''; ?>>🇿🇦 South Africa (+27)</option>
-                <option value="82" <?php echo (($client['0']['cc'] ?? '') == '82') ? 'selected' : ''; ?>>🇰🇷 South Korea (+82)</option>
-                <option value="34" <?php echo (($client['0']['cc'] ?? '') == '34') ? 'selected' : ''; ?>>🇪🇸 Spain (+34)</option>
-                <option value="94" <?php echo (($client['0']['cc'] ?? '') == '94') ? 'selected' : ''; ?>>🇱🇰 Sri Lanka (+94)</option>
-                <option value="46" <?php echo (($client['0']['cc'] ?? '') == '46') ? 'selected' : ''; ?>>🇸🇪 Sweden (+46)</option>
-                <option value="41" <?php echo (($client['0']['cc'] ?? '') == '41') ? 'selected' : ''; ?>>🇨🇭 Switzerland (+41)</option>
-                <option value="66" <?php echo (($client['0']['cc'] ?? '') == '66') ? 'selected' : ''; ?>>🇹🇭 Thailand (+66)</option>
-                <option value="971" <?php echo (($client['0']['cc'] ?? '') == '971') ? 'selected' : ''; ?>>🇦🇪 United Arab Emirates (+971)</option>
-                <option value="44" <?php echo (($client['0']['cc'] ?? '') == '44') ? 'selected' : ''; ?>>🇬🇧 United Kingdom (+44)</option>
-                <option value="1" <?php echo (($client['0']['cc'] ?? '') == '1') ? 'selected' : ''; ?>>🇺🇸 United States (+1)</option>
-                <option value="84" <?php echo (($client['0']['cc'] ?? '') == '84') ? 'selected' : ''; ?>>🇻🇳 Vietnam (+84)</option>
-                <option value="260" <?php echo (($client['0']['cc'] ?? '') == '260') ? 'selected' : ''; ?>>🇿🇲 Zambia (+260)</option>
-                <option value="263" <?php echo (($client['0']['cc'] ?? '') == '263') ? 'selected' : ''; ?>>🇿🇼 Zimbabwe (+263)</option>
-            </optgroup>
-        </select>
+        <input type="hidden" name="cc" id="cc" value="<?php echo esc($client['0']['cc'] ?? '', 'attr'); ?>" />
         <input class="form-control py-4" name="contact" id="contact" type="text" placeholder="Enter contact number" value="<?php echo $client['0']['number'];?>" style="flex:1;" />
     </div>
 </div>
@@ -782,7 +718,8 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function(){
-    $('#cc').select2({ placeholder: 'Country Code', allowClear: false, dropdownParent: $('body') });
+    // #cc (Contact Number's country code) is now a hidden input, not a <select> — no
+    // select2 initialization needed, it just carries the existing value through on submit.
     $('#alt_cc').select2({ placeholder: 'Country Code', allowClear: false, dropdownParent: $('body') });
 });
 </script>

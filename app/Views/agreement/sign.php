@@ -20,7 +20,7 @@
             .sg-brand img { height: 40px; }
             .sg-brand .name { font-weight: 800; color: var(--sg-red); font-size: 16px; line-height: 1.1; }
             .sg-brand .name small { display: block; color: #9aa0aa; font-weight: 400; font-size: 10.5px; }
-            .sg-rcic-badge { color: var(--sg-red); font-weight: 800; font-size: 15px; border: 2px solid var(--sg-red); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+            .sg-rcic-badge img { height: 40px; width: auto; }
             .sg-gradient-bar { height: 4px; background: linear-gradient(90deg,#e23b3b,#f39c12,#2ecc71,#3498db,#8e44ad); }
 
             .sg-page { max-width: 1180px; margin: 0 auto; padding: 22px 20px 60px; }
@@ -196,7 +196,9 @@
                 <div class="sg-brand">
                     <img src="<?php echo base_url();?>/public/assets_client/img/sia_logo.png" alt="SIA Immigration">
                 </div>
-                <div class="sg-rcic-badge">RCIC</div>
+                <div class="sg-rcic-badge">
+                    <img src="<?php echo base_url('public/assets_client/img/rcic_logo.png'); ?>" alt="RCIC - Regulated Canadian Immigration Consultant">
+                </div>
             </div>
         </div>
         <div class="sg-gradient-bar"></div>
@@ -324,7 +326,7 @@
                                 <div class="sg-pdf-page-initial">
                                     <?php if ($isActionable): ?>
                                         <div class="sg-initial-box">
-                                            <input type="text" class="sg-typed-input" data-init-typed="1" placeholder="Initials">
+                                            <input type="text" class="sg-typed-input" data-init-typed="1" placeholder="Initials" maxlength="4">
                                             <span style="display:none;" data-init-status="1">&#10003;</span>
                                         </div>
                                     <?php else: $initRow = $pageInitialsByPage[1] ?? null; ?>
@@ -374,7 +376,7 @@
                                 <div class="sg-pdf-page-initial">
                                     <?php if ($isActionable): ?>
                                         <div class="sg-initial-box">
-                                            <input type="text" class="sg-typed-input" data-init-typed="<?php echo $n; ?>" placeholder="Initials">
+                                            <input type="text" class="sg-typed-input" data-init-typed="<?php echo $n; ?>" placeholder="Initials" maxlength="4">
                                             <span style="display:none;" data-init-status="<?php echo $n; ?>">&#10003;</span>
                                         </div>
                                     <?php else: $initRow = $pageInitialsByPage[$n] ?? null; ?>
@@ -432,7 +434,7 @@
                                             <input type="hidden" name="signature_data" id="sgSignatureData">
                                         </div>
                                         <div class="sg-tab-pane" data-pane="type">
-                                            <input type="text" class="sg-typed-input" id="sgTypedName" name="typed_name" placeholder="Type your full name">
+                                            <input type="text" class="sg-typed-input" id="sgTypedName" name="typed_name" placeholder="Type your full name" maxlength="60">
                                         </div>
                                         <div class="sg-tab-pane" data-pane="upload">
                                             <input type="file" name="signature_file" id="sgUploadFile" accept="image/png,image/jpeg">

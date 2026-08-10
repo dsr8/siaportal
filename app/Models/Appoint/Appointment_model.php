@@ -78,7 +78,7 @@ class Appointment_model extends Model
         $now    = (new \DateTime('now', $tz))->format('Y-m-d H:i:s');
         $in5hrs = (new \DateTime('+5 hours', $tz))->format('Y-m-d H:i:s');
         return $db->query(
-            "SELECT * FROM tbl_app_appointment WHERE status != 3 AND reminder_sent = 0
+            "SELECT * FROM tbl_app_appointment WHERE status = 1 AND reminder_sent = 0
              AND CONCAT(appointment_date, ' ', appointment_time) >= ?
              AND CONCAT(appointment_date, ' ', appointment_time) <= ?",
             [$now, $in5hrs]

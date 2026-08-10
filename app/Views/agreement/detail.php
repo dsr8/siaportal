@@ -39,6 +39,7 @@
             .ca-table td { padding: 5px 6px; border-bottom: 1px solid #f4f4f6; }
             .ca-table td input { width: 100%; padding: 6px 8px; border: 1px solid #d8dce1; border-radius: 5px; font-size: 13px; }
             .ca-gst-hint { font-size: 11px; color: #8e44ad; font-weight: 700; margin-top: 3px; min-height: 13px; }
+            label.error { display: block; color: #e53935; font-size: 12px; font-weight: 700; margin-top: 4px; }
             .ca-table td.ca-actions { white-space: nowrap; text-align: center; }
             .ca-table td.ca-actions button { border: none; background: none; cursor: pointer; color: #e74c3c; font-size: 14px; }
             .ca-date-input-wrap { position: relative; }
@@ -216,7 +217,7 @@
                                     <div class="ca-row">
                                         <div class="ca-field">
                                             <label>Main Applicant (<span class="ca-cur-label">CAD</span>)</label>
-                                            <input type="number" step="0.01" name="govt_proc_main" id="f_govt_proc_main" value="<?php echo esc($agreement['govt_proc_main'] ?? 0); ?>" required>
+                                            <input type="number" step="0.01" name="govt_proc_main" id="f_govt_proc_main" value="<?php echo esc($agreement['govt_proc_main'] ?? 0); ?>">
                                         </div>
                                         <div class="ca-field">
                                             <label>Spouse (<span class="ca-cur-label">CAD</span>)</label>
@@ -273,7 +274,7 @@
                                                 <td><input type="text" name="milestones[<?php echo $i; ?>][due_date]" value="<?php echo esc($m['due_date']); ?>" placeholder="e.g. Within 7 days"></td>
                                                 <td><input type="number" step="0.01" name="milestones[<?php echo $i; ?>][amount]" value="<?php echo esc($m['amount']); ?>" placeholder="Included"><div class="ca-gst-hint"></div></td>
                                                 <td><input type="text" name="milestones[<?php echo $i; ?>][included_services]" value="<?php echo esc($m['included_services']); ?>"></td>
-                                                <td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>
+                                                <td class="ca-actions"><?php if ($i > 0): ?><button type="button" onclick="caRemoveRow(this)">&#128465;</button><?php endif; ?></td>
                                             </tr>
                                             <?php endforeach; ?>
                                         </tbody>
@@ -292,7 +293,7 @@
                                             <tr>
                                                 <td><input type="text" name="additional_fees[<?php echo $i; ?>][description]" value="<?php echo esc($f['description']); ?>"></td>
                                                 <td><input type="number" step="0.01" name="additional_fees[<?php echo $i; ?>][amount]" value="<?php echo esc($f['amount']); ?>"><div class="ca-gst-hint"></div></td>
-                                                <td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>
+                                                <td class="ca-actions"><?php if ($i > 0): ?><button type="button" onclick="caRemoveRow(this)">&#128465;</button><?php endif; ?></td>
                                             </tr>
                                             <?php endforeach; ?>
                                         </tbody>
@@ -687,6 +688,10 @@
             }
 
             function caGenerateLinkOnly() {
+                if (!$('#caEditForm').valid()) {
+                    document.getElementById('f_service_fee').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
                 var form = document.getElementById('caEditForm');
                 form.action = CA_BASE + 'agreement/Agreement/generate_link/' + CA_AGREEMENT_ID;
                 form.submit();
@@ -714,6 +719,13 @@
             var caSending = false;
             function caSendForEsign() {
                 if (caSending) return;
+                // form.submit() below is the native DOM method, which does NOT fire the
+                // form's 'submit' event — so jQuery Validate (and the native required
+                // attribute) never runs unless explicitly triggered here first via .valid().
+                if (!$('#caEditForm').valid()) {
+                    document.getElementById('f_service_fee').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
                 Swal.fire({
                     title: 'Send for eSign?',
                     text: 'Send this agreement to the client\'s email now for e-signature?',
@@ -801,12 +813,10 @@
 
             $('#caEditForm').validate({
                 rules: {
-                    service_fee:     { required: true },
-                    govt_proc_main:  { required: true }
+                    service_fee:     { required: true, min: 0.01 }
                 },
                 messages: {
-                    service_fee:     'Professional Service Fee cannot be blank',
-                    govt_proc_main:  'Government processing fee - Main Applicant cannot be blank'
+                    service_fee:     { required: 'Professional Service Fee cannot be blank', min: 'Professional Service Fee must be greater than 0.00' }
                 },
                 errorElement: 'label'
             });

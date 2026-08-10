@@ -183,9 +183,10 @@ class Agreement_model extends Model
     private function dashboardQuery(array $filters)
     {
         $builder = $this->db->table($this->table . ' a')
-            ->select('a.*, tc.type as type_name, cat.category as category_name')
+            ->select('a.*, tc.type as type_name, cat.category as category_name, p.entery_status as prospect_entery_status')
             ->join('type_client tc', 'tc.id = a.type_id', 'left')
             ->join('category cat', 'cat.id = tc.category_id', 'left')
+            ->join('client_prospect p', 'p.id = a.prospect_id', 'left')
             ->where('a.hide', !empty($filters['archived']) ? 1 : 0);
 
         if (!empty($filters['q'])) {

@@ -121,6 +121,12 @@
                         <option value="">-- Select a client first --</option>
                     </select>
                     <div id="ca_app_msg"></div>
+                    <!-- Only shown once the client's existing applications have loaded, so staff
+                         can add a second (or third) category for the same client instead of being
+                         limited to whichever categories already exist. -->
+                    <div id="ca_add_new_wrap" style="display:none;margin-top:8px;">
+                        <a href="javascript:void(0)" id="ca_add_new_link" onclick="caShowQuickAdd()" style="font-size:12.5px;color:#e23b3b;font-weight:700;text-decoration:none;">+ Add New Category / Application</a>
+                    </div>
                 </div>
 
                 <!-- Shown only when the picked client has no CRM application yet — lets the
@@ -218,6 +224,7 @@
         appSelect.disabled = true;
         submitBtn.disabled = true;
         document.getElementById('ca_app_msg').innerHTML = '';
+        document.getElementById('ca_add_new_wrap').style.display = 'none';
         caHideQuickAdd();
 
         $.get(CA_BASE + 'agreement/Agreement/applications_for_client/' + clientId, function (data) {
@@ -236,6 +243,9 @@
             appSelect.innerHTML = html;
             appSelect.disabled = false;
             appSelect.focus();
+            // Client already has at least one category/application — offer a way to add
+            // another instead of limiting them to the ones that already exist.
+            document.getElementById('ca_add_new_wrap').style.display = 'block';
         }, 'json').fail(function () {
             appSelect.innerHTML = '<option value="">-- Error loading applications --</option>';
             document.getElementById('ca_app_msg').innerHTML = '<span style="color:#e74c3c;">&#9888;&#65039; Could not load applications. Please try again.</span>';
@@ -243,6 +253,7 @@
     }
 
     function caShowQuickAdd() {
+        document.getElementById('ca_add_new_wrap').style.display = 'none';
         document.getElementById('ca_quickadd_wrap').style.display = 'block';
         document.getElementById('ca_qa_type').innerHTML = '<option value="">-- Select category first --</option>';
         document.getElementById('ca_qa_type').disabled = true;
