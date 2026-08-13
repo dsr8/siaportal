@@ -13,7 +13,7 @@ class Appointment_model extends Model
         'appointment_date', 'appointment_time', 'service_type', 'appointment_type',
         'consultation_type', 'office_location', 'contact_method',
         'inside_canada', 'existing_client', 'immigration_status',
-        'notes', 'status', 'assigned_to', 'reminder_sent', 'insert_on', 'update_on'
+        'notes', 'status', 'hide', 'assigned_to', 'reminder_sent', 'insert_on', 'update_on'
     ];
 
     public function isSlotTaken($date, $time, int $excludeId = 0)
@@ -27,12 +27,17 @@ class Appointment_model extends Model
         return $builder->countAllResults() > 0;
     }
 
+    // A team member can't have two appointments within BUFFER_MINUTES of each other,
+    // not just at the exact same minute — otherwise a 4:00 booking and a 4:01 booking
+    // for the same member would both go through even though they're really the same slot.
+    private const BUFFER_MINUTES = 30;
+
     public function isMemberSlotTaken($date, $time, $member, $excludeId = null)
     {
         $builder = $this->where('appointment_date', $date)
-                        ->where('appointment_time', $time)
                         ->where('assigned_to', $member)
-                        ->where('status !=', 3);
+                        ->where('status !=', 3)
+                        ->where('ABS(TIME_TO_SEC(TIMEDIFF(appointment_time, "' . $this->db->escapeString($time) . '"))) <', self::BUFFER_MINUTES * 60);
         if ($excludeId) {
             $builder->where('id !=', (int)$excludeId);
         }

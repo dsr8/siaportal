@@ -5,6 +5,7 @@ use App\Models\Declaration\Declaration_model;
 use App\Models\Client_application_model;
 use App\Models\Prospect_model;
 use App\Models\Type_client_model;
+use App\Models\Category_model;
 
 class Declaration extends BaseController
 {
@@ -122,7 +123,7 @@ class Declaration extends BaseController
 
         $q = trim($this->request->getGet('q') ?? '');
         $Prospect = new Prospect_model();
-        $rows = $Prospect->searchActiveClients($q);
+        $rows = $Prospect->searchActiveClientsAndProspects($q);
 
         $results = [];
         foreach ($rows as $r) {
@@ -159,6 +160,98 @@ class Declaration extends BaseController
         }
 
         return $this->response->setJSON(['results' => $results]);
+    }
+
+    // Category/Type dropdowns for the create form's quick-add-application form (shown when a
+    // picked client has no CRM application yet to attach the disclaimer/consent to). Mirrors
+    // Agreement::categories()/types_for_category()/statuses_for_type()/quick_add_application().
+    public function categories()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response->setJSON(['results' => []]);
+        }
+
+        $rows = (new Category_model())->getpost();
+        $results = [];
+        foreach ($rows as $r) {
+            $results[] = ['id' => $r['id'], 'text' => $r['category']];
+        }
+
+        return $this->response->setJSON(['results' => $results]);
+    }
+
+    public function types_for_category($categoryId = null)
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response->setJSON(['results' => []]);
+        }
+
+        $rows = (new Type_client_model())->where('category_id', (int) $categoryId)->findAll();
+        $results = [];
+        foreach ($rows as $r) {
+            $results[] = ['id' => $r['id'], 'text' => $r['type']];
+        }
+
+        return $this->response->setJSON(['results' => $results]);
+    }
+
+    // Siaportal::gettype_status() (add_client_application's Status field) doesn't actually
+    // query by type — it always shows the single hardcoded option id=35 "Ready to Apply".
+    // Matched here so a quick-added application looks identical to one made through that form.
+    public function statuses_for_type($typeId = null)
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response->setJSON(['results' => []]);
+        }
+
+        $results = [['id' => 35, 'text' => 'Ready to Apply']];
+
+        return $this->response->setJSON(['results' => $results]);
+    }
+
+    // Creates the minimal CRM application record needed to attach a new disclaimer/consent to a
+    // client who doesn't have one yet — mirrors Agreement::quick_add_application() exactly.
+    public function quick_add_application()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response->setJSON(['success' => false, 'error' => 'Unauthorized']);
+        }
+        if ($this->request->getMethod() !== 'post') {
+            return $this->response->setJSON(['success' => false, 'error' => 'Invalid request']);
+        }
+
+        $prospectId = (int) $this->request->getPost('prospect_id');
+        $categoryId = (int) $this->request->getPost('category_id');
+        $typeId     = (int) $this->request->getPost('type_id');
+        $statusId   = (int) $this->request->getPost('status_id');
+
+        if (!$prospectId || !$categoryId || !$typeId || !$statusId) {
+            return $this->response->setJSON(['success' => false, 'error' => 'Client, category, type, and status are all required.']);
+        }
+
+        $ApplicationModel = new Client_application_model();
+
+        $duplicate = $ApplicationModel->where('siaportalid', $prospectId)
+            ->where('category', $categoryId)
+            ->where('type', $typeId)
+            ->first();
+        if ($duplicate) {
+            return $this->response->setJSON(['success' => false, 'error' => 'This client already has an application in that category and type.']);
+        }
+
+        $newId = $ApplicationModel->insert([
+            'siaportalid'         => $prospectId,
+            'category'            => $categoryId,
+            'type'                => $typeId,
+            'application_status'  => $statusId,
+            'insert_on'           => date('Y-m-d H:i:s'),
+        ]);
+
+        if (!$newId) {
+            return $this->response->setJSON(['success' => false, 'error' => 'Could not create application.']);
+        }
+
+        return $this->response->setJSON(['success' => true, 'id' => $newId]);
     }
 
     // One-click entry point from an application row (e.g. Siaportal/view_client's "Start
@@ -199,7 +292,7 @@ class Declaration extends BaseController
             'category_id'     => $application['category'],
             'type_id'         => $application['type'],
             'title'           => 'Disclaimer / Consent',
-            'content'         => "Dear [Client Name],\n\nThis declaration is to inform you of the potential consequences related to your application due to the following issue(s)...\n\nI have read and understand the above declaration.",
+            'content'         => '',
             'consultant_name' => trim((string) session()->get('firstname') . ' ' . (string) session()->get('lastname')),
             'consent_date'    => date('Y-m-d'),
             'status'          => 'draft',
@@ -295,8 +388,12 @@ class Declaration extends BaseController
 
         $title = trim((string) ($post['title'] ?? ''));
         $content = (string) ($post['content'] ?? '');
-        if ($title === '' || trim(html_entity_decode(strip_tags($content), ENT_QUOTES)) === '') {
+        $contentText = trim(html_entity_decode(strip_tags($content), ENT_QUOTES));
+        if ($title === '' || $contentText === '') {
             return redirect()->back()->withInput()->with('error', 'Title and content are required.');
+        }
+        if (str_word_count($contentText) > 3000) {
+            return redirect()->back()->withInput()->with('error', 'Disclaimer / Consent Content is too long — please keep it under 3000 words.');
         }
 
         $DeclarationModel = new Declaration_model();
@@ -379,8 +476,12 @@ class Declaration extends BaseController
         $post = $this->request->getPost();
         $title = trim((string) ($post['title'] ?? ''));
         $content = (string) ($post['content'] ?? '');
-        if ($title === '' || trim(html_entity_decode(strip_tags($content), ENT_QUOTES)) === '') {
+        $contentText = trim(html_entity_decode(strip_tags($content), ENT_QUOTES));
+        if ($title === '' || $contentText === '') {
             return redirect()->to(base_url('declaration/Declaration/detail/' . $id))->with('error', 'Title and content are required.');
+        }
+        if (str_word_count($contentText) > 3000) {
+            return redirect()->to(base_url('declaration/Declaration/detail/' . $id))->with('error', 'Disclaimer / Consent Content is too long — please keep it under 3000 words.');
         }
 
         $DeclarationModel->update($id, [
@@ -394,6 +495,13 @@ class Declaration extends BaseController
             'show_consent_checkbox'    => 1,
             'update_on'       => date('Y-m-d H:i:s'),
         ]);
+
+        // "Send for Signature" on the edit page submits this same form with this flag set, so
+        // whatever was just edited is saved and sent in one step — see store()'s identical use
+        // of this flag for the create-page path.
+        if (!empty($post['send_after_save'])) {
+            return $this->generate_link($id);
+        }
 
         return redirect()->to(base_url('declaration/Declaration/detail/' . $id))->with('message', 'Disclaimer saved as draft successfully.');
     }

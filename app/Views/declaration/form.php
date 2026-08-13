@@ -355,6 +355,33 @@
                                                 <option value="">-- Select a client first --</option>
                                             </select>
                                             <div class="dc-field-error-msg" id="dc_application_error" style="display:none;"></div>
+                                            <div id="dc_app_msg" style="font-size:12.5px;margin-top:6px;"></div>
+                                            <!-- Only shown once the client's existing applications have loaded, so staff
+                                                 can add a second (or third) category for the same client instead of being
+                                                 limited to whichever categories already exist. -->
+                                            <div id="dc_add_new_wrap" style="display:none;margin-top:6px;">
+                                                <a href="javascript:void(0)" onclick="dcShowQuickAdd()" style="font-size:12.5px;color:#4c3ff5;font-weight:700;text-decoration:none;">+ Add New Category / Application</a>
+                                            </div>
+                                        </div>
+                                        <!-- Shown only when the picked client has no CRM application yet — lets the
+                                             admin create a minimal one (Category + Type) on the spot rather than
+                                             having to leave this page and use the full CRM application form. -->
+                                        <div class="dc-field" id="dc_quickadd_wrap" style="display:none;background:#fafafa;border:1px dashed #d8dce1;border-radius:10px;padding:14px;">
+                                            <label style="margin-bottom:10px;">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                                                Quick-Add Application
+                                            </label>
+                                            <select id="dc_qa_category" style="width:100%;margin-bottom:10px;">
+                                                <option value="">-- Select category --</option>
+                                            </select>
+                                            <select id="dc_qa_type" disabled style="width:100%;">
+                                                <option value="">-- Select category first --</option>
+                                            </select>
+                                            <select id="dc_qa_status" disabled style="width:100%;margin-top:10px;">
+                                                <option value="">-- Select type first --</option>
+                                            </select>
+                                            <div id="dc_qa_msg" style="margin-top:8px;font-size:12.5px;"></div>
+                                            <button type="button" class="dc-btn dc-btn-send" id="dc_qa_submit" onclick="dcQuickAddApplication()" disabled style="margin-top:12px;width:100%;justify-content:center;">Create Application &amp; Continue</button>
                                         </div>
                                         <div class="dc-field">
                                             <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2Z"/></svg> Application Category</label>
@@ -397,8 +424,8 @@
                                     </div>
                                     <div class="dc-field">
                                         <label>Disclaimer / Consent Content <span style="color:#e23b3b;">*</span></label>
-                                        <textarea name="content" id="dc_content" rows="10"><?php echo $declaration['content'] ?? "Dear [Client Name],\n\nThis declaration is to inform you of the potential consequences related to your application due to the following issue(s)...\n\nI have read and understand the above declaration."; ?></textarea>
-                                        <div class="dc-word-count"><span id="dcWordCount">0</span> words</div>
+                                        <textarea name="content" id="dc_content" rows="10"><?php echo $declaration['content'] ?? ''; ?></textarea>
+                                        <div class="dc-word-count"><span id="dcWordCount">0</span> / 3000 words</div>
                                     </div>
 
                                     <?php if (!$isLocked): ?>
@@ -459,7 +486,6 @@
                 </main>
             </div>
         </div>
-        <form id="dcSendForm" method="post" style="display:none;"></form>
 
         <div class="dc-modal-wrap" id="dcPreviewModal" onclick="dcMaybeClosePreview(event)">
             <div class="dc-modal-box">
@@ -525,18 +551,27 @@
             // live-edited HTML back into that textarea's actual value — without this, the form
             // silently posts whatever HTML was there at page load (the old/default text) no
             // matter what's typed into the editor. Sync it just before the browser submits.
-            document.getElementById('dcForm').addEventListener('submit', function () {
+            document.getElementById('dcForm').addEventListener('submit', function (e) {
                 if (dcEditor) {
                     document.getElementById('dc_content').value = dcEditor.getData();
                 }
+                var words = parseInt(document.getElementById('dcWordCount').textContent, 10) || 0;
+                if (words > DC_MAX_WORDS) {
+                    e.preventDefault();
+                    alert('Disclaimer / Consent Content is too long (' + words + ' words). Please keep it under ' + DC_MAX_WORDS + ' words.');
+                }
             });
 
+            var DC_MAX_WORDS = 3000;
             function dcUpdatePreview() {
                 var html = dcEditor ? dcEditor.getData() : '';
                 document.getElementById('dcPrevContent').innerHTML = html;
                 var text = html.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').trim();
                 var words = text === '' ? 0 : text.split(/\s+/).length;
-                document.getElementById('dcWordCount').textContent = words;
+                var countEl = document.getElementById('dcWordCount');
+                countEl.textContent = words;
+                countEl.style.color = words > DC_MAX_WORDS ? '#e23b3b' : '';
+                countEl.style.fontWeight = words > DC_MAX_WORDS ? '700' : '';
             }
 
             // Fills the "[Client Name]" merge field in the content editor with the actually
@@ -601,11 +636,17 @@
                 }
             });
 
+            // Tracks whichever client is currently picked, so the quick-add-application form
+            // (shown when they have none) knows who to attach the new application to.
+            var dcCurrentClientId = null;
+            var dcCategoriesLoaded = false;
+
             // Shared by the select2:select handler (client picked by searching) and the
             // prospect-id pre-fill path below (client already known — e.g. opened from a
             // specific row on Siaportal/view_prospect) — both need to end up in the same state.
             function dcLoadApplicationsForClient(clientId, clientName) {
                 document.getElementById('dc_prospect_id').value = clientId;
+                dcCurrentClientId = clientId;
                 clientName = clientName || '—';
                 document.getElementById('dcPrevClientName').textContent = clientName;
                 document.getElementById('dcPrevSiaId').textContent = clientId;
@@ -613,12 +654,17 @@
                 var appSelect = document.getElementById('dc_application');
                 appSelect.innerHTML = '<option value="">Loading...</option>';
                 appSelect.disabled = true;
+                document.getElementById('dc_app_msg').innerHTML = '';
+                document.getElementById('dc_add_new_wrap').style.display = 'none';
+                dcHideQuickAdd();
                 dcSetCategoryType('', '');
 
                 $.get(DC_BASE + 'declaration/Declaration/applications_for_client/' + clientId, function (data) {
                     var results = data.results || [];
                     if (results.length === 0) {
                         appSelect.innerHTML = '<option value="">-- No applications found --</option>';
+                        document.getElementById('dc_app_msg').innerHTML = '<span style="color:#f5a623;">&#9888;&#65039; This client has no applications yet.</span>';
+                        dcShowQuickAdd();
                         return;
                     }
                     var html = '<option value="">-- Select an application --</option>';
@@ -627,7 +673,124 @@
                     });
                     appSelect.innerHTML = html;
                     appSelect.disabled = false;
+                    // Client already has at least one category/application — offer a way to add
+                    // another instead of limiting them to the ones that already exist.
+                    document.getElementById('dc_add_new_wrap').style.display = 'block';
                 }, 'json');
+            }
+
+            function dcShowQuickAdd() {
+                document.getElementById('dc_add_new_wrap').style.display = 'none';
+                document.getElementById('dc_quickadd_wrap').style.display = 'block';
+                document.getElementById('dc_qa_type').innerHTML = '<option value="">-- Select category first --</option>';
+                document.getElementById('dc_qa_type').disabled = true;
+                document.getElementById('dc_qa_status').innerHTML = '<option value="">-- Select type first --</option>';
+                document.getElementById('dc_qa_status').disabled = true;
+                document.getElementById('dc_qa_submit').disabled = true;
+                document.getElementById('dc_qa_msg').innerHTML = '';
+                document.getElementById('dc_qa_category').value = '';
+
+                if (dcCategoriesLoaded) return;
+                var catSelect = document.getElementById('dc_qa_category');
+                $.get(DC_BASE + 'declaration/Declaration/categories', function (data) {
+                    var html = '<option value="">-- Select category --</option>';
+                    (data.results || []).forEach(function (r) {
+                        html += '<option value="' + r.id + '">' + r.text + '</option>';
+                    });
+                    catSelect.innerHTML = html;
+                    dcCategoriesLoaded = true;
+                }, 'json');
+            }
+
+            function dcHideQuickAdd() {
+                document.getElementById('dc_quickadd_wrap').style.display = 'none';
+            }
+
+            function dcQaResetStatus() {
+                document.getElementById('dc_qa_status').innerHTML = '<option value="">-- Select type first --</option>';
+                document.getElementById('dc_qa_status').disabled = true;
+                document.getElementById('dc_qa_submit').disabled = true;
+            }
+
+            document.getElementById('dc_qa_category').addEventListener('change', function () {
+                var typeSelect = document.getElementById('dc_qa_type');
+                dcQaResetStatus();
+                if (!this.value) {
+                    typeSelect.innerHTML = '<option value="">-- Select category first --</option>';
+                    typeSelect.disabled = true;
+                    return;
+                }
+                typeSelect.innerHTML = '<option value="">Loading...</option>';
+                typeSelect.disabled = true;
+                $.get(DC_BASE + 'declaration/Declaration/types_for_category/' + this.value, function (data) {
+                    var results = data.results || [];
+                    if (results.length === 0) {
+                        typeSelect.innerHTML = '<option value="">-- No types for this category --</option>';
+                        typeSelect.disabled = true;
+                        return;
+                    }
+                    var html = '<option value="">-- Select type --</option>';
+                    results.forEach(function (r) {
+                        html += '<option value="' + r.id + '">' + r.text + '</option>';
+                    });
+                    typeSelect.innerHTML = html;
+                    typeSelect.disabled = false;
+                }, 'json');
+            });
+
+            document.getElementById('dc_qa_type').addEventListener('change', function () {
+                var statusSelect = document.getElementById('dc_qa_status');
+                dcQaResetStatus();
+                if (!this.value) return;
+                statusSelect.innerHTML = '<option value="">Loading...</option>';
+                statusSelect.disabled = true;
+                $.get(DC_BASE + 'declaration/Declaration/statuses_for_type/' + this.value, function (data) {
+                    var results = data.results || [];
+                    if (results.length === 0) {
+                        statusSelect.innerHTML = '<option value="">-- No statuses for this type --</option>';
+                        statusSelect.disabled = true;
+                        return;
+                    }
+                    var html = '<option value="">-- Select status --</option>';
+                    results.forEach(function (r) {
+                        html += '<option value="' + r.id + '">' + r.text + '</option>';
+                    });
+                    statusSelect.innerHTML = html;
+                    statusSelect.disabled = false;
+                }, 'json');
+            });
+
+            document.getElementById('dc_qa_status').addEventListener('change', function () {
+                document.getElementById('dc_qa_submit').disabled = !this.value;
+            });
+
+            function dcQuickAddApplication() {
+                var categoryId = document.getElementById('dc_qa_category').value;
+                var typeId = document.getElementById('dc_qa_type').value;
+                var statusId = document.getElementById('dc_qa_status').value;
+                if (!dcCurrentClientId || !categoryId || !typeId || !statusId) return;
+
+                var qaSubmit = document.getElementById('dc_qa_submit');
+                qaSubmit.disabled = true;
+                document.getElementById('dc_qa_msg').innerHTML = 'Creating application...';
+
+                $.post(DC_BASE + 'declaration/Declaration/quick_add_application', {
+                    prospect_id: dcCurrentClientId,
+                    category_id: categoryId,
+                    type_id: typeId,
+                    status_id: statusId
+                }, function (data) {
+                    if (!data.success) {
+                        document.getElementById('dc_qa_msg').innerHTML = '<span style="color:#e74c3c;">&#9888;&#65039; ' + (data.error || 'Could not create application.') + '</span>';
+                        qaSubmit.disabled = false;
+                        return;
+                    }
+                    dcHideQuickAdd();
+                    dcLoadApplicationsForClient(dcCurrentClientId);
+                }, 'json').fail(function () {
+                    document.getElementById('dc_qa_msg').innerHTML = '<span style="color:#e74c3c;">&#9888;&#65039; Could not create application. Please try again.</span>';
+                    qaSubmit.disabled = false;
+                });
             }
 
             $('#dc_client').on('select2:select', function (e) {
@@ -739,18 +902,14 @@
                     reverseButtons: true
                 }).then(function (result) {
                     if (!result.value) return;
-                    if (!id) {
-                        // Not saved yet (create page): submit the main form with a flag so the
-                        // server creates the draft and immediately sends it, in one step —
-                        // requestSubmit() (not submit()) so the existing client/application
-                        // picker validation listener on #dcForm still runs first.
-                        document.getElementById('dc_send_after_save').value = '1';
-                        document.getElementById('dcForm').requestSubmit();
-                        return;
-                    }
-                    var form = document.getElementById('dcSendForm');
-                    form.action = DC_BASE + 'declaration/Declaration/generate_link/' + id;
-                    form.submit();
+                    // Always goes through the main form (create -> store, edit -> save/id —
+                    // #dcForm's action already points at the right one) with this flag set, so
+                    // whatever is currently typed/edited gets saved and sent in one step — no
+                    // separate "Save Changes" click required first. requestSubmit() (not
+                    // submit()) so the existing client/application picker validation listener
+                    // (create page only) still runs first.
+                    document.getElementById('dc_send_after_save').value = '1';
+                    document.getElementById('dcForm').requestSubmit();
                 });
             }
         </script>

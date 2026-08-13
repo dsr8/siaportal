@@ -4,6 +4,7 @@ namespace App\Controllers\Appoint;
 use App\Controllers\BaseController;
 use App\Models\Appoint\Appointment_model;
 use App\Models\Team_model;
+use App\Models\Prospect_model;
 
 class AppointAdmin extends BaseController
 {
@@ -69,16 +70,16 @@ class AppointAdmin extends BaseController
         $team  = new Team_model();
         $db    = \Config\Database::connect();
 
-        $data['stat_today']     = (new Appointment_model())->where('appointment_date', date('Y-m-d'))->countAllResults();
-        $data['stat_tomorrow']  = (new Appointment_model())->where('appointment_date', date('Y-m-d', strtotime('+1 day')))->countAllResults();
-        $data['stat_inoffice']  = (new Appointment_model())->where('consultation_type', 'In-Person')->where('status !=', 3)->countAllResults();
-        $data['stat_pending']   = (new Appointment_model())->where('status', 0)->countAllResults();
-        $data['stat_confirmed'] = (new Appointment_model())->where('status', 1)->countAllResults();
-        $data['stat_cancelled'] = (new Appointment_model())->where('status', 3)->countAllResults();
+        $data['stat_today']     = (new Appointment_model())->where('hide', 0)->where('appointment_date', date('Y-m-d'))->countAllResults();
+        $data['stat_tomorrow']  = (new Appointment_model())->where('hide', 0)->where('appointment_date', date('Y-m-d', strtotime('+1 day')))->countAllResults();
+        $data['stat_inoffice']  = (new Appointment_model())->where('hide', 0)->where('consultation_type', 'In-Person')->where('status !=', 3)->countAllResults();
+        $data['stat_pending']   = (new Appointment_model())->where('hide', 0)->where('status', 0)->countAllResults();
+        $data['stat_confirmed'] = (new Appointment_model())->where('hide', 0)->where('status', 1)->countAllResults();
+        $data['stat_cancelled'] = (new Appointment_model())->where('hide', 0)->where('status', 3)->countAllResults();
 
         // All appointment dates (unfiltered) for the sidebar calendar
         $data['all_appt_dates'] = array_column(
-            $db->query("SELECT DISTINCT appointment_date FROM tbl_app_appointment WHERE status != 3")->getResultArray(),
+            $db->query("SELECT DISTINCT appointment_date FROM tbl_app_appointment WHERE status != 3 AND hide = 0")->getResultArray(),
             'appointment_date'
         );
 
@@ -87,18 +88,25 @@ class AppointAdmin extends BaseController
         $fSearch           = $this->request->getGet('search');
         $fMember           = $this->request->getGet('member');
         $fConsultationType = $this->request->getGet('consultation_type');
+        $fArchived         = $this->request->getGet('archived');
 
         // Reject date values that are not valid YYYY-MM-DD (e.g. 0000-00-00 from browser)
         if ($fDate && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fDate)) {
             $fDate = '';
         }
 
-        $builder = $model->orderBy('appointment_date', 'asc')->orderBy('appointment_time', 'asc');
+        $data['archived_count'] = (new Appointment_model())->where('hide', 1)->countAllResults();
+
+        $builder = $model->where('hide', $fArchived ? 1 : 0)
+            ->orderBy('appointment_date', 'asc')->orderBy('appointment_time', 'asc');
 
         if ($fStatus !== null && $fStatus !== '') {
             $builder->where('status', $fStatus);
         }
-        $hasOtherFilter = $fSearch || $fMember || ($fStatus !== null && $fStatus !== '') || $fConsultationType;
+        // Archived view is a deliberate, explicit look at everything ever hidden — the default
+        // "upcoming appointments only" date floor below must not silently hide older archived
+        // rows from it the way it correctly narrows the normal active-dashboard view.
+        $hasOtherFilter = $fSearch || $fMember || ($fStatus !== null && $fStatus !== '') || $fConsultationType || $fArchived;
 
         if ($fDate) {
             $builder->where('appointment_date', $fDate);
@@ -121,8 +129,20 @@ class AppointAdmin extends BaseController
         }
 
         $data['appointments'] = $builder->findAll();
+
+        // Team status notes are kept on the prospect record (shared with the Prospect/Client
+        // pages) — pull them in bulk for whichever prospects appear in this list.
+        $prospectIds = array_filter(array_column($data['appointments'], 'prospect_id'));
+        $data['prospect_status'] = [];
+        if ($prospectIds) {
+            $prospectRows = (new Prospect_model())->select('id, ppstatus')->whereIn('id', $prospectIds)->findAll();
+            foreach ($prospectRows as $row) {
+                $data['prospect_status'][$row['id']] = $row['ppstatus'];
+            }
+        }
+
         $data['team_members'] = $team->select('id, firstname, lastname')->where('status', 1)->where('type', 'Employee')->findAll();
-        $data['filters']      = compact('fStatus', 'fDate', 'fSearch', 'fMember', 'fConsultationType');
+        $data['filters']      = compact('fStatus', 'fDate', 'fSearch', 'fMember', 'fConsultationType', 'fArchived');
         $data['admin_name']   = session()->get('appoint_admin_name') ?? 'Guest';
 
         return view('appoint/admin_dashboard', $data);
@@ -530,8 +550,7 @@ class AppointAdmin extends BaseController
             sia_send_email(
                 $appt['client_email'],
                 $subject,
-                sia_appt_html($clientBody),
-                sia_team_emails()
+                sia_appt_html($clientBody)
             );
         } else {
             // No client email — still notify team
@@ -601,8 +620,7 @@ class AppointAdmin extends BaseController
                 sia_send_email(
                     $appt['client_email'],
                     $subject,
-                    sia_appt_html($clientBody),
-                    sia_team_emails()
+                    sia_appt_html($clientBody)
                 );
             } else {
                 $teamBody = '
@@ -737,8 +755,12 @@ class AppointAdmin extends BaseController
         $map   = ['approve' => 1, 'confirm' => 1, 'complete' => 2, 'reject' => 3];
 
         foreach ($ids as $id) {
-            if ($action === 'delete') {
-                $model->delete($id);
+            if ($action === 'archive') {
+                // Soft-archive (hide=1), not a hard delete — matches Agreement/Declaration's
+                // archive pattern so appointments stay recoverable via "View Archived".
+                $model->update($id, ['hide' => 1, 'update_on' => date('Y-m-d H:i:s')]);
+            } elseif ($action === 'restore') {
+                $model->update($id, ['hide' => 0, 'update_on' => date('Y-m-d H:i:s')]);
             } elseif (isset($map[$action])) {
                 $model->update($id, ['status' => $map[$action], 'update_on' => date('Y-m-d H:i:s')]);
             }

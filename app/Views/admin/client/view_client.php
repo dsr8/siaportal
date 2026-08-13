@@ -23,6 +23,16 @@
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+<script language="JavaScript">
+function add_status(id,st)
+{
+     $.ajax({   type: "POST",
+          url: '<?php echo base_url().'/Siaportal/st_chang';?>/'+id+'/'+st,
+    success: function(result){
+    }
+       } );
+}
+</script>
 
 
 
@@ -86,6 +96,99 @@ tr:nth-child(even) {
             border-bottom:1px solid rgba(255,255,255,0.1);
         }
         .dup-tooltip .dup-id-row:last-child { border-bottom:none; }
+
+        /* ===================== View Client redesign (visual only) ===================== */
+        :root {
+            --vc-purple-bg:#f1ecfb; --vc-purple-text:#5b3fae; --vc-purple-border:#dcd0f5;
+            --vc-amber-bg:#fdf3e2;  --vc-amber-text:#a5670a;  --vc-amber-border:#f6e2b8;
+            --vc-rose-bg:#fbeaec;   --vc-rose-text:#b23a4e;   --vc-rose-border:#f1c0c5;
+            --vc-green-bg:#e8f6ee;  --vc-green-text:#1f7a4d;  --vc-green-border:#c3e6cb;
+            --vc-blue-bg:#eaf2fe;   --vc-blue-text:#1a56c4;   --vc-blue-border:#cfe2ff;
+            --vc-ink:#1f2430; --vc-muted:#6b7280;
+        }
+        .vc-page-title { font-weight:700; color:var(--vc-ink); letter-spacing:-0.02em; }
+
+        .vc-search-card { border:1px solid #e5e7eb !important; border-radius:10px !important; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+        .vc-search-card .form-control { border-radius:6px; border:1px solid #dcdfe4; }
+        .vc-search-card .btn { border-radius:6px; font-weight:600; }
+
+        .vc-table-card { border:1px solid #e5e7eb !important; border-radius:10px !important; overflow:hidden; }
+        .vc-table-card .card-header { background:#fafbfc; border-bottom:1px solid #eef0f3; color:var(--vc-muted); }
+        #dataTable.vc-table td { vertical-align:top; padding:0; border-color:#eef0f3; }
+
+        .vc-client-card { padding:14px 16px; }
+        .vc-id-row { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--vc-muted); font-weight:700; margin-bottom:8px; }
+        .vc-id-row i { color:#4fb7c9; }
+
+        .vc-flag { display:inline-flex; align-items:center; gap:4px; background:var(--vc-purple-bg); color:var(--vc-purple-text); border:1px solid var(--vc-purple-border); font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; cursor:pointer; position:relative; }
+        .vc-flag.vc-flag-client { background:var(--vc-rose-bg); color:var(--vc-rose-text); border-color:var(--vc-rose-border); }
+
+        .vc-warn-label { display:inline-block; background:var(--vc-amber-bg); color:var(--vc-amber-text); border:1px solid var(--vc-amber-border); font-size:10.5px; font-weight:600; padding:3px 8px; border-radius:6px; margin:2px 0 8px; }
+
+        .vc-name { font-weight:700; color:var(--vc-ink); font-size:13px; margin:2px 0 6px; display:flex; align-items:center; gap:7px; }
+        .vc-meta-row { display:flex; align-items:center; gap:7px; font-size:12px; color:#444; margin-bottom:5px; }
+        .vc-meta-row i { color:#9aa0aa; width:14px; text-align:center; flex-shrink:0; }
+
+        .vc-actions { display:flex; align-items:center; gap:12px; margin:8px 0; padding-top:8px; border-top:1px dashed #eee; }
+
+        .vc-book-btn { background:#6f42c1; color:#fff; border:none; border-radius:6px; padding:8px 10px; font-size:12px; font-weight:600; width:100%; margin-top:2px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:background .15s; }
+        .vc-book-btn:hover { background:#5c359f; color:#fff; }
+        .vc-book-btn[disabled] { background:#27ae60; opacity:.9; cursor:default; }
+
+        .vc-status-box { background:var(--vc-amber-bg); border:1px solid var(--vc-amber-border); border-radius:8px; padding:8px 10px; width:100%; box-sizing:border-box; }
+        .vc-status-label { display:flex; align-items:center; gap:5px; font-size:10px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--vc-amber-text); margin-bottom:6px; }
+        .vc-status-box textarea { width:100%; box-sizing:border-box; border:1px solid var(--vc-amber-border); border-radius:6px; padding:7px 8px; font-size:12px; line-height:1.5; color:var(--vc-ink); background:#fff; resize:vertical; transition:border-color .15s, box-shadow .15s; }
+        .vc-status-box textarea::placeholder { color:#b8a276; }
+        .vc-status-box textarea:focus { outline:none; border-color:#c98a1a; box-shadow:0 0 0 3px rgba(201,138,26,.15); }
+
+        .vc-appt-card { background:var(--vc-green-bg); border:1px solid var(--vc-green-border); border-radius:8px; padding:8px 10px; margin-top:8px; font-size:11px; line-height:1.6; width:100%; box-sizing:border-box; }
+        .vc-appt-badge { display:inline-block; background:#fff; color:var(--vc-green-text); font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; margin-bottom:2px; }
+        .vc-appt-empty { background:#f4f5f7; border:1px solid #e2e3e5; border-radius:8px; padding:14px 10px; text-align:center; width:100%; box-sizing:border-box; }
+
+        .vc-app-row { padding:14px 16px; border-top:1px solid #eef0f3; }
+        .vc-badge-pill { display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; padding:6px 10px; border-radius:6px; margin-bottom:8px; line-height:1.3; }
+        .vc-badge-category { background:var(--vc-purple-bg); color:var(--vc-purple-text); border:1px solid var(--vc-purple-border); }
+        .vc-badge-team { background:var(--vc-green-bg); color:var(--vc-green-text); border:1px solid var(--vc-green-border); }
+        .vc-badge-type { background:var(--vc-amber-bg); color:var(--vc-amber-text); border:1px solid var(--vc-amber-border); }
+        .vc-badge-status { background:var(--vc-rose-bg); color:var(--vc-rose-text); border:1px solid var(--vc-rose-border); }
+        .vc-app-card { background:#f8f9fb; border:1px solid #e5e7eb; border-radius:6px; padding:10px 12px; font-size:11px; }
+        .vc-app-card-row { color:#555; margin-bottom:3px; }
+        .vc-app-card-row b { color:var(--vc-ink); }
+        .vc-app-card-row b.vc-val-category { color:var(--vc-blue-text); }
+        .vc-app-card-row b.vc-val-type { color:var(--vc-amber-text); }
+        .vc-app-card-row b.vc-val-team { color:var(--vc-green-text); }
+        .vc-app-card-hr { margin:6px 0; border-top:1px dashed #e5e7eb; }
+        .vc-app-card-status { font-weight:700; color:var(--vc-ink); }
+        .vc-app-card-pill { display:inline-block; background:var(--vc-rose-text); color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+        .vc-app-icon-col { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; height:100%; padding-top:2px; }
+
+        .vc-icon-btn { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:7px; background:#fff; border:1px solid #e5e7eb; color:#6b7280; font-size:13px; transition:all .15s; box-shadow:0 1px 2px rgba(0,0,0,.03); }
+        .vc-icon-btn:hover { color:#fff; transform:translateY(-1px); box-shadow:0 3px 8px rgba(0,0,0,.12); text-decoration:none; }
+        .vc-icon-btn.vc-icon-edit:hover { background:#1a56c4; border-color:#1a56c4; }
+        .vc-icon-btn.vc-icon-view:hover { background:#1f7a4d; border-color:#1f7a4d; }
+        .vc-icon-btn.vc-icon-add:hover { background:#5b3fae; border-color:#5b3fae; }
+
+        /* ===================== Mobile (< 768px) ===================== */
+        @media (max-width: 767px) {
+            .vc-search-card .form-inline { flex-direction:column; align-items:stretch; }
+            .vc-search-card .form-control { width:100% !important; margin-right:0 !important; margin-bottom:8px; }
+            .vc-search-card .btn { width:100%; margin-right:0 !important; margin-bottom:8px; }
+
+            .container-fluid > .row > [class^="col-"],
+            .container-fluid > .row > [class*=" col-"] { margin-bottom:14px; }
+            .container-fluid > .row > [class^="col-"]:last-child,
+            .container-fluid > .row > [class*=" col-"]:last-child { margin-bottom:0; }
+
+            .vc-app-row { padding:12px 10px; }
+            .vc-app-row > [class^="col-"],
+            .vc-app-row > [class*=" col-"] { margin-bottom:12px; }
+            .vc-app-row > [class^="col-"]:last-child,
+            .vc-app-row > [class*=" col-"]:last-child { margin-bottom:0; }
+
+            .vc-app-icon-col { flex-direction:row; height:auto; padding:4px 0; }
+
+            .vc-client-card { padding:14px; }
+        }
         </style>
     </head>
     <body class="sb-nav-fixed">
@@ -101,15 +204,15 @@ tr:nth-child(even) {
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
-                        <h1 class="mt-4">View Client</h1>
+                        <h1 class="mt-4 vc-page-title">View Client</h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active"></li>
                         </ol>
-                        
-                       
+
+
                         <!-- Search Bar -->
-                        <div class="card mb-3">
-                            <div class="card-body py-2">
+                        <div class="card mb-3 vc-search-card">
+                            <div class="card-body py-3">
                                 <form method="get" action="" class="form-inline">
                                     <input type="number" name="search_id" class="form-control mr-2" placeholder="Search by ID" value="<?php echo htmlspecialchars($search_id ?? ''); ?>" style="width:120px;">
                                     <input type="text" name="search_name" class="form-control mr-2" placeholder="Search by Name" value="<?php echo htmlspecialchars($search_name ?? ''); ?>" style="width:180px;">
@@ -120,11 +223,11 @@ tr:nth-child(even) {
                             </div>
                         </div>
 
-                        <div class="card mb-4">
-                            <div class="card-header"><i class="fas fa-table mr-1"></i></div>
-                            <div class="card-body">
+                        <div class="card mb-4 vc-table-card">
+                            <div class="card-header"><i class="fas fa-table mr-1"></i> Clients</div>
+                            <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table vc-table" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                <th>Export Data</th>
@@ -140,10 +243,12 @@ tr:nth-child(even) {
                  
              
 
- 
+
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xl-3 col-md-3"><i style="color:#80ced6;"class="fa fa-id-card" aria-hidden="true"></i><?php echo $allcat['id'];?>
+        <div class="col-12 col-md-3 col-xl-3 vc-client-card">
+        <div class="vc-id-row">
+            <i class="fa fa-id-card" aria-hidden="true"></i> ID <?php echo $allcat['id'];?>
         <?php $pid = (int)$allcat['id']; ?>
         <?php if (!empty($dupProspectIds[$pid])): ?>
             <?php
@@ -154,7 +259,7 @@ tr:nth-child(even) {
                 $preStr  = implode(', ', $preview);
                 $moreStr = $rest > 0 ? ' +' . $rest . ' more' : '';
             ?>
-            <span style="background:#6f42c1;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:bold;margin-left:4px;cursor:pointer;position:relative;"
+            <span class="vc-flag"
                   onclick="toggleDupTooltip(this)"
                   data-allids="<?php echo $allStr; ?>">
                 Prospect [<?php echo $preStr . $moreStr; ?>]
@@ -169,82 +274,47 @@ tr:nth-child(even) {
                 $preStr  = implode(', ', $preview);
                 $moreStr = $rest > 0 ? ' +' . $rest . ' more' : '';
             ?>
-            <span style="background:#e74c3c;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:bold;margin-left:4px;cursor:pointer;position:relative;"
+            <span class="vc-flag vc-flag-client"
                   onclick="toggleDupTooltip(this)"
                   data-allids="<?php echo $allStr; ?>">
                 Client [<?php echo $preStr . $moreStr; ?>]
             </span>
-        <?php endif; ?> <br>
-
-
+        <?php endif; ?>
+        </div>
 
           <?php if($allcat['news_image1']==""){ ?>
 
-                          <label style="color:#ff7b25">Recoding not uploaded yet</label>
+                          <div class="vc-warn-label">Recoding not uploaded yet</div>
 
-                        <?php 
-                    }else { 
+                        <?php
+                    }else {
 
 
 if($allcat['voice_added']=='siaportal'){
                      ?>
- 
+
  <?php } else { ?>
 
-                  
+
                   <?php } } ?>
 
+<div class="vc-name">
+    <i class="fa fa-bookmark" aria-hidden="true"></i> <?php echo $allcat['heading'];?>
+</div>
+<div class="vc-meta-row"><i class="fa fa-mobile" aria-hidden="true"></i><?php echo $allcat['number'];?></div>
 
-                  <br>
-
-
-
-
-
-
-         
-<i class="fa fa-bookmark" aria-hidden="true"></i> <?php echo $allcat['heading'];?><br>
-<i class="fa fa-mobile" aria-hidden="true"></i><?php echo $allcat['number'];?><br>
-<i class="fa fa-envelope-open" aria-hidden="true"></i><?php echo $allcat['email'];?><br>
-
-<?php if (!empty($bookedIds[(int)$allcat['id']])):
-    $appt = $bookedIds[(int)$allcat['id']];
-    $sColors = [0=>'#856404',1=>'#0f5132',2=>'#084298',3=>'#842029'];
-    $sLabels = [0=>'Pending',1=>'Confirmed',2=>'Completed',3=>'Cancelled'];
-    $sc = $sColors[$appt['status']] ?? '#0f5132';
-    $sl = $sLabels[$appt['status']] ?? '';
-?>
-    <span style="display:inline-block;background:#d1e7dd;color:#0f5132;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:3px;">&#128197; Appt Booked</span><br>
-    <small style="font-size:10px;color:#333;">&#128198; <?php echo date('d M Y', strtotime($appt['date'])); ?> &nbsp;&#128336; <?php echo date('h:i A', strtotime($appt['time'])); ?></small><br>
-    <small style="font-size:10px;font-weight:700;color:<?php echo $sc; ?>;"><?php echo $sl; ?></small><br>
-    <?php if (!empty($appt['service_type'])): ?>
-    <small style="font-size:10px;color:#555;">&#128203; <?php echo htmlspecialchars($appt['service_type']); ?></small><br>
-    <?php endif; ?>
-    <?php if (!empty($appt['appointment_type'])): ?>
-    <small style="font-size:10px;color:#6f42c1;font-weight:600;">&#128197; <?php echo htmlspecialchars($appt['appointment_type']); ?></small><br>
-    <?php endif; ?>
-    <?php if (!empty($appt['consultation_type'])): ?>
-    <small style="font-size:10px;color:#333;">&#128222; <?php echo htmlspecialchars($appt['consultation_type']); ?><?php
-        if ($appt['consultation_type'] === 'In-Person' && !empty($appt['office_location'])) {
-            echo ' – ' . htmlspecialchars($appt['office_location']);
-        } elseif (!empty($appt['contact_method'])) {
-            echo ' – ' . htmlspecialchars($appt['contact_method']);
-        }
-    ?></small><br>
-    <?php endif; ?>
-    <small style="font-size:10px;color:<?php echo !empty($appt['assigned_to']) ? '#1a73e8' : '#aaa'; ?>;">&#128100; <?php echo !empty($appt['assigned_to']) ? htmlspecialchars($appt['assigned_to']) : 'Unassigned'; ?></small>
-<?php endif; ?>
+<div class="vc-meta-row"><i class="fa fa-envelope-open" aria-hidden="true"></i><?php echo $allcat['email'];?></div>
 
 <?php if (!empty($bookedIds[(int)$allcat['id']])): ?>
 <button type="button"
-    style="background:#27ae60;margin-top:6px;color:white;width:100%;font-size:12px;border:none;padding:5px 8px;cursor:default;border-radius:3px;display:block;opacity:0.85;"
+    class="vc-book-btn"
     title="<?php $a=$bookedIds[(int)$allcat['id']]; echo date('d M Y',strtotime($a['date'])).' '.date('h:i A',strtotime($a['time'])); ?>"
     disabled>
     &#10003; Appointment Booked
 </button>
 <?php else: ?>
 <button type="button"
-    style="background:#6f42c1;margin-top:6px;color:white;width:100%;font-size:12px;border:none;padding:5px 8px;cursor:pointer;border-radius:3px;display:block;"
+    class="vc-book-btn"
     data-pid="<?php echo (int)$allcat['id'];?>"
     data-pname="<?php echo htmlspecialchars($allcat['heading'] ?? '', ENT_QUOTES, 'UTF-8');?>"
     data-pemail="<?php echo htmlspecialchars($allcat['email'] ?? '', ENT_QUOTES, 'UTF-8');?>"
@@ -254,21 +324,25 @@ if($allcat['voice_added']=='siaportal'){
 </button>
 <?php endif; ?>
 
-          
-            <?php 
+<div class="vc-status-box" style="margin-top:8px;">
+    <div class="vc-status-label"><i class="fa fa-sticky-note"></i> Team Status</div>
+    <textarea rows="3" placeholder="Add a note..." onkeyup="add_status(<?php echo (int)$allcat['id'];?>,this.value)"><?php echo str_replace('%20', ' ', $allcat['ppstatus']);?></textarea>
+</div>
+
+<div class="vc-actions">
+            <?php
             $a = $allcat['address'];
             $b = $allcat['city'];
             $c = $allcat['family'];
-             if($a=="" || $b==''|| $c=''){ 
+             if($a=="" || $b==''|| $c=''){
 
             ?>
 
-            <lable >  <a onclick="aa();"  href=""><i class="fa fa-plus" aria-hidden="true"></i></a></lable><lable>
-
+            <a class="vc-icon-btn vc-icon-add" onclick="aa();" href="" title="Add Application"><i class="fa fa-plus" aria-hidden="true"></i></a>
 
 <script type = "text/javascript">
  function aa()
- {  
+ {
 alert('Complet Your profile first');
 }
 </script>
@@ -276,23 +350,57 @@ alert('Complet Your profile first');
 
 
             <?php  } else { ?>
-          <lable >  <a  target="_blank" href="<?php echo base_url();?>/Siaportal/add_client_application/<?php echo $allcat['id'];?>"><i class="fa fa-plus" aria-hidden="true"></i></a></lable><lable>
+          <a class="vc-icon-btn vc-icon-add" target="_blank" href="<?php echo base_url();?>/Siaportal/add_client_application/<?php echo $allcat['id'];?>" title="Add Application"><i class="fa fa-plus" aria-hidden="true"></i></a>
 
         <?php } ?>
-             <a  target="_blank" href="<?php echo base_url();?>/Siaportal/edit_client_prospect/<?php echo $allcat['id'];?>"> <img style="height:20px;width:40px;" src="<?php echo base_url();?>/assets/edit.png"></a>
-            </lable><label>
-             <a  target="_blank" href="<?php echo base_url();?>/Siaportal/full_view_client/<?php echo $allcat['id'];?>"> <i class="fa fa-binoculars" aria-hidden="true"></i></a>
-            </label>
-
+             <a class="vc-icon-btn vc-icon-edit" target="_blank" href="<?php echo base_url();?>/Siaportal/edit_client_prospect/<?php echo $allcat['id'];?>" title="Edit"><i class="fa fa-edit" aria-hidden="true"></i></a>
+             <a class="vc-icon-btn vc-icon-view" target="_blank" href="<?php echo base_url();?>/Siaportal/full_view_client/<?php echo $allcat['id'];?>" title="View"><i class="fa fa-eye" aria-hidden="true"></i></a>
+</div>
 
 
 
           </div>
 
+        <div class="col-12 col-md-2 col-xl-2 d-flex align-items-center justify-content-center">
+        <?php if (!empty($bookedIds[(int)$allcat['id']])):
+            $appt = $bookedIds[(int)$allcat['id']];
+            $sColors = [0=>'#856404',1=>'#0f5132',2=>'#084298',3=>'#842029'];
+            $sLabels = [0=>'Pending',1=>'Confirmed',2=>'Completed',3=>'Cancelled'];
+            $sc = $sColors[$appt['status']] ?? '#0f5132';
+            $sl = $sLabels[$appt['status']] ?? '';
+        ?>
+            <div class="vc-appt-card">
+                <span class="vc-appt-badge">&#128197; Appt Booked</span><br>
+                <span style="color:#333;">&#128198; <?php echo date('d M Y', strtotime($appt['date'])); ?> &nbsp;&#128336; <?php echo date('h:i A', strtotime($appt['time'])); ?></span><br>
+                <span style="font-weight:700;color:<?php echo $sc; ?>;"><?php echo $sl; ?></span><br>
+                <?php if (!empty($appt['service_type'])): ?>
+                <span style="color:#555;">&#128203; <?php echo htmlspecialchars($appt['service_type']); ?></span><br>
+                <?php endif; ?>
+                <?php if (!empty($appt['appointment_type'])): ?>
+                <span style="color:#6f42c1;font-weight:600;">&#128197; <?php echo htmlspecialchars($appt['appointment_type']); ?></span><br>
+                <?php endif; ?>
+                <?php if (!empty($appt['consultation_type'])): ?>
+                <span style="color:#333;">&#128222; <?php echo htmlspecialchars($appt['consultation_type']); ?><?php
+                    if ($appt['consultation_type'] === 'In-Person' && !empty($appt['office_location'])) {
+                        echo ' – ' . htmlspecialchars($appt['office_location']);
+                    } elseif (!empty($appt['contact_method'])) {
+                        echo ' – ' . htmlspecialchars($appt['contact_method']);
+                    }
+                ?></span><br>
+                <?php endif; ?>
+                <span style="color:<?php echo !empty($appt['assigned_to']) ? '#1a73e8' : '#aaa'; ?>;">&#128100; <?php echo !empty($appt['assigned_to']) ? htmlspecialchars($appt['assigned_to']) : 'Unassigned'; ?></span>
+            </div>
+        <?php else: ?>
+            <div class="vc-appt-empty">
+                <div style="font-size:11.5px;font-weight:700;color:#41464b;">No Appointment</div>
+                <div style="font-size:10.5px;color:#9aa0aa;">(Not Booked Yet)</div>
+            </div>
+        <?php endif; ?>
+        </div>
 
-         <div class="col-xl-9 col-md-9">
+         <div class="col-12 col-md-7 col-xl-7">
 
-            <?php 
+            <?php
 
            $host="localhost";
   $db="sia_database";
@@ -320,41 +428,24 @@ where tbl_client_application.`siaportalid` =$ddd ";
                     ?>
           
 
-    <div class="row">
+    <div class="row vc-app-row">
 
-      
-      <div class="col-xl-3 col-md-3  "  data-toggle="tooltip" title="<?php echo $GetData['cat'];?>" >
-        <div class="row">
 
-       <div class="col-xl-12 col-md-12" style="background-color:#6b5b95; font-size: 13px;color:#fff;" > <i  class="fa fa-id-badge" style="color:#fff; margin-left:1px;" ></i> <?php echo $GetData['cat'];?>
-
-</div>
-<?php if(!empty($GetData['team_name'])): ?>
-<div class="col-xl-12 col-md-12" style="background-color:#009b77; font-size: 12px;color:#fff;"><i class="fa fa-user" style="color:#fff; margin-left:1px;"></i> <?php echo $GetData['team_name']; ?></div>
-<?php endif; ?>
-</div>
-
+      <div class="col-12 col-md-5 col-xl-5">
+        <div class="vc-app-card">
+            <div class="vc-app-card-row">Category: <b class="vc-val-category"><?php echo $GetData['cat'];?></b></div>
+            <div class="vc-app-card-row">Type: <b class="vc-val-type"><?php echo substr($GetData['ttyy'], 0, 20);?></b></div>
+            <hr class="vc-app-card-hr">
+            <div class="vc-app-card-status">Status:
+                <span class="vc-app-card-pill"><?php echo substr((string) ($GetData['apps'] ?? ''), 0, 20);?></span>
+            </div>
+            <?php if(!empty($GetData['team_name'])): ?>
+            <div class="vc-app-card-row" style="margin-top:6px;">Team: <b class="vc-val-team"><?php echo $GetData['team_name']; ?></b></div>
+            <?php endif; ?>
+        </div>
       </div>
-     
-
-       <div class="col-xl-3 col-md-3"  data-toggle="tooltip" title="<?php echo $GetData['ttyy'];?>">
-
-
-<div  style="background-color:#feb236;font-size: 13px;color:#fff; ">
-          <i style="color:#fff; margin-left:1px;" class="fa fa-list-alt" aria-hidden="true"></i>  <?php echo substr($GetData['ttyy'], 0, 15);?>
-
-</div>
-
-      </div>
-       <div class="col-xl-3 col-md-3"  data-toggle="tooltip" title="<?php echo $GetData['apps'];?>">
-<div style="background-color:#d64161;font-size: 13px;color:#fff;">
-  
-        <i style="color:#fff;margin-left:1px;" class="fa fa-bullhorn" aria-hidden="true"></i> <?php echo substr((string) ($GetData['apps'] ?? ''), 0, 15);?>
-      
-</div>
-      </div>
-       <div class="col-xl-1 col-md-1"  >
-
+       <div class="col-12 col-md-1 col-xl-1"  >
+        <div class="vc-app-icon-col">
         <?php $block =$GetData['application_status'];
 
 $allid= array(490,485,480,475,471,451,438,433,428,423,418,413,408,403,398,393,388,383,378,373,368,363,358,353,348,343,338,333,324,307,298,290,282,272,264,256,245,233,222,212,204,196,188,180,170,160,150,140,133,127,117,107,97,85,75,64,55,44,33,21,13,491,486,481,476,439,434,429,424,419,414,409,404,399,394,389,384,379,374,369,364,359,354,349,344,339,334,325,308,299,291,283,273,265,257,246,234,223,213,205,197,189,181,171,161,151,141,134,128,118,108,98,86,76,65,54,43,34,22,14);
@@ -365,16 +456,15 @@ if(in_array($block,$allid)){ ?>
 <?php }else{
 
         ?>
-         <a  target="_blank" href="<?php   echo base_url();?>/Siaportal/edit_client_application/<?php echo $GetData['category'];?>/<?php echo $GetData['id'];?>/<?php echo $GetData['siaportalid'];?>/<?php echo $GetData['type'];?> ">
-        <img style="height:20px;width:20px;" src="<?php echo base_url();?>/assets/ed.png">
-
+         <a class="vc-icon-btn vc-icon-edit" target="_blank" href="<?php   echo base_url();?>/Siaportal/edit_client_application/<?php echo $GetData['category'];?>/<?php echo $GetData['id'];?>/<?php echo $GetData['siaportalid'];?>/<?php echo $GetData['type'];?> " title="Edit">
+        <i class="fa fa-edit" aria-hidden="true"></i>
       </a>
 <?php } ?>
-      <br> <a  target="_blank" href="<?php   echo base_url();?>/Siaportal/full_view_client_application/<?php echo $GetData['category'];?>/<?php echo $GetData['id'];?>/<?php echo $GetData['siaportalid'];?>/<?php echo $GetData['type'];?> "> <i class="fa fa-binoculars" aria-hidden="true"></i></a>
-
+      <a class="vc-icon-btn vc-icon-view" target="_blank" href="<?php   echo base_url();?>/Siaportal/full_view_client_application/<?php echo $GetData['category'];?>/<?php echo $GetData['id'];?>/<?php echo $GetData['siaportalid'];?>/<?php echo $GetData['type'];?> " title="View"> <i class="fa fa-eye" aria-hidden="true"></i></a>
+        </div>
        </div>
 
-        <div class="col-xl-2 col-md-2"  >
+        <div class="col-12 col-md-3 col-xl-3"  >
         <?php
           $agAppId = (int) $GetData['id'];
           echo view('admin/partials/agreement_card', [
@@ -386,21 +476,22 @@ if(in_array($block,$allid)){ ?>
         ?>
        </div>
 
-        <div class="col-xl-2 col-md-2"  >
+        <div class="col-12 col-md-3 col-xl-3"  >
         <?php
           $dcAppId = (int) $GetData['id'];
           $dcRow = $declarationStatus[$dcAppId] ?? null;
           if ($dcRow):
               $dcBadgeColors = [
-                  'draft'     => ['#e2e3e5', '#41464b'],
-                  'sent'      => ['#fff3cd', '#856404'],
-                  'viewed'    => ['#cfe2ff', '#084298'],
-                  'signed'    => ['#d1e7dd', '#0f5132'],
-                  'declined'  => ['#f8d7da', '#842029'],
-                  'cancelled' => ['#f8d7da', '#842029'],
+                  'draft'     => ['#e2e3e5', '#41464b', '#f4f5f7', '#c9cbcf'],
+                  'sent'      => ['#fff3cd', '#856404', '#fdf6e3', '#f5e3ab'],
+                  'viewed'    => ['#cfe2ff', '#084298', '#eaf2fe', '#b6d4fe'],
+                  'signed'    => ['#d1e7dd', '#0f5132', '#eaf7ef', '#a3cfbb'],
+                  'declined'  => ['#f8d7da', '#842029', '#fbeaec', '#f1aeb5'],
+                  'cancelled' => ['#f8d7da', '#842029', '#fbeaec', '#f1aeb5'],
               ];
-              [$dcBg, $dcFg] = $dcBadgeColors[$dcRow['status']] ?? ['#e2e3e5', '#41464b'];
+              [$dcBg, $dcFg, $dcCardBg, $dcCardBorder] = $dcBadgeColors[$dcRow['status']] ?? ['#e2e3e5', '#41464b', '#f4f5f7', '#c9cbcf'];
         ?>
+          <div style="background:<?php echo $dcCardBg; ?>;border:1px solid <?php echo $dcCardBorder; ?>;border-radius:6px;padding:10px 12px;width:100%;box-sizing:border-box;font-size:11px;">
           <span style="display:inline-block;background:<?php echo $dcBg; ?>;color:<?php echo $dcFg; ?>;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;">
             &#128203; Consent: <?php echo ucfirst($dcRow['status']); ?>
           </span><br>
@@ -410,7 +501,9 @@ if(in_array($block,$allid)){ ?>
                 onsubmit="this.querySelector('button').disabled = true;">
             <button type="submit" style="background:none;border:none;color:#4c3ff5;font-size:11px;font-weight:600;cursor:pointer;padding:0;">+ New</button>
           </form>
+          </div>
         <?php else: ?>
+          <div style="background:#f4f5f7;border:1px solid #e2e3e5;border-radius:6px;padding:10px 12px;width:100%;box-sizing:border-box;text-align:center;">
           <form method="post" target="_blank" action="<?php echo base_url(); ?>/declaration/Declaration/start_from_application/<?php echo $dcAppId; ?>" style="margin:0;"
                 onsubmit="this.querySelector('button').disabled = true;">
             <button type="submit"
@@ -418,6 +511,7 @@ if(in_array($block,$allid)){ ?>
               Start Consent
             </button>
           </form>
+          </div>
         <?php endif; ?>
        </div>
    </div>

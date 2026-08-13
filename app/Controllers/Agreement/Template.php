@@ -66,6 +66,29 @@ class Template extends BaseController
         return redirect()->to(base_url('agreement/Agreement/detail/' . $agreementId))->with('message', 'Agreement Template saved successfully.');
     }
 
+    // AJAX: permanently removes a template and its milestone/fee rows.
+    public function delete($templateId = null)
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response->setJSON(['success' => false]);
+        }
+        if ($this->request->getMethod() !== 'post') {
+            return $this->response->setJSON(['success' => false]);
+        }
+
+        $templateId = (int) $templateId;
+        $TemplateModel = new Agreement_template_model();
+        if (!$TemplateModel->find($templateId)) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Template not found.']);
+        }
+
+        (new Agreement_template_milestone_model())->where('template_id', $templateId)->delete();
+        (new Agreement_template_fee_model())->where('template_id', $templateId)->delete();
+        $TemplateModel->delete($templateId);
+
+        return $this->response->setJSON(['success' => true]);
+    }
+
     // JSON snapshot of a template's fields, used to prefill the agreement form via AJAX.
     public function get($templateId = null)
     {

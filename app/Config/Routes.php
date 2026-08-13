@@ -88,6 +88,7 @@ $routes->get( 'agreement/Agreement/cron_send_reminders', 'Agreement\Agreement::c
 $routes->get( 'agreement/Agreement/migrate_clause_indices_once', 'Agreement\Agreement::migrate_clause_indices_once');
 $routes->post('agreement/Template/save/(:num)',      'Agreement\Template::save/$1');
 $routes->get( 'agreement/Template/get/(:num)',       'Agreement\Template::get/$1');
+$routes->post('agreement/Template/delete/(:num)',    'Agreement\Template::delete/$1');
 
 // --- Agreement Sign (public, no login — reached via emailed signing link) ---
 // (:any) is greedy (matches across slashes) so more specific routes must come first.
@@ -106,6 +107,10 @@ $routes->post('declaration/Declaration/start_from_application/(:num)', 'Declarat
 $routes->get( 'declaration/Declaration/detail/(:num)',    'Declaration\Declaration::detail/$1');
 $routes->get( 'declaration/Declaration/search_clients',   'Declaration\Declaration::search_clients');
 $routes->get( 'declaration/Declaration/applications_for_client/(:num)', 'Declaration\Declaration::applications_for_client/$1');
+$routes->get( 'declaration/Declaration/categories',        'Declaration\Declaration::categories');
+$routes->get( 'declaration/Declaration/types_for_category/(:num)', 'Declaration\Declaration::types_for_category/$1');
+$routes->get( 'declaration/Declaration/statuses_for_type/(:num)', 'Declaration\Declaration::statuses_for_type/$1');
+$routes->post('declaration/Declaration/quick_add_application', 'Declaration\Declaration::quick_add_application');
 $routes->post('declaration/Declaration/save/(:num)',       'Declaration\Declaration::save/$1');
 $routes->post('declaration/Declaration/generate_link/(:num)', 'Declaration\Declaration::generate_link/$1');
 $routes->get( 'declaration/Declaration/pdf/(:num)',        'Declaration\Declaration::pdf/$1');

@@ -76,6 +76,26 @@ public function getentery_client(){
         return $builder->findAll($limit);
     }
 
+    // Client + Prospect search for Declaration/Consent's client picker — unlike Agreement,
+    // a disclaimer/consent can be started for someone who hasn't converted to a client yet,
+    // so prospects must show up in search results too (searchActiveClients() above deliberately
+    // excludes them since an Agreement needs an existing CRM application to attach to).
+    public function searchActiveClientsAndProspects(string $q = '', int $limit = 50): array
+    {
+        $builder = $this->select('id, heading, email, number, cc')
+            ->whereIn('entery_status', ['client', 'prospect'])
+            ->groupStart()->where('hide_prospect', null)->orWhere('hide_prospect !=', 1)->groupEnd()
+            ->orderBy('id', 'desc');
+
+        if ($q !== '') {
+            $builder->groupStart()
+                ->like('heading', $q)->orLike('id', $q)->orLike('number', $q)->orLike('email', $q)
+                ->groupEnd();
+        }
+
+        return $builder->findAll($limit);
+    }
+
 
 
 

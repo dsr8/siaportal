@@ -235,6 +235,16 @@
         .b2 { background:#cfe2ff; color:#084298; }
         .b3 { background:#f8d7da; color:#842029; }
 
+        /* Team status note */
+        .ts-box textarea {
+            width: 100%; box-sizing: border-box; resize: vertical;
+            border: 1px solid #f6e2b8; border-radius: 6px; background: #fdf3e2;
+            padding: 6px 7px; font-size: 11px; line-height: 1.4; color: #1f2430;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .ts-box textarea::placeholder { color: #b8a276; }
+        .ts-box textarea:focus { outline: none; border-color: #c98a1a; background: #fff; box-shadow: 0 0 0 3px rgba(201,138,26,.15); }
+
         /* Action btns */
         .act-btn {
             display: inline-flex; align-items: center;
@@ -266,6 +276,18 @@
         .ab-view     { background: #e9ecef; color: #333; }
         .ab-edit     { background: #fff3cd; color: #856404; }
         .ab-delete   { background: #f8d7da; color: #842029; }
+        .ab-restore  { background: #d1e7dd; color: #0a3622; }
+
+        .btn-archived-toggle {
+            display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700;
+            color: #555; background: #fff; border: 1px solid #dee2e6; border-radius: 6px; padding: 8px 14px;
+            text-decoration: none; transition: background 0.15s;
+        }
+        .btn-archived-toggle:hover { background: #f0f0f0; color: #222; }
+        .archived-banner {
+            background: #fff8e6; color: #8a6d1f; font-size: 13px; padding: 10px 16px; border-radius: 8px;
+            margin-bottom: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+        }
 
         /* Assigned chip */
         .assigned-chip {
@@ -471,6 +493,13 @@ $flashMsg = session()->getFlashdata('msg');
         <!-- Main column -->
         <div class="main-col">
 
+            <?php $isArchived = !empty($filters['fArchived']); ?>
+            <?php if ($isArchived): ?>
+            <div class="archived-banner">
+                &#128193; Viewing <strong><?php echo (int) $archived_count; ?></strong> archived appointment<?php echo $archived_count === 1 ? '' : 's'; ?> — hidden from the active dashboard, not deleted.
+            </div>
+            <?php endif; ?>
+
             <!-- Filter bar -->
             <form method="get" action="" id="filterForm">
             <div class="filter-bar">
@@ -491,9 +520,13 @@ $flashMsg = session()->getFlashdata('msg');
                     </option>
                     <?php endforeach; ?>
                 </select>
+                <?php if ($isArchived): ?><input type="hidden" name="archived" value="1"><?php endif; ?>
                 <button type="submit" class="btn-filter">Filter</button>
-                <a href="?" class="btn-reset">Reset</a>
+                <a href="<?php echo $isArchived ? '?archived=1' : '?'; ?>" class="btn-reset">Reset</a>
                 <a href="<?php echo base_url('appoint/Appoint/add'); ?>?from=dashboard" class="btn-add">+ Add Appointment</a>
+                <a class="btn-archived-toggle" href="<?php echo base_url('appoint/AppointAdmin/dashboard' . ($isArchived ? '' : '?archived=1')); ?>">
+                    <?php echo $isArchived ? '&#11013; Active Appointments' : '&#128193; View Archived (' . (int) $archived_count . ')'; ?>
+                </a>
             </div>
             </form>
 
@@ -514,12 +547,13 @@ $flashMsg = session()->getFlashdata('msg');
                             <th>Service / Type</th>
                             <th>Assigned To</th>
                             <th>Status</th>
+                            <th>Team Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php if (empty($appointments)): ?>
-                        <tr><td colspan="8" style="text-align:center;padding:30px;color:#aaa;">No appointments found.</td></tr>
+                        <tr><td colspan="9" style="text-align:center;padding:30px;color:#aaa;">No appointments found.</td></tr>
                     <?php else: ?>
                     <?php foreach ($appointments as $i => $a):
                         $s = (int)$a['status'];
@@ -579,6 +613,15 @@ $flashMsg = session()->getFlashdata('msg');
                         <td>
                             <span class="badge b<?php echo $s; ?>"><?php echo $sLabels[$s]; ?></span>
                         </td>
+                        <td style="min-width:180px;">
+                            <?php if (!empty($a['prospect_id'])): ?>
+                            <div class="ts-box">
+                                <textarea rows="2" placeholder="Add a note..." onkeyup="addStatus(<?php echo (int)$a['prospect_id']; ?>, this.value)"><?php echo str_replace('%20', ' ', $prospect_status[$a['prospect_id']] ?? ''); ?></textarea>
+                            </div>
+                            <?php else: ?>
+                                <span style="font-size:10px;color:#bbb;">&mdash;</span>
+                            <?php endif; ?>
+                        </td>
                         <td style="white-space:nowrap;">
                             <div style="display:flex;flex-direction:column;gap:3px;">
                                 <!-- Reschedule: Confirmed + complete only -->
@@ -622,10 +665,16 @@ $flashMsg = session()->getFlashdata('msg');
                                 <a class="act-btn ab-edit" href="<?php echo base_url('appoint/Appoint/edit/'.$a['id']); ?>?from=dashboard">
                                     &#9998; Edit
                                 </a>
-                                <!-- Delete -->
-                                <button class="act-btn ab-delete" onclick="confirmDelete(<?php echo $a['id']; ?>)">
-                                    &#128465; Delete
+                                <!-- Archive / Restore -->
+                                <?php if ($isArchived): ?>
+                                <button class="act-btn ab-restore" onclick="restoreAppointment(<?php echo $a['id']; ?>)">
+                                    &#8630; Restore
                                 </button>
+                                <?php else: ?>
+                                <button class="act-btn ab-delete" onclick="archiveAppointment(<?php echo $a['id']; ?>)">
+                                    &#128193; Archive
+                                </button>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
@@ -988,13 +1037,31 @@ function escHtml(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-/* ── Delete ── */
-function confirmDelete(id) {
-    if (!confirm('Delete this appointment? This cannot be undone.')) return;
-    ajax(BASE + 'appoint/AppointAdmin/bulk_action', { action: 'delete', ids: JSON.stringify([id]) }, function() {
+/* ── Team Status note (shared with Prospect/Client pages) ── */
+var addStatusTimers = {};
+function addStatus(prospectId, value) {
+    clearTimeout(addStatusTimers[prospectId]);
+    addStatusTimers[prospectId] = setTimeout(function() {
+        var form = new FormData();
+        fetch(BASE + 'Siaportal/st_chang/' + prospectId + '/' + encodeURIComponent(value), { method: 'POST', body: form });
+    }, 400);
+}
+
+/* ── Archive / Restore ── */
+function archiveAppointment(id) {
+    if (!confirm('Archive this appointment? It will be hidden from the active dashboard, not deleted — you can restore it anytime from "View Archived".')) return;
+    ajax(BASE + 'appoint/AppointAdmin/bulk_action', { action: 'archive', ids: JSON.stringify([id]) }, function() {
         var row = document.getElementById('row-' + id);
         if (row) row.remove();
-        showToast('Appointment deleted.', 'success');
+        showToast('Appointment archived.', 'success');
+    });
+}
+function restoreAppointment(id) {
+    if (!confirm('Restore this appointment to the active dashboard?')) return;
+    ajax(BASE + 'appoint/AppointAdmin/bulk_action', { action: 'restore', ids: JSON.stringify([id]) }, function() {
+        var row = document.getElementById('row-' + id);
+        if (row) row.remove();
+        showToast('Appointment restored.', 'success');
     });
 }
 

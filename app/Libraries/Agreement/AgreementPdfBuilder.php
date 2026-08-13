@@ -247,20 +247,24 @@ class AgreementPdfBuilder
         }
         $html .= '</table>';
 
-        $html .= '<p style="font-size:9.5px;color:#e23b3b;"><b>PAYMENT SCHEDULE / MILESTONES</b></p><table cellpadding="3" style="width:100%;font-size:9px;" border="0.5">
-            <tr><td><b>Milestone</b></td><td><b>Timeline</b></td><td><b>Amount (GST Included)</b></td></tr>';
-        foreach ($milestones as $m) {
-            $amt = $m['amount'] !== null ? $this->money($agreement, (float) $m['amount'] * 1.05) : 'Included';
-            $html .= '<tr><td>' . esc($m['milestone']) . '</td><td>' . (esc($m['due_date']) ?: '—') . '</td><td>' . $amt . '</td></tr>';
+        if (!empty($milestones)) {
+            $html .= '<p style="font-size:9.5px;color:#e23b3b;"><b>PAYMENT SCHEDULE / MILESTONES</b></p><table cellpadding="3" style="width:100%;font-size:9px;" border="0.5">
+                <tr><td><b>Milestone</b></td><td><b>Timeline</b></td><td><b>Amount (GST Included)</b></td></tr>';
+            foreach ($milestones as $m) {
+                $amt = $m['amount'] !== null ? $this->money($agreement, (float) $m['amount'] * 1.05) : 'Included';
+                $html .= '<tr><td>' . esc($m['milestone']) . '</td><td>' . (esc($m['due_date']) ?: '—') . '</td><td>' . $amt . '</td></tr>';
+            }
+            $html .= '</table>';
         }
-        $html .= '</table>';
 
-        $html .= '<p style="font-size:9.5px;color:#e23b3b;"><b>ADDITIONAL FEES (IF APPLICABLE)</b></p><table cellpadding="3" style="width:100%;font-size:9px;" border="0.5">
-            <tr><td><b>Description</b></td><td><b>Amount (GST Included)</b></td></tr>';
-        foreach ($additionalFees as $f) {
-            $html .= '<tr><td>' . esc($f['description']) . '</td><td>' . $this->money($agreement, (float) $f['amount'] * 1.05) . '</td></tr>';
+        if (!empty($additionalFees)) {
+            $html .= '<p style="font-size:9.5px;color:#e23b3b;"><b>ADDITIONAL FEES (IF APPLICABLE)</b></p><table cellpadding="3" style="width:100%;font-size:9px;" border="0.5">
+                <tr><td><b>Description</b></td><td><b>Amount (GST Included)</b></td></tr>';
+            foreach ($additionalFees as $f) {
+                $html .= '<tr><td>' . esc($f['description']) . '</td><td>' . $this->money($agreement, (float) $f['amount'] * 1.05) . '</td></tr>';
+            }
+            $html .= '</table>';
         }
-        $html .= '</table>';
 
         $html .= '<table cellpadding="3" style="width:100%;font-size:9.5px;" border="0.5">
             <tr style="background-color:#fdf1f1;"><td><b style="color:#e23b3b;">TOTAL PAYABLE</b></td><td align="right"><b style="color:#e23b3b;">' . $this->money($agreement, $agreement['total_amount']) . '</b></td></tr>

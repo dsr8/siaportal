@@ -19,7 +19,7 @@ $agCardTheme = [
 ];
 ?>
 <?php if (!$agRow): ?>
-    <div style="background:#f4f5f7;border:1px solid #e2e3e5;border-radius:6px;padding:14px 10px;text-align:center;min-width:200px;">
+    <div style="background:#f4f5f7;border:1px solid #e2e3e5;border-radius:6px;padding:14px 10px;text-align:center;width:100%;box-sizing:border-box;">
         <div style="font-size:11.5px;font-weight:700;color:#41464b;">No Agreement</div>
         <div style="font-size:10.5px;color:#9aa0aa;margin-bottom:8px;">(Not Created Yet)</div>
         <form method="post" target="_blank" action="<?php echo base_url('agreement/Agreement/start_from_application/' . (int) $applicationId); ?>" style="margin:0;" onsubmit="this.querySelector('button').disabled = true;">
@@ -33,10 +33,7 @@ $agCardTheme = [
         return esc($agRow['currency'] ?? 'CAD') . ' $' . number_format((float) $amount, 2);
     };
 ?>
-    <div style="background:<?php echo $theme['bg']; ?>;border:1px solid <?php echo $theme['border']; ?>;border-radius:6px;padding:10px 12px;min-width:210px;font-size:11px;">
-        <div style="font-weight:700;color:#1f2430;margin-bottom:6px;">Retainer Agreement</div>
-        <div style="color:#555;">Category: <b style="color:#1f2430;"><?php echo esc($categoryLabel ?: '—'); ?></b></div>
-        <div style="color:#555;">Type / Service Type: <b style="color:#1f2430;"><?php echo esc($typeLabel ?: '—'); ?></b></div>
+    <div style="background:<?php echo $theme['bg']; ?>;border:1px solid <?php echo $theme['border']; ?>;border-radius:6px;padding:10px 12px;width:100%;box-sizing:border-box;font-size:11px;">
         <div style="color:#555;">Service Fee: <b style="color:#1f2430;"><?php echo $agMoney($agRow['service_fee'] ?? 0); ?></b></div>
         <div style="color:#555;">GST (<?php echo esc($agRow['gst_rate'] ?? 5); ?>%): <b style="color:#1f2430;"><?php echo $agMoney($agRow['gst_amount'] ?? 0); ?></b></div>
         <div style="color:#555;">Govt. Fee: <b style="color:#1f2430;"><?php echo $agMoney($govtFeeTotal); ?></b></div>
@@ -47,8 +44,10 @@ $agCardTheme = [
         </div>
         <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;">
         <?php if ($agRow['status'] === 'signed'): ?>
-            <a target="_blank" href="<?php echo base_url('agreement/Agreement/detail/' . (int) $agRow['id']); ?>" style="display:block;text-align:center;background:#fff;color:#2ecc71;border:1px solid #2ecc71;border-radius:4px;padding:5px 10px;font-size:11px;font-weight:600;text-decoration:none;">&#128065; View Agreement</a>
-            <a target="_blank" href="<?php echo base_url('agreement/Agreement/pdf/' . (int) $agRow['id']); ?>" style="display:block;text-align:center;background:#fff;color:#1a73e8;border:1px solid #1a73e8;border-radius:4px;padding:5px 10px;font-size:11px;font-weight:600;text-decoration:none;">&#11015; Download PDF</a>
+            <div style="display:flex;gap:5px;">
+                <a target="_blank" href="<?php echo base_url('agreement/Agreement/detail/' . (int) $agRow['id']); ?>" style="flex:1;display:block;text-align:center;background:#fff;color:#2ecc71;border:1px solid #2ecc71;border-radius:4px;padding:5px 6px;font-size:10.5px;font-weight:600;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">&#128065; View</a>
+                <a target="_blank" href="<?php echo base_url('agreement/Agreement/pdf/' . (int) $agRow['id']); ?>" style="flex:1;display:block;text-align:center;background:#fff;color:#1a73e8;border:1px solid #1a73e8;border-radius:4px;padding:5px 6px;font-size:10.5px;font-weight:600;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">&#11015; PDF</a>
+            </div>
         <?php else: ?>
             <form method="post" target="_blank" action="<?php echo base_url('agreement/Agreement/start_from_application/' . (int) $applicationId); ?>" style="margin:0;" onsubmit="this.querySelector('button').disabled = true;">
                 <button type="submit" style="display:block;width:100%;background:#fff;color:#1a73e8;border:1px solid #1a73e8;border-radius:4px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;">+ Create Agreement</button>

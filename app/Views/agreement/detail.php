@@ -146,12 +146,19 @@
                                         </div>
                                         <div class="ca-field">
                                             <label>Agreement Template</label>
-                                            <select id="f_template_id">
-                                                <option value="">-- Select Template --</option>
-                                                <?php foreach ($templates as $tpl): ?>
-                                                    <option value="<?php echo $tpl['id']; ?>"><?php echo esc($tpl['name']); ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
+                                            <div style="display:flex;gap:6px;align-items:center;">
+                                                <select id="f_template_id" style="flex:1;">
+                                                    <option value="">-- Select Template --</option>
+                                                    <?php foreach ($templates as $tpl): ?>
+                                                        <option value="<?php echo $tpl['id']; ?>"><?php echo esc($tpl['name']); ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <button type="button" id="caDeleteTemplateBtn" onclick="caDeleteTemplate();" disabled
+                                                        title="Delete selected template"
+                                                        style="flex:0 0 auto;background:#fff;color:#e23b3b;border:1px solid #e23b3b;border-radius:6px;width:34px;height:34px;cursor:pointer;">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="ca-row">
@@ -265,7 +272,7 @@
                                     <h5><span class="ca-card-icon" style="background:#eaf1fb;color:#3498db;"><i class="fas fa-calendar-alt"></i></span> Payment Schedule / Milestones</h5>
                                     <table class="ca-table" id="milestoneTable">
                                         <thead>
-                                            <tr><th style="width:22%;">Milestone</th><th style="width:16%;">Timeline</th><th style="width:16%;">Amount (before GST)</th><th>Included Services</th><th style="width:36px;"></th></tr>
+                                            <tr><th style="width:26%;">Milestone</th><th style="width:20%;">Timeline</th><th style="width:20%;">Amount (before GST)</th><th style="width:36px;"></th></tr>
                                         </thead>
                                         <tbody id="milestoneBody">
                                             <?php foreach ($milestones as $i => $m): ?>
@@ -273,7 +280,6 @@
                                                 <td><input type="text" name="milestones[<?php echo $i; ?>][milestone]" value="<?php echo esc($m['milestone']); ?>"></td>
                                                 <td><input type="text" name="milestones[<?php echo $i; ?>][due_date]" value="<?php echo esc($m['due_date']); ?>" placeholder="e.g. Within 7 days"></td>
                                                 <td><input type="number" step="0.01" name="milestones[<?php echo $i; ?>][amount]" value="<?php echo esc($m['amount']); ?>" placeholder="Included"><div class="ca-gst-hint"></div></td>
-                                                <td><input type="text" name="milestones[<?php echo $i; ?>][included_services]" value="<?php echo esc($m['included_services']); ?>"></td>
                                                 <td class="ca-actions"><?php if ($i > 0): ?><button type="button" onclick="caRemoveRow(this)">&#128465;</button><?php endif; ?></td>
                                             </tr>
                                             <?php endforeach; ?>
@@ -385,16 +391,20 @@
                                         <tr><td>GST (<span id="p_gst_rate">0</span>%) on Service Fee</td><td id="p_gst_amount">$0.00</td></tr>
                                         <tbody id="p_govt_fee_rows"></tbody>
                                     </table>
-                                    <div class="ca-preview-section-title">PAYMENT SCHEDULE / MILESTONES</div>
-                                    <table class="ca-preview-mini-table">
-                                        <thead><tr><th>Milestone</th><th>Timeline</th><th>Amount (GST Included)</th></tr></thead>
-                                        <tbody id="p_milestones"></tbody>
-                                    </table>
-                                    <div class="ca-preview-section-title">ADDITIONAL FEES (IF APPLICABLE)</div>
-                                    <table class="ca-preview-mini-table">
-                                        <thead><tr><th>Description</th><th>Amount</th></tr></thead>
-                                        <tbody id="p_additional_fees"></tbody>
-                                    </table>
+                                    <div id="p_milestones_section" style="display:none;">
+                                        <div class="ca-preview-section-title">PAYMENT SCHEDULE / MILESTONES</div>
+                                        <table class="ca-preview-mini-table">
+                                            <thead><tr><th>Milestone</th><th>Timeline</th><th>Amount (GST Included)</th></tr></thead>
+                                            <tbody id="p_milestones"></tbody>
+                                        </table>
+                                    </div>
+                                    <div id="p_additional_fees_section" style="display:none;">
+                                        <div class="ca-preview-section-title">ADDITIONAL FEES (IF APPLICABLE)</div>
+                                        <table class="ca-preview-mini-table">
+                                            <thead><tr><th>Description</th><th>Amount</th></tr></thead>
+                                            <tbody id="p_additional_fees"></tbody>
+                                        </table>
+                                    </div>
                                     <table class="ca-fee-table">
                                         <tr class="total"><td>TOTAL PAYABLE</td><td id="p_total">$0.00</td></tr>
                                     </table>
@@ -591,6 +601,7 @@
                     html += '<tr><td>' + m + '</td><td>' + (timeline || '—') + '</td><td>' + display + '</td></tr>';
                 });
                 document.getElementById('p_milestones').innerHTML = html;
+                document.getElementById('p_milestones_section').style.display = html ? '' : 'none';
             }
 
             // Additional fee amounts are entered pre-GST, same as Milestones — the preview
@@ -610,6 +621,7 @@
                     html += '<tr><td>' + d + '</td><td>' + caFmt((parseFloat(amt) || 0) * (1 + gstRate / 100)) + '</td></tr>';
                 });
                 document.getElementById('p_additional_fees').innerHTML = html;
+                document.getElementById('p_additional_fees_section').style.display = html ? '' : 'none';
             }
 
             function caUpdatePreview() {
@@ -658,7 +670,6 @@
                     '<td><input type="text" name="milestones[' + idx + '][milestone]"></td>' +
                     '<td><input type="text" name="milestones[' + idx + '][due_date]" placeholder="e.g. Within 7 days"></td>' +
                     '<td><input type="number" step="0.01" name="milestones[' + idx + '][amount]" placeholder="Included"><div class="ca-gst-hint"></div></td>' +
-                    '<td><input type="text" name="milestones[' + idx + '][included_services]"></td>' +
                     '<td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>';
                 document.getElementById('milestoneBody').appendChild(tr);
             }
@@ -779,7 +790,6 @@
                         '<td><input type="text" name="milestones[' + idx + '][milestone]" value="' + (m.milestone || '') + '"></td>' +
                         '<td><input type="text" name="milestones[' + idx + '][due_date]" value="' + (m.due_date || '') + '" placeholder="e.g. Within 7 days"></td>' +
                         '<td><input type="number" step="0.01" name="milestones[' + idx + '][amount]" value="' + (m.amount || '') + '" placeholder="Included"><div class="ca-gst-hint"></div></td>' +
-                        '<td><input type="text" name="milestones[' + idx + '][included_services]" value="' + (m.included_services || '') + '"></td>' +
                         '<td class="ca-actions"><button type="button" onclick="caRemoveRow(this)">&#128465;</button></td>';
                     document.getElementById('milestoneBody').appendChild(tr);
                 });
@@ -801,11 +811,41 @@
 
             $('#f_template_id').on('change', function () {
                 var id = this.value;
+                document.getElementById('caDeleteTemplateBtn').disabled = !id;
                 if (!id) return;
                 $.get(CA_BASE + 'agreement/Template/get/' + id, function (data) {
                     if (data && Object.keys(data).length) caApplyTemplate(data);
                 }, 'json');
             });
+
+            function caDeleteTemplate() {
+                var select = document.getElementById('f_template_id');
+                var id = select.value;
+                if (!id) return;
+                var name = select.options[select.selectedIndex].text;
+                Swal.fire({
+                    title: 'Delete this template?',
+                    text: '"' + name + '" will be permanently removed. This cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Delete It',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#e23b3b',
+                    reverseButtons: true
+                }).then(function (result) {
+                    if (!result.value) return;
+                    $.post(CA_BASE + 'agreement/Template/delete/' + id, {}, function (res) {
+                        if (res && res.success) {
+                            select.querySelector('option[value="' + id + '"]').remove();
+                            select.value = '';
+                            document.getElementById('caDeleteTemplateBtn').disabled = true;
+                            Swal.fire({ title: 'Deleted', icon: 'success', timer: 1500, showConfirmButton: false });
+                        } else {
+                            Swal.fire({ title: 'Error', text: (res && res.message) || 'Could not delete this template.', icon: 'error' });
+                        }
+                    }, 'json');
+                });
+            }
 
             document.getElementById('caEditForm').addEventListener('input', caUpdatePreview);
             document.getElementById('caEditForm').addEventListener('change', caUpdatePreview);

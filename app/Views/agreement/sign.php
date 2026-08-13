@@ -68,9 +68,9 @@
             .sg-fee-table { width: 100%; font-size: 12px; border-collapse: collapse; margin-bottom: 10px; }
             .sg-fee-table td { padding: 4px 8px; border-bottom: 1px solid #f4f4f6; }
             .sg-fee-table td:last-child { text-align: right; }
-            .sg-fee-table tr.total td { font-weight: 800; color: var(--sg-red); background: #fdf1f1; border-top: 1px solid var(--sg-red); border-bottom: none; padding-top: 8px; padding-bottom: 8px; }
-            .sg-fee-table tr.total td:first-child { border-radius: 6px 0 0 6px; }
-            .sg-fee-table tr.total td:last-child { border-radius: 0 6px 6px 0; }
+            .sg-total-payable { display: flex; align-items: center; justify-content: space-between; background: #fdf1f1; border: 1px solid var(--sg-red); border-radius: 8px; padding: 12px 18px; margin-top: 4px; }
+            .sg-total-payable .h { font-weight: 800; color: var(--sg-red); font-size: 15px; letter-spacing: .02em; text-transform: uppercase; }
+            .sg-total-payable .amt { font-weight: 800; color: var(--sg-red); font-size: 19px; }
             .sg-mini-table { width: 100%; font-size: 11px; border-collapse: collapse; }
             .sg-mini-table th, .sg-mini-table td { padding: 4px 6px; border-bottom: 1px solid #f4f4f6; text-align: left; }
 
@@ -183,7 +183,7 @@
                 .sg-pdf-pages { display: block; }
                 .sg-card.sg-pdf-page {
                     box-shadow: none; border-radius: 0; margin: 0; padding: 15mm 15mm 20mm;
-                    min-height: 297mm; page-break-after: always; break-inside: avoid;
+                    min-height: 297mm; page-break-after: always; overflow: visible;
                 }
                 .sg-card.sg-pdf-page:last-of-type { page-break-after: auto; }
                 .sg-cert-page { display: block; page-break-before: always; }
@@ -288,7 +288,7 @@
                                 <div class="sg-pdf-page-content">
 
                                 <div class="sg-section">
-                                    <div class="sg-preview-title">FEES &amp; PAYMENT SUMMARY</div>
+                                    <div class="sg-preview-title">PROFESSIONAL FEES AND GOVERNMENT FEES</div>
                                     <table class="sg-fee-table">
                                         <tr><td>Professional Service Fee</td><td>$<?php echo number_format((float) $agreement['service_fee'], 2); ?></td></tr>
                                         <tr><td>GST (<?php echo esc((string) (float) $agreement['gst_rate']); ?>%) on Service Fee</td><td>$<?php echo number_format((float) $agreement['gst_amount'], 2); ?></td></tr>
@@ -299,6 +299,7 @@
                                             <tr><td style="<?php echo $line['group'] !== null ? 'padding-left:20px;color:#555;' : ''; ?>"><?php echo esc($line['label']); ?></td><td>$<?php echo number_format($line['amount'], 2); ?></td></tr>
                                         <?php endforeach; ?>
                                     </table>
+                                    <?php if (!empty($milestones)): ?>
                                     <div class="sg-preview-title">PAYMENT SCHEDULE / MILESTONES</div>
                                     <table class="sg-mini-table">
                                         <thead><tr><th>Milestone</th><th>Timeline</th><th>Amount (GST Included)</th></tr></thead>
@@ -308,6 +309,8 @@
                                         <?php endforeach; ?>
                                         </tbody>
                                     </table>
+                                    <?php endif; ?>
+                                    <?php if (!empty($additionalFees)): ?>
                                     <div class="sg-preview-title">ADDITIONAL FEES (IF APPLICABLE)</div>
                                     <table class="sg-mini-table">
                                         <thead><tr><th>Description</th><th>Amount (GST Included)</th></tr></thead>
@@ -317,9 +320,11 @@
                                         <?php endforeach; ?>
                                         </tbody>
                                     </table>
-                                    <table class="sg-fee-table">
-                                        <tr class="total"><td>TOTAL PAYABLE</td><td>$<?php echo number_format((float) $agreement['total_amount'], 2); ?></td></tr>
-                                    </table>
+                                    <?php endif; ?>
+                                    <div class="sg-total-payable">
+                                        <span class="h">Total Payable</span>
+                                        <span class="amt">$<?php echo number_format((float) $agreement['total_amount'], 2); ?></span>
+                                    </div>
                                 </div>
 
                                 </div>

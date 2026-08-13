@@ -302,6 +302,7 @@ function sia_send_agreement_client_sent_email(array $agreement, string $signUrl)
     $cards = [
         ['emoji' => '&#128188;', 'color' => '#27ae60', 'label' => 'Application Type', 'value' => $typeLabel],
         ['emoji' => '&#128176;', 'color' => '#e08e2b', 'label' => 'Service Fee', 'value' => sia_agreement_money($agreement, $agreement['service_fee'] ?? 0)],
+        ['emoji' => '&#128176;', 'color' => '#e08e2b', 'label' => 'GST (5%)', 'value' => sia_agreement_money($agreement, $agreement['gst_amount'] ?? 0)],
         ['emoji' => '&#127974;', 'color' => '#3498db', 'label' => 'Government Fee', 'value' => sia_agreement_money($agreement, \App\Libraries\Agreement\AgreementClauses::governmentFeeTotal($agreement))],
         ['emoji' => '&#128179;', 'color' => '#e23b3b', 'label' => 'Total Amount', 'value' => sia_agreement_money($agreement, $agreement['total_amount'] ?? 0)],
     ];
