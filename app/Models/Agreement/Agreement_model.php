@@ -10,6 +10,7 @@ class Agreement_model extends Model
 
     protected $allowedFields = [
         'application_id', 'prospect_id', 'client_name', 'client_email', 'client_phone', 'client_address',
+        'case_description',
         'category_id', 'type_id', 'status', 'hide', 'created_by', 'insert_on', 'update_on',
         'reference_number', 'agreement_date', 'consultant_name', 'rcic_number', 'currency', 'template_name',
         'service_fee', 'gst_rate', 'gst_amount', 'government_fee',

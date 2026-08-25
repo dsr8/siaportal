@@ -189,6 +189,9 @@ class AgreementPdfBuilder
     {
         $html  = '<h1 style="text-align:center;font-size:19px;margin-bottom:2px;">SERVICE AGREEMENT</h1>';
         $html .= '<p style="text-align:center;color:#e23b3b;font-weight:bold;font-size:11.5px;margin-top:0;">' . esc($typeLabel) . '</p>';
+        if (trim($agreement['case_description'] ?? '') !== '') {
+            $html .= '<p style="text-align:center;color:#444;font-size:9px;margin-top:-4px;">' . nl2br(esc($agreement['case_description'])) . '</p>';
+        }
         $html .= '<table cellpadding="0" style="width:100%;font-size:9px;color:#6b7280;">
             <tr>
                 <td width="50%">SiaID: ' . (int) ($agreement['prospect_id'] ?? 0) . '</td>

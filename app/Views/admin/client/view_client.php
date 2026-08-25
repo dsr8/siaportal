@@ -842,9 +842,10 @@ function baCheckSlot() {
         document.getElementById('ba_avail_msg').innerHTML = '<span style="color:orange">Please select date and time first.</span>';
         return;
     }
+    var member = document.getElementById('ba_assigned').value;
     document.getElementById('ba_avail_msg').innerHTML = '<span style="color:#888">Checking...</span>';
     $.post('<?php echo base_url("appoint/Appoint/check_availability"); ?>',
-        { appointment_date: date, appointment_time: time },
+        { appointment_date: date, appointment_time: time, team_member: member },
         function(res) {
             if (res.available) {
                 document.getElementById('ba_avail_msg').innerHTML = '<span style="color:green;font-weight:bold">&#10003; Slot is available!</span>';

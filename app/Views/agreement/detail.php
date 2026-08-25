@@ -28,9 +28,10 @@
             .ca-row { display: flex; gap: 14px; margin-bottom: 14px; flex-wrap: wrap; }
             .ca-field { flex: 1; min-width: 160px; }
             .ca-field label { font-size: 12.5px; font-weight: 600; color: #444; margin-bottom: 4px; display: block; }
-            .ca-field input, .ca-field select {
+            .ca-field input, .ca-field select, .ca-field textarea {
                 width: 100%; padding: 8px 10px; border: 1px solid #d8dce1; border-radius: 6px; font-size: 13.5px;
             }
+            .ca-field textarea { resize: vertical; font-family: inherit; box-sizing: border-box; }
             .ca-field input[readonly] { background: #f5f5f5; color: #666; }
             .ca-subsection-title { font-size: 12px; font-weight: 700; color: #8e44ad; text-transform: uppercase; letter-spacing: .02em; margin: 4px 0 10px; }
 
@@ -204,6 +205,15 @@
                                 </div>
 
                                 <div class="ca-card">
+                                    <h5><span class="ca-card-icon" style="background:#eafaf0;color:#27ae60;"><i class="fas fa-align-left"></i></span> Case Description / Scope of Work</h5>
+                                    <div class="ca-row">
+                                        <div class="ca-field" style="flex:1 1 100%;">
+                                            <textarea name="case_description" id="f_case_description" rows="4" placeholder="Describe the specific case or scope of services for this agreement..."><?php echo esc($agreement['case_description'] ?? ''); ?></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="ca-card">
                                     <h5><span class="ca-card-icon" style="background:#f4eafb;color:#8e44ad;"><i class="fas fa-file-invoice-dollar"></i></span> Professional Fees &amp; Govt Fees</h5>
                                     <div class="ca-row">
                                         <div class="ca-field">
@@ -366,6 +376,7 @@
                                     </div>
                                     <div class="ca-doc-title">SERVICE AGREEMENT</div>
                                     <div class="ca-doc-subtitle" id="p_agreement_type">—</div>
+                                    <div id="p_case_description" style="display:none;text-align:center;font-size:12px;color:#444;margin:-8px 0 10px;"></div>
                                     <div class="ca-doc-meta">
                                         <span>SiaID: <?php echo (int) $agreement['prospect_id']; ?></span>
                                         <span id="p_date">—</span>
@@ -582,6 +593,10 @@
                 document.getElementById('p_consultant_name').textContent = document.getElementById('f_consultant_name').value || '—';
                 document.getElementById('p_rcic_number').textContent = document.getElementById('f_rcic_number').value || '—';
                 document.getElementById('p_date').textContent = document.getElementById('f_agreement_date').value || '—';
+                var caseDesc = document.getElementById('f_case_description').value;
+                var caseDescEl = document.getElementById('p_case_description');
+                caseDescEl.textContent = caseDesc;
+                caseDescEl.style.display = caseDesc ? 'block' : 'none';
             }
 
             // Milestone amounts are entered pre-GST; the preview (and the client-facing document)

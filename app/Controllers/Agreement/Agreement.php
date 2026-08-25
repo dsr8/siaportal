@@ -418,6 +418,7 @@ class Agreement extends BaseController
             'client_email'    => trim($post['client_email'] ?? '') ?: $agreement['client_email'],
             'client_phone'    => trim($post['client_phone'] ?? '') ?: $agreement['client_phone'],
             'client_address'  => trim($post['client_address'] ?? '') ?: $agreement['client_address'],
+            'case_description' => trim($post['case_description'] ?? ''),
             'template_name'   => trim($post['template_name'] ?? '') ?: 'Default Template',
             'agreement_date'  => trim($post['agreement_date'] ?? '') ?: null,
             'consultant_name' => self::CONSULTANT_NAME,

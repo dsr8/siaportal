@@ -615,11 +615,12 @@ textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-si
 
         $Appoint = new Appointment_model();
 
-        $date = $this->request->getPost('appointment_date');
-        $time = $this->request->getPost('appointment_time');
+        $date       = $this->request->getPost('appointment_date');
+        $time       = $this->request->getPost('appointment_time');
+        $assignedTo = trim($this->request->getPost('assigned_to') ?? '');
 
-        if ($Appoint->isSlotTaken($date, $time)) {
-            return $this->response->setJSON(['success' => false, 'msg' => 'This slot is already booked. Please choose another time.']);
+        if (!empty($assignedTo) && $Appoint->isMemberSlotTaken($date, $time, $assignedTo)) {
+            return $this->response->setJSON(['success' => false, 'msg' => $assignedTo . ' already has an appointment on this date and time. Please choose a different slot or team member.']);
         }
 
         $clientName       = $this->request->getPost('client_name');
@@ -632,7 +633,6 @@ textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-si
         $officeLocation   = $this->request->getPost('office_location') ?? '';
         $notes            = $this->request->getPost('notes');
         $prospectId       = $this->request->getPost('prospect_id');
-        $assignedTo       = $this->request->getPost('assigned_to') ?? '';
 
         $insideCanada      = $this->request->getPost('inside_canada') ?? '';
         $existingClient    = $this->request->getPost('existing_client') ?? '';

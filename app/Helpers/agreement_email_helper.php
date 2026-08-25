@@ -294,6 +294,9 @@ function sia_send_agreement_client_sent_email(array $agreement, string $signUrl)
     <div style="margin-top:8px;font-size:13.5px;color:#555;line-height:1.6;">
       Your Retainer Agreement for immigration services has been prepared and is ready for your review and electronic signature.
     </div>';
+    if (trim($agreement['case_description'] ?? '') !== '') {
+        $intro .= '<div style="margin-top:10px;font-size:13px;color:#555;line-height:1.6;font-style:italic;">' . nl2br(esc($agreement['case_description'])) . '</div>';
+    }
 
     $metaRow = [
         ['icon' => '&#35;', 'label' => 'Reference No.', 'value' => $refNumber],
@@ -338,6 +341,9 @@ function sia_send_agreement_team_sent_email(array $agreement): void
       The Retainer Agreement has been successfully sent to the client.<br>
       Below is the agreement summary for your reference.
     </div>';
+    if (trim($agreement['case_description'] ?? '') !== '') {
+        $intro .= '<div style="margin-top:10px;font-size:13px;color:#555;line-height:1.6;font-style:italic;">' . nl2br(esc($agreement['case_description'])) . '</div>';
+    }
 
     $cards = [
         ['emoji' => '&#128100;', 'color' => '#3498db', 'label' => 'SiaID', 'value' => (string) (int) $agreement['prospect_id']],

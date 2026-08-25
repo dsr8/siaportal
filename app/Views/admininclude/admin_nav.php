@@ -31,6 +31,12 @@
   @media (max-width: 991px) {
     #sidebarCollapseBtn { display: none; }
   }
+
+  /* The full-page birthday balloon/ribbon overlay lives in admininclude/header.php instead of
+     here — #layoutSidenav_nav (an ancestor of this nav) gets a CSS transform when the sidebar
+     is toggled, and a transformed ancestor re-anchors any position:fixed descendant to itself
+     instead of the real viewport, which would break a "cover the whole page" overlay. */
+  body.birthday-hidden .birthday-decor { display: none !important; }
 </style>
 
 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">

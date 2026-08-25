@@ -264,6 +264,9 @@
 
                             <div class="sg-doc-title">SERVICE AGREEMENT</div>
                             <div class="sg-doc-subtitle"><?php echo esc($typeLabel); ?></div>
+                            <?php if (trim($agreement['case_description'] ?? '') !== ''): ?>
+                            <div style="text-align:center;font-size:12px;color:#444;margin:-8px 0 10px;"><?php echo nl2br(esc($agreement['case_description'])); ?></div>
+                            <?php endif; ?>
                             <div class="sg-doc-meta">
                                 <span>SiaID: <?php echo (int) $agreement['prospect_id']; ?></span>
                                 <span><?php echo esc($agreement['agreement_date'] ?? '—'); ?></span>
