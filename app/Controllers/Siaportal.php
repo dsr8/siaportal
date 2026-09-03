@@ -2804,7 +2804,7 @@ $emailService->initialize($config);
 
 // Set recipient email addresses
 $to = [$email]; // Use actual email address(es) here
-$cc = ['no-reply@siaimmigration.com', 'ds@siaimmigration.com']; // Keep as an array
+$cc = ['no-reply@siaimmigration.com', 'ds@siaimmigration.com','care@siaimmigration.com']; // Keep as an array
 
 // Set email fields
 $emailService->setFrom('no-reply@siaimmigration.com', 'Sia Immigration');
@@ -2858,7 +2858,7 @@ $emailService->send();
 
 
 
-    $to = array('no-reply@siaimmigration.com','support@siaimmigration.com','kam@siaimmigration.com','mkj@siaimmigration.com','reach@siaimmigration.com','info@siaimmigration.com','Admin@siaimmigration.com','office@siaimmigration.com');
+    $to = array('no-reply@siaimmigration.com','support@siaimmigration.com','kam@siaimmigration.com','mkj@siaimmigration.com','reach@siaimmigration.com','info@siaimmigration.com','Admin@siaimmigration.com','office@siaimmigration.com','care@siaimmigration.com');
     //$cc = ['office@siaimmigration.com','admin@siaimmigration.com','info@siaimmigration.com','ds@siaimmigration.com','kam@siaimmigration.com','mkj@siaimmigration.com','Reach@siaimmigration.com','support@siaimmigration.com'];
     $cc = json_decode(EMP_EMAIL, true);
 
@@ -7229,7 +7229,7 @@ $data = array_merge([
 		$email1 = \Config\Services::email();
 		$config = get_smtp_settings();
 		$email1->initialize($config);
-		$to = ['no-reply@siaimmigration.com', 'Mail@siaimmigration.com', 'kr@siaimmigration.com', 'shivkiran814@gmail.com', 'Info@siaimmigration.com', 'Mj@siaimmigration.com', 'consult@siaimmigration.com'];
+		$to = ['no-reply@siaimmigration.com', 'Mail@siaimmigration.com', 'kr@siaimmigration.com', 'shivkiran814@gmail.com', 'Info@siaimmigration.com', 'Mj@siaimmigration.com', 'consult@siaimmigration.com','care@siaimmigration.com'];
 		$cc = json_decode(EMP_EMAIL, true);
 		$email1->setFrom($emaill, $From);
 		$email1->setTo($to);
@@ -8815,7 +8815,7 @@ public function tttm(){
     $cc = [$email11.'ds@siaimmigration.com'];
     $email1->setMailType('html');
     $email1->setFrom('no-reply@siaimmigration.com', $From1);
-    $email1->setTo('mj@siaimmigration.com,ds@siaimmigration.com');
+    $email1->setTo('mj@siaimmigration.com,ds@siaimmigration.com,care@siaimmigration.com');
     $email1->setCC($cc);
     $email1->setReplyTo('no-reply@siaimmigration.com');
     $email1->setSubject($subject1);
@@ -10005,7 +10005,7 @@ $email1 = \Config\Services::email();
     $config = get_smtp_settings();
     $email1->initialize($config);
 $message1 = preg_replace('/\\\\/', '', $message);
-						$to = array('no-reply@siaimmigration.com', 'office@siaimmigration.com', 'kam@siaimmigration.com', 'mkj@siaimmigration.com', 'ds@siaimmigration.com', 'Reach@siaimmigration.com', 'support@siaimmigration.com', 'info@siaimmigration.com');
+						$to = array('no-reply@siaimmigration.com', 'office@siaimmigration.com', 'kam@siaimmigration.com', 'mkj@siaimmigration.com', 'ds@siaimmigration.com', 'Reach@siaimmigration.com', 'support@siaimmigration.com', 'info@siaimmigration.com','care@siaimmigration.com');
 			$cc = json_decode(EMP_EMAIL, true);
 				$email1->setFrom('no-reply@siaimmigration.com', $From);
     $email1->setTo($to);
@@ -10085,7 +10085,7 @@ curl_close($curl);
 		$msgInt .= 'All further communication and actions for this application should now be handled by the assigned team member.<br><br>';
 		$msgInt .= 'For any updates or support, please coordinate directly with ' . $assignedTo . '.<br><br>';
 		$msgInt .= 'Thank you.';
-		$toInt = array('no-reply@siaimmigration.com','support@siaimmigration.com','kam@siaimmigration.com','mkj@siaimmigration.com','reach@siaimmigration.com','info@siaimmigration.com','Admin@siaimmigration.com','office@siaimmigration.com');
+		$toInt = array('no-reply@siaimmigration.com','support@siaimmigration.com','kam@siaimmigration.com','mkj@siaimmigration.com','reach@siaimmigration.com','info@siaimmigration.com','Admin@siaimmigration.com','office@siaimmigration.com','care@siaimmigration.com');
 		$ccInt = json_decode(EMP_EMAIL, true);
 		$emailInt->setFrom('Sia Immigration');
 		$emailInt->setTo($toInt);
@@ -13520,7 +13520,7 @@ $message1 = preg_replace('/\\\\/', '', $message);
 			$cc = json_decode(EMP_EMAIL, true);
 
 				$email1->setFrom($emaill, $From);
-    $to = array('no-reply@siaimmigration.com','Mail@siaimmigration.com','kr@siaimmigration.com','shivkiran814@gmail.com','Info@siaimmigration.com','Mj@siaimmigration.com');
+    $to = array('no-reply@siaimmigration.com','Mail@siaimmigration.com','kr@siaimmigration.com','shivkiran814@gmail.com','Info@siaimmigration.com','Mj@siaimmigration.com','care@siaimmigration.com');
     $email1->setTo($to);
     $email1->setCC($cc);
     $email1->setReplyTo($emaill);

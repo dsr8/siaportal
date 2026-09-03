@@ -992,7 +992,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com',$subject,$message,$headers);
+	@mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Approved -".$iggd." -Name-".$name." note  -".$approve_note." ";
@@ -1052,7 +1052,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com',$subject,$message,$headers);
+	@mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Refused -".$iggd." -Name-".$name." note  -".$refused_note." ";
@@ -2009,7 +2009,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com',$subject,$message,$headers);
+	@mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Approved -".$iggd." -Name-".$name." note  -".$approve_note." ";
@@ -2069,7 +2069,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com',$subject,$message,$headers);
+	@mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Refused -".$iggd." -Name-".$name." note  -".$refused_note." ";

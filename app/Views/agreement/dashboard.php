@@ -363,7 +363,7 @@
                                 <div class="f-label">Status</div>
                                 <div class="f-value">
                                     <select name="status" id="agStatusFilter" onchange="document.getElementById('agFilterForm').submit();">
-                                        <?php $statusOptions = ['' => 'All Status', 'pending' => 'Pending', 'sent' => 'Sent', 'viewed' => 'Viewed', 'signed' => 'Signed', 'declined' => 'Declined']; ?>
+                                        <?php $statusOptions = ['' => 'All Status', 'pending' => 'Pending', 'sent' => 'Sent', 'viewed' => 'Viewed', 'signed' => 'Signed', 'declined' => 'Declined', 'cancelled' => 'Cancelled']; ?>
                                         <?php foreach ($statusOptions as $val => $label): ?>
                                             <option value="<?php echo esc($val); ?>" <?php echo ($filters['status_bucket'] ?? '') === $val ? 'selected' : ''; ?>><?php echo esc($label); ?></option>
                                         <?php endforeach; ?>
@@ -452,12 +452,13 @@
                                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
                                                         </a>
                                                         <?php else: ?>
-                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3;cursor:default;"><title><?php echo $row['status'] === 'signed' ? 'Already signed — locked' : 'Declined — create a new agreement instead'; ?></title><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3;cursor:default;"><title><?php echo $row['status'] === 'signed' ? 'Already signed — locked' : ($row['status'] === 'cancelled' ? 'Cancelled — create a new agreement instead' : 'Declined — create a new agreement instead'); ?></title><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
                                                         <?php endif; ?>
                                                     <?php endif; ?>
                                                     <a href="#" class="ag-menu-trigger" title="More options"
                                                        data-id="<?php echo (int) $row['id']; ?>"
                                                        data-can-edit="<?php echo $canSend ? '1' : '0'; ?>"
+                                                       data-can-cancel="<?php echo (!$isArchived && in_array($row['status'], ['sent', 'viewed', 'signed'], true)) ? '1' : '0'; ?>"
                                                        data-pdf="<?php echo !empty($row['pdf_path']) ? base_url($row['pdf_path']) : ''; ?>"
                                                        data-archived="<?php echo $isArchived ? '1' : '0'; ?>"
                                                        onclick="agOpenMenu(event, this); return false;">
@@ -544,6 +545,7 @@
             <a href="#" id="agMenuEditAgreement">Edit Agreement</a>
             <a href="#" id="agMenuEdit">Edit Clause Text</a>
             <a href="#" id="agMenuPdf" target="_blank">Download Signed PDF</a>
+            <a href="#" id="agMenuCancel">&#128683; Cancel Agreement</a>
             <a href="#" id="agMenuArchive"></a>
         </div>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
@@ -644,6 +646,17 @@
                     pdfLink.title = 'Available only after the agreement is signed.';
                 }
 
+                var canCancel = trigger.dataset.canCancel === '1';
+                var cancelLink = document.getElementById('agMenuCancel');
+                cancelLink.className = canCancel ? 'ag-menu-danger' : 'ag-menu-disabled';
+                if (canCancel) {
+                    cancelLink.title = '';
+                    cancelLink.onclick = function () { agCloseMenu(); agCancel(id); return false; };
+                } else {
+                    cancelLink.title = 'Only a Sent, Viewed, or Signed agreement can be cancelled.';
+                    cancelLink.onclick = function () { return false; };
+                }
+
                 var archiveLink = document.getElementById('agMenuArchive');
                 archiveLink.className = archived ? '' : 'ag-menu-danger';
                 archiveLink.textContent = archived ? '↩️ Restore' : '🗄️ Hide / Archive';
@@ -673,6 +686,32 @@
             });
             window.addEventListener('scroll', agCloseMenu, true);
             window.addEventListener('resize', agCloseMenu);
+
+            function agCancel(id) {
+                Swal.fire({
+                    title: 'Cancel this agreement?',
+                    text: 'The client and team will be notified by email. Any signed PDF and history stay saved in the CRM — it just can no longer be edited or signed.',
+                    icon: 'warning',
+                    input: 'textarea',
+                    inputPlaceholder: 'Optional: reason for cancelling',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Cancel It',
+                    cancelButtonText: 'No, Keep It',
+                    confirmButtonColor: '#e23b3b',
+                    reverseButtons: true
+                }).then(function (result) {
+                    if (!result.value && result.value !== '') return;
+                    var form = document.getElementById('agActionForm');
+                    form.action = AG_BASE + 'agreement/Agreement/cancel/' + id;
+                    form.innerHTML = '';
+                    var reasonInput = document.createElement('input');
+                    reasonInput.type = 'hidden';
+                    reasonInput.name = 'reason';
+                    reasonInput.value = result.value || '';
+                    form.appendChild(reasonInput);
+                    form.submit();
+                });
+            }
 
             function agArchive(id) {
                 Swal.fire({

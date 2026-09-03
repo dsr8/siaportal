@@ -589,7 +589,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply_exp');
           $message .= 'Document :-: https://canada.siaimmigration.com/assets/resume/'.$newName.'<br>';  
 
   
-  @mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com',$subject,$message,$headers);
+  @mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Profile Created id-".$iggd." -Name-".$name." - Date of Creation-".$date_of_creation." ";
@@ -1303,7 +1303,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply_exp');
           $message .= 'Document :-: https://canada.siaimmigration.com/assets/resume/'.$newName.'<br>';  
 
   
-  @mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com',$subject,$message,$headers);
+  @mail('office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Profile Created id-".$iggd." -Name-".$name." - Date of Creation-".$date_of_creation." ";

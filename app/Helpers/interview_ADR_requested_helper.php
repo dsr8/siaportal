@@ -29,7 +29,7 @@ function interview_ADR_requested_team_mail($iggd,$name,$date_int_req_rec,$date_i
     $email1->initialize($config);
 $message1 = preg_replace('/\\\\/', '', $message);
 						$cc = array('no-reply@siaimmigration.com');
-				$to = ['info@siaimmigration.com','admin@siaimmigration.com','ds@siaimmigration.com','office@siaimmigration.com','kam@siaimmigration.com','mkj@siaimmigration.com','Reach@siaimmigration.com','support@siaimmigration.com','consult@siaimmigration.com'];
+				$to = ['info@siaimmigration.com','admin@siaimmigration.com','ds@siaimmigration.com','office@siaimmigration.com','kam@siaimmigration.com','mkj@siaimmigration.com','Reach@siaimmigration.com','support@siaimmigration.com','consult@siaimmigration.com','care@siaimmigration.com'];
 
 			
 				

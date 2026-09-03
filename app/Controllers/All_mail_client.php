@@ -226,7 +226,7 @@ class All_mail_client extends BaseController
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -585,7 +585,7 @@ $From="Sia Immigration";
 					
 
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -747,7 +747,7 @@ $From="Sia Immigration";
 					$message .= 'voice : ' .$vv.'<br>';
 
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -996,7 +996,7 @@ $From="Sia Immigration";
 					
 					$message .= 'Date : ' .date('d/m/Y').'<br>';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -1201,7 +1201,7 @@ $From="New Employer Added";
 					$message .= 'Province : ' .$country.'<br>';
 					$message .= 'Company Name : ' .$company_name.'<br>';
 					$message .= 'Company Type : ' .$company_type.'<br>';
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -1385,7 +1385,7 @@ $From="Sia Immigration";
 					//$message .= 'Country : ' .$country.'<br>';
 					//$message .= 'Company Name : ' .$company_name.'<br>';
 					//$message .= 'Company Type : ' .$company_type.'<br>';
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -1647,7 +1647,7 @@ public function birthday_mail(){
 					//$message .= 'Country : ' .$country.'<br>';
 					//$message .= 'Company Name : ' .$company_name.'<br>';
 					//$message .= 'Company Type : ' .$company_type.'<br>';
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -1883,7 +1883,7 @@ public function profile_in_process($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -2119,7 +2119,7 @@ public function profile_created($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -2345,7 +2345,7 @@ public function invitation_received($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -2572,7 +2572,7 @@ public function invitation_withdrawn($name,$tname,$tmobile,$cmobile,$reason,$ema
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -2791,7 +2791,7 @@ public function application_submitted($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -3006,7 +3006,7 @@ public function Adr_BCPNP($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -3227,7 +3227,7 @@ public function nomination_approved($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -3447,7 +3447,7 @@ public function nomination_refused($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -3668,7 +3668,7 @@ public function federal_application_sent($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -3888,7 +3888,7 @@ public function AOR_IRCC($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -4108,7 +4108,7 @@ public function ADR_IRCC($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -4328,7 +4328,7 @@ public function medical_requested($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -4547,7 +4547,7 @@ public function biometric_requested($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -4764,7 +4764,7 @@ public function biometric_completed($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -4983,7 +4983,7 @@ public function interview_ADR_requested($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -5201,7 +5201,7 @@ public function interview_ADR_completed($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -5420,7 +5420,7 @@ public function passport_requested($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -5641,7 +5641,7 @@ public function approved($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -5862,7 +5862,7 @@ public function refused($name,$tname,$tmobile,$cmobile,$email){
               </body>
 ';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -6097,7 +6097,7 @@ $From="Sia Immigration";
 					$message .= 'voice : ' .$vv.'<br>';
 
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -6303,7 +6303,7 @@ $From="Sia Immigration";
 					$message .= 'voice : ' .$vv.'<br>';
 
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -6530,7 +6530,7 @@ $From="SiaPortal New Agent Added";
 					$message .= 'Country : ' .$country.'<br>';
 					//$message .= 'Company Name : ' .$company_name.'<br>';
 					//$message .= 'Company Type : ' .$company_type.'<br>';
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -6710,7 +6710,7 @@ $From="Sia Immigration";
 					$message .= 'Heading : ' .$heading.'<br>';
 					$message .= 'Form Body: ' .$form_body.'<br>';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -7468,7 +7468,7 @@ public function move_to_client($id){
 					
 		
 	
-	@mail('ds@siaimmigration.com,mkj@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,mkj@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 			$Prospect = new Prospect_model(); 
 $updatee=$Prospect->update($id, $data);
@@ -8070,7 +8070,7 @@ $tid=$this->request->getPost('type');
 					
 		
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -8886,7 +8886,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					$message .= 'Expected Date To Apply : ' .$exp_date_to_apply.'<br>';
 					$message .= 'Assign Team Member : ' .$fname.'<br>';	
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Profile in Process id-".$iggd." Name-".$name."";
@@ -8993,7 +8993,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					$message .= 'Document :-: https://canada.siaimmigration.com/assets/resume/'.$newName.'<br>';	
 
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Profile Created id-".$iggd." -Name-".$name." - Date of Creation-".$date_of_creation." ";
@@ -9090,7 +9090,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Invitation received-".$iggd." -Name-".$name." - Final Submission Date-".$invitation_date_final." ";
@@ -9185,7 +9185,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					$message .= 'Reason : ' .$invit_withdrawn_reason.'<br>';
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Invitation withdrawn-".$iggd." -Name-".$name." - Reason-".$invit_withdrawn_reason." ";
@@ -9291,7 +9291,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Application submitted-".$iggd." -Name-".$name." - Date Of Application Submitted-".$app_sub_date." ";
@@ -9389,7 +9389,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Adr BCPNP -".$iggd." -Name-".$name." - Adr Deadline-".$adr_deadline." ";
@@ -9486,7 +9486,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Nomination Approved -".$iggd." -Name-".$name."  ";
@@ -9581,7 +9581,7 @@ $nomination_refused_reason=$this->request->getPost('nomination_refused_reason');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Nomination refused -".$iggd." -Name-".$name." Reason -".$nomination_refused_reason." ";
@@ -9680,7 +9680,7 @@ $app_sent_date=$this->request->getPost('app_sent_date');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Federal Application Sent -".$iggd." -Name-".$name." Application Sent Date -".$app_sent_date." ";
@@ -9783,7 +9783,7 @@ $aor_app_number=$this->request->getPost('aor_app_number');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team AOR IRCC -".$iggd." -Name-".$name." Application Number  -".$aor_app_number."Application Date=".$aor_app_date." ";
@@ -9879,7 +9879,7 @@ $adr_submission_date=$this->request->getPost('adr_submission_date');
 					$message .= 'Submission Date : ' .$adr_submission_date.'<br>';
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team ADR IRCC -".$iggd." -Name-".$name." Submission Date  -".$adr_submission_date." ";
@@ -9976,7 +9976,7 @@ $date_for_medical=$this->request->getPost('date_for_medical');
 					$message .= 'Notes : ' .$medical_note.'<br>';
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Medical requested -".$iggd." -Name-".$name." Date For Medical  -".$date_for_medical." Date For Medical Tentative".$date_for_medical_ten." ";
@@ -10071,7 +10071,7 @@ $medical_submit=$this->request->getPost('medical_submit');
 					
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Medical submited -".$iggd." -Name-".$name." Date Of Medical Submit   -".$medical_submit."- Notes".$medical_sub_note." ";
@@ -10166,7 +10166,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Passport requested -".$iggd." -Name-".$name." PP Submition Deadline  -".$pp_deadline." PP submition Tentative ".$pp_tentative."";
@@ -10257,7 +10257,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Approved -".$iggd." -Name-".$name." note  -".$approve_note." ";
@@ -10348,7 +10348,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Refused -".$iggd." -Name-".$name." note  -".$refused_note." ";
@@ -10521,7 +10521,7 @@ $From="Sia Immigration";
 					
 		
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -10708,7 +10708,7 @@ $From="Sia Immigration";
 					$message .= 'Advertisement Heading : ' .$add_head.'<br>';
 					$message .= 'Advertisement Type: ' .$add_type.'<br>';
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -11138,7 +11138,7 @@ $app_recv=$this->request->getPost('app_recv');
 					$message .= 'Study Permit Expiry Date : ' .$study_permit_exp.'<br>';
 					$message .= 'College Transfer Required : ' .$c_transfer.'<br>';
 
-					$to = array('ds@siaimmigration.com', 'no-reply@siaimmigration.com', 'office@siaimmigration.com', 'kam@siaimmigration.com', 'mkj@siaimmigration.com', 'Reach@siaimmigration.com', 'support@siaimmigration.com');
+					$to = array('ds@siaimmigration.com', 'no-reply@siaimmigration.com', 'office@siaimmigration.com', 'kam@siaimmigration.com', 'mkj@siaimmigration.com', 'Reach@siaimmigration.com', 'support@siaimmigration.com','care@siaimmigration.com');
 					$cc = json_decode(EMP_EMAIL, true);
 
 					$email1 = \Config\Services::email();
@@ -11254,7 +11254,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Document Awaiting for Submission id-".$iggd." -Name-".$name." - Document Requested Date-".$doc_req_date."Fee Received Or Pending-".$feerp."  ";
@@ -11361,7 +11361,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Application submitted-".$iggd." -Name-".$name." - Date Of Application Submitted-".$app_sub_date." ";
@@ -11458,7 +11458,7 @@ $date_bio_reciv=$this->request->getPost('date_bio_reciv');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Biometric Requested -".$iggd." -Name-".$name." - Date Of Biometric received-".$date_bio_reciv."Date of Biometric sent to client ".$date_bio_sent."  ";
@@ -11557,7 +11557,7 @@ $date_bio_comp=$this->request->getPost('date_bio_comp');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Biometric Completed -".$iggd." -Name-".$name."  Date Of Biometric completed-".$date_bio_comp." ";
@@ -11654,7 +11654,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Interview/ADR Requested -".$iggd." -Name-".$name." Date Of Request Received -".$date_int_req_rec." ";
@@ -11751,7 +11751,7 @@ $date_int_req_com=$this->request->getPost('date_int_req_com');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Interview/ADR Completed -".$iggd." -Name-".$name." Request Completed Date -".$date_int_req_com." ";
@@ -11850,7 +11850,7 @@ $date_for_medical=$this->request->getPost('date_for_medical');
 					$message .= 'Notes : ' .$medical_note.'<br>';
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Medical requested -".$iggd." -Name-".$name." Date For Medical  -".$date_for_medical." Date For Medical Tentative".$date_for_medical_ten." ";
@@ -11947,7 +11947,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Approved -".$iggd." -Name-".$name." Date Of Work Permit Received Untill  -".$date_work_permit." ";
@@ -12038,7 +12038,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Refused -".$iggd." -Name-".$name." Date Of Refusal  -".$refusal_date." ";
@@ -12455,7 +12455,7 @@ $app_recv=$this->request->getPost('app_recv');
 					$message .= 'Study Permit Expiry Date : ' .$study_permit_exp.'<br>';
 					$message .= 'College Transfer Required : ' .$c_transfer.'<br>';
 
-					$to = array('ds@siaimmigration.com', 'no-reply@siaimmigration.com', 'office@siaimmigration.com', 'kam@siaimmigration.com', 'mkj@siaimmigration.com', 'Reach@siaimmigration.com', 'support@siaimmigration.com');
+					$to = array('ds@siaimmigration.com', 'no-reply@siaimmigration.com', 'office@siaimmigration.com', 'kam@siaimmigration.com', 'mkj@siaimmigration.com', 'Reach@siaimmigration.com', 'support@siaimmigration.com','care@siaimmigration.com');
 					$cc = json_decode(EMP_EMAIL, true);
 
 					$email1 = \Config\Services::email();
@@ -12567,7 +12567,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Document Awaiting for Submission id-".$iggd." -Name-".$name." - Document Requested Date-".$doc_req_date."Fee Received Or Pending-".$feerp."  ";
@@ -12670,7 +12670,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Application submitted-".$iggd." -Name-".$name." - Date Of Application Submitted-".$app_sub_date." ";
@@ -12764,7 +12764,7 @@ $date_bio_reciv=$this->request->getPost('date_bio_reciv');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Biometric Requested -".$iggd." -Name-".$name." - Date Of Biometric received-".$date_bio_reciv."Date of Biometric sent to client ".$date_bio_sent."  ";
@@ -12859,7 +12859,7 @@ $date_bio_comp=$this->request->getPost('date_bio_comp');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Biometric Completed -".$iggd." -Name-".$name."  Date Of Biometric completed-".$date_bio_comp." ";
@@ -12953,7 +12953,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Interview/ADR Requested -".$iggd." -Name-".$name." Date Of Request Received -".$date_int_req_rec." ";
@@ -13047,7 +13047,7 @@ $date_int_req_com=$this->request->getPost('date_int_req_com');
 				
 					
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Interview/ADR Completed -".$iggd." -Name-".$name." Request Completed Date -".$date_int_req_com." ";
@@ -13143,7 +13143,7 @@ $date_for_medical=$this->request->getPost('date_for_medical');
 					$message .= 'Notes : ' .$medical_note.'<br>';
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Medical requested -".$iggd." -Name-".$name." Date For Medical  -".$date_for_medical." Date For Medical Tentative".$date_for_medical_ten." ";
@@ -13237,7 +13237,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Approved -".$iggd." -Name-".$name." Date Of Work Permit Received Untill  -".$date_work_permit." ";
@@ -13328,7 +13328,7 @@ $exp_date_to_apply = $this->request->getPost('exp_date_to_apply');
 					
 				
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 $message1="Hi Team Refused -".$iggd." -Name-".$name." Date Of Refusal  -".$refusal_date." ";
@@ -13563,7 +13563,7 @@ if($stt=='2'){
 					
 		
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 
 
@@ -13653,7 +13653,7 @@ $Prospect = new Prospect_model();
 					
 		
 	
-	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+	@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 
 $message1="Your BC PNP profile Successfuly created";
 
@@ -14032,7 +14032,7 @@ $From="Sia Immigration";
 
 					
 					
-@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com',$subject,$message,$headers);
+@mail('ds@siaimmigration.com,no-reply@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com',$subject,$message,$headers);
 //$message1="Thank You for Business Referral - ".$heading."-".$number."-".$email."";
 $message1="Thank You for Business Referral ";
 

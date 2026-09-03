@@ -16,6 +16,7 @@ function sia_team_emails(): array
         'reach@siaimmigration.com',
         'mkj@siaimmigration.com',
         'consult@siaimmigration.com',
+        'care@siaimmigration.com',
     ];
 }
 

@@ -84,6 +84,7 @@ $routes->post('agreement/Agreement/save/(:num)',     'Agreement\Agreement::save/
 $routes->post('agreement/Agreement/generate_link/(:num)', 'Agreement\Agreement::generate_link/$1');
 $routes->get( 'agreement/Agreement/pdf/(:num)',      'Agreement\Agreement::pdf/$1');
 $routes->post('agreement/Agreement/regenerate_pdf/(:num)', 'Agreement\Agreement::regenerate_pdf/$1');
+$routes->post('agreement/Agreement/cancel/(:num)',   'Agreement\Agreement::cancel/$1');
 $routes->get( 'agreement/Agreement/cron_send_reminders', 'Agreement\Agreement::cron_send_reminders');
 $routes->get( 'agreement/Agreement/migrate_clause_indices_once', 'Agreement\Agreement::migrate_clause_indices_once');
 $routes->post('agreement/Template/save/(:num)',      'Agreement\Template::save/$1');

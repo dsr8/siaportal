@@ -80,4 +80,4 @@ defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125); // highest auto
 //define('EMP_EMAIL',"office@siaimmigration.com,admin@siaimmigration.com,info@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com,chandola.neeraj@gmail.com");
 
 
-define('EMP_EMAIL', '["office@siaimmigration.com","admin@siaimmigration.com","info@siaimmigration.com","kam@siaimmigration.com","mkj@siaimmigration.com","no-reply@siaimmigration.com","Reach@siaimmigration.com","support@siaimmigration.com","consult@siaimmigration.com"]');
+define('EMP_EMAIL', '["office@siaimmigration.com","admin@siaimmigration.com","info@siaimmigration.com","kam@siaimmigration.com","mkj@siaimmigration.com","no-reply@siaimmigration.com","Reach@siaimmigration.com","support@siaimmigration.com","consult@siaimmigration.com","care@siaimmigration.com"]');

@@ -30,6 +30,7 @@
             .sg-badge-sent, .sg-badge-viewed { background: #fff6df; color: #b9840c; }
             .sg-badge-signed { background: #e8f8ee; color: #27ae60; }
             .sg-badge-declined { background: #fdecec; color: #e23b3b; }
+            .sg-badge-cancelled { background: #fdecec; color: #e23b3b; }
 
             .sg-alert { border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; font-size: 13.5px; }
             .sg-alert-success { background: #e8f8ee; color: #1e7e42; border: 1px solid #bfe8cf; }
@@ -509,6 +510,13 @@
                                     <div class="sg-alert sg-alert-error">
                                         You declined this agreement<?php echo $agreement['declined_at'] ? ' on ' . esc(date('F j, Y \a\t g:i A', strtotime($agreement['declined_at']))) : ''; ?>.
                                         <?php if (!empty($agreement['decline_reason'])): ?><br>Reason: <?php echo esc($agreement['decline_reason']); ?><?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php elseif ($agreement['status'] === 'cancelled'): ?>
+                                <div class="sg-sign-box">
+                                    <div class="sg-alert sg-alert-error">
+                                        This agreement has been cancelled<?php echo !empty($agreement['cancelled_at']) ? ' on ' . esc(date('F j, Y \a\t g:i A', strtotime($agreement['cancelled_at']))) : ''; ?> and is no longer available for signing.
+                                        Please contact us if you have any questions.
                                     </div>
                                 </div>
                             <?php else: ?>

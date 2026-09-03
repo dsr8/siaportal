@@ -116,11 +116,14 @@
                             <span><span class="dot dot-static"></span>Static Field (Non-editable)</span>
                         </div>
 
-                        <?php $locked = in_array($agreement['status'], ['signed', 'declined'], true); ?>
+                        <?php $locked = in_array($agreement['status'], ['signed', 'declined', 'cancelled'], true); ?>
                         <?php if ($locked): ?>
                             <div class="ca-note" style="background:#fdecec;color:#c0392b;font-weight:700;font-size:13.5px;margin-bottom:16px;">
                                 <?php if ($agreement['status'] === 'signed'): ?>
                                     &#128274; This agreement has been signed and is now locked. It can no longer be edited, resent, or signed again.
+                                <?php elseif ($agreement['status'] === 'cancelled'): ?>
+                                    &#128683; This agreement has been cancelled<?php echo !empty($agreement['cancelled_at']) ? ' on ' . esc(date('F j, Y \a\t g:i A', strtotime($agreement['cancelled_at']))) : ''; ?> and is locked. Create a new agreement instead of editing or resending this one.
+                                    <?php if (!empty($agreement['cancel_reason'])): ?><br>Reason: <?php echo esc($agreement['cancel_reason']); ?><?php endif; ?>
                                 <?php else: ?>
                                     &#128683; This agreement was declined by the client and is locked. Create a new agreement instead of editing or resending this one.
                                 <?php endif; ?>

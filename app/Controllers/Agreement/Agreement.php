@@ -138,6 +138,52 @@ class Agreement extends BaseController
         return redirect()->to(base_url('agreement/Agreement/dashboard?archived=1'))->with('message', 'Agreement restored.');
     }
 
+    // Team/Admin-side cancellation: Sent, Viewed, and Signed documents can all be cancelled
+    // (a Draft was never sent — nothing to cancel, archive it instead; Declined/Cancelled are
+    // already terminal). The row, its signed PDF (if any), and its full history stay in the
+    // CRM untouched — only status/cancelled_at/cancel_reason change — and every edit/sign
+    // entry point (save/generate_link/edit_clauses/save_clauses/Sign::*) already rejects
+    // anything outside its own allow-list, so a cancelled row is automatically locked there too.
+    public function cancel($id = null)
+    {
+        if (!$this->isAuthorized()) {
+            return redirect()->to(base_url());
+        }
+        if ($this->request->getMethod() !== 'post') {
+            return redirect()->to(base_url());
+        }
+
+        $id = (int) $id;
+        $AgreementModel = new Agreement_model();
+        $agreement = $AgreementModel->find($id);
+        if (!$agreement || (int) $agreement['hide'] === 1) {
+            return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Agreement not found.');
+        }
+        if (!in_array($agreement['status'], Agreement_model::CANCELLABLE_STATUSES, true)) {
+            return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Only a Sent, Viewed, or Signed agreement can be cancelled.');
+        }
+
+        $wasSigned = $agreement['status'] === 'signed';
+        $reason = trim((string) $this->request->getPost('reason'));
+
+        $AgreementModel->update($id, [
+            'status'        => 'cancelled',
+            'cancelled_at'  => date('Y-m-d H:i:s'),
+            'cancel_reason' => $reason !== '' ? $reason : null,
+            'cancelled_by'  => session()->get('id'),
+        ]);
+
+        $agreement = array_merge($agreement, [
+            'status'        => 'cancelled',
+            'cancel_reason' => $reason,
+        ]);
+
+        helper('agreement_email_helper');
+        sia_send_agreement_cancelled_email($agreement, $wasSigned);
+
+        return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('message', 'Agreement cancelled.');
+    }
+
     public function search_clients()
     {
         if (!$this->isAuthorized()) {
@@ -462,11 +508,13 @@ class Agreement extends BaseController
         if (!$agreement || (int) $agreement['hide'] === 1) {
             return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Agreement not found.');
         }
-        if (in_array($agreement['status'], ['signed', 'declined'], true)) {
+        if (in_array($agreement['status'], ['signed', 'declined', 'cancelled'], true)) {
             return redirect()->to(base_url('agreement/Agreement/detail/' . $id))
                 ->with('error', $agreement['status'] === 'signed'
                     ? 'This agreement has been signed and is locked — it can no longer be edited.'
-                    : 'This agreement was declined by the client and can no longer be edited. Create a new agreement instead.');
+                    : ($agreement['status'] === 'cancelled'
+                        ? 'This agreement has been cancelled and can no longer be edited. Create a new agreement instead.'
+                        : 'This agreement was declined by the client and can no longer be edited. Create a new agreement instead.'));
         }
 
         $this->persistAgreementForm($id, $agreement);
@@ -492,11 +540,13 @@ class Agreement extends BaseController
         if (!$agreement || (int) $agreement['hide'] === 1) {
             return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Agreement not found.');
         }
-        if (in_array($agreement['status'], ['signed', 'declined'], true)) {
+        if (in_array($agreement['status'], ['signed', 'declined', 'cancelled'], true)) {
             return redirect()->to(base_url('agreement/Agreement/detail/' . $id))
                 ->with('error', $agreement['status'] === 'signed'
                     ? 'This agreement has already been signed — the signing link can no longer be sent.'
-                    : 'This agreement was declined by the client. Create a new agreement instead of resending this one.');
+                    : ($agreement['status'] === 'cancelled'
+                        ? 'This agreement has been cancelled. Create a new agreement instead of resending this one.'
+                        : 'This agreement was declined by the client. Create a new agreement instead of resending this one.'));
         }
 
         // Both "Send for eSign" and "Generate Signing Link" submit the full edit form straight
@@ -632,11 +682,13 @@ class Agreement extends BaseController
         if (!$agreement || (int) $agreement['hide'] === 1) {
             return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Agreement not found.');
         }
-        if (in_array($agreement['status'], ['signed', 'declined'], true)) {
+        if (in_array($agreement['status'], ['signed', 'declined', 'cancelled'], true)) {
             return redirect()->to(base_url('agreement/Agreement/detail/' . $id))
                 ->with('error', $agreement['status'] === 'signed'
                     ? 'This agreement has been signed and is locked — its clause text can no longer be edited.'
-                    : 'This agreement was declined by the client and can no longer be edited. Create a new agreement instead.');
+                    : ($agreement['status'] === 'cancelled'
+                        ? 'This agreement has been cancelled and can no longer be edited. Create a new agreement instead.'
+                        : 'This agreement was declined by the client and can no longer be edited. Create a new agreement instead.'));
         }
 
         // Current effective content per clause (saved override if one exists, else the
@@ -675,7 +727,7 @@ class Agreement extends BaseController
         if (!$agreement || (int) $agreement['hide'] === 1) {
             return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Agreement not found.');
         }
-        if (in_array($agreement['status'], ['signed', 'declined'], true)) {
+        if (in_array($agreement['status'], ['signed', 'declined', 'cancelled'], true)) {
             return redirect()->to(base_url('agreement/Agreement/detail/' . $id))
                 ->with('error', 'This agreement can no longer be edited.');
         }

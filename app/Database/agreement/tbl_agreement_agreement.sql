@@ -59,6 +59,9 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
   `decline_reason`     VARCHAR(255) DEFAULT NULL,
   `custom_clauses`     LONGTEXT     DEFAULT NULL COMMENT 'JSON map of clause-index => admin-edited HTML override, from the per-agreement clause text editor',
   `pdf_path`           VARCHAR(255) DEFAULT NULL COMMENT 'file path under public/assets/agreement_pdfs/, generated + locked once signed',
+  `cancelled_at`       DATETIME     DEFAULT NULL,
+  `cancel_reason`      VARCHAR(255) DEFAULT NULL,
+  `cancelled_by`       INT(11)      DEFAULT NULL COMMENT 'tbl_reg.id / session id of staff who cancelled it',
   PRIMARY KEY (`id`),
   KEY `idx_application_id` (`application_id`),
   KEY `idx_prospect_id` (`prospect_id`),
@@ -164,3 +167,11 @@ CREATE TABLE IF NOT EXISTS `tbl_agreement_agreement` (
 -- Viewed" notification (see App\Commands\SendAgreementViewedNotifications):
 -- ALTER TABLE `tbl_agreement_agreement`
 --   ADD COLUMN `viewed_notified_at` DATETIME DEFAULT NULL AFTER `viewed_ip`;
+
+-- Run this ALTER if upgrading an existing table created before the Team/Admin "Cancel
+-- Agreement" action (Sent/Viewed/Signed documents can be cancelled; status becomes
+-- 'cancelled', signed PDF/history stays untouched, and the row can no longer be edited or signed):
+-- ALTER TABLE `tbl_agreement_agreement`
+--   ADD COLUMN `cancelled_at`  DATETIME     DEFAULT NULL AFTER `pdf_path`,
+--   ADD COLUMN `cancel_reason` VARCHAR(255) DEFAULT NULL AFTER `cancelled_at`,
+--   ADD COLUMN `cancelled_by`  INT(11)      DEFAULT NULL AFTER `cancel_reason`;

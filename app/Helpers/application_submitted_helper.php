@@ -36,7 +36,7 @@ function application_submitted_mail_team($iggd,$name,$fee,$app_sub_date,$mode_cl
     $email1->initialize($config);
 $message1 = preg_replace('/\\\\/', '', $message);
 						$to = array('no-reply@siaimmigration.com');
-				$cc = ['info@siaimmigration.com','admin@siaimmigration.com','ds@siaimmigration.com','office@siaimmigration.com','kam@siaimmigration.com','mkj@siaimmigration.com','Reach@siaimmigration.com','support@siaimmigration.com','consult@siaimmigration.com'];
+				$cc = ['info@siaimmigration.com','admin@siaimmigration.com','ds@siaimmigration.com','office@siaimmigration.com','kam@siaimmigration.com','mkj@siaimmigration.com','Reach@siaimmigration.com','support@siaimmigration.com','consult@siaimmigration.com','care@siaimmigration.com'];
 
 			
 				

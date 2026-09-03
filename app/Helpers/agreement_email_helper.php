@@ -295,7 +295,10 @@ function sia_send_agreement_client_sent_email(array $agreement, string $signUrl)
       Your Retainer Agreement for immigration services has been prepared and is ready for your review and electronic signature.
     </div>';
     if (trim($agreement['case_description'] ?? '') !== '') {
-        $intro .= '<div style="margin-top:10px;font-size:13px;color:#555;line-height:1.6;font-style:italic;">' . nl2br(esc($agreement['case_description'])) . '</div>';
+        $intro .= '<div style="margin-top:14px;padding:12px 14px;background:#fdf3e3;border-radius:8px;">'
+            . '<div style="font-size:11.5px;font-weight:700;color:#9aa0aa;text-transform:uppercase;letter-spacing:.3px;">Case Description / Scope of Work</div>'
+            . '<div style="margin-top:4px;font-size:13px;color:#1f2430;line-height:1.6;font-style:italic;font-weight:700;">' . nl2br(esc($agreement['case_description'])) . '</div>'
+            . '</div>';
     }
 
     $metaRow = [
@@ -342,7 +345,7 @@ function sia_send_agreement_team_sent_email(array $agreement): void
       Below is the agreement summary for your reference.
     </div>';
     if (trim($agreement['case_description'] ?? '') !== '') {
-        $intro .= '<div style="margin-top:10px;font-size:13px;color:#555;line-height:1.6;font-style:italic;">' . nl2br(esc($agreement['case_description'])) . '</div>';
+        $intro .= '<div style="margin-top:10px;font-size:13px;color:#1f2430;line-height:1.6;font-style:italic;font-weight:700;">' . nl2br(esc($agreement['case_description'])) . '</div>';
     }
 
     $cards = [
@@ -594,5 +597,66 @@ function sia_send_agreement_declined_email(array $agreement): void
         sia_team_emails(),
         sia_agreement_subject('Agreement Declined', $agreement, $typeLabel),
         $html
+    );
+}
+
+// 8. CLIENT + TEAM – AGREEMENT CANCELLED (Team/Admin-initiated). Same content to both audiences;
+// the signed PDF/history is untouched in the CRM, this is just the notification.
+function sia_send_agreement_cancelled_email(array $agreement, bool $wasSigned = false): void
+{
+    $typeLabel = sia_agreement_type_label($agreement);
+
+    $introClient = '<div style="margin-top:18px;font-size:15px;font-weight:700;color:#1f2430;">Hello ' . esc(sia_agreement_first_name($agreement)) . ',</div>
+    <div style="margin-top:8px;font-size:13.5px;color:#555;line-height:1.6;">
+      Your Retainer Agreement has been cancelled' . ($wasSigned ? ' by our team' : '') . ' and is no longer active.<br>
+      If you have any questions, please contact us.
+    </div>';
+
+    $fields = [
+        ['label' => 'Client', 'value' => $agreement['client_name'] ?? '—'],
+        ['label' => 'Application', 'value' => $typeLabel],
+        ['label' => 'Cancelled On', 'value' => date('F j, Y g:i A')],
+    ];
+    $reason = trim((string) ($agreement['cancel_reason'] ?? ''));
+    if ($reason !== '') {
+        $fields[] = ['label' => 'Reason', 'value' => $reason];
+    }
+
+    $clientHtml = sia_agreement_email_shell([
+        'bannerEmoji'  => '&#128683;',
+        'bannerBg'     => '#fdecec',
+        'bannerIconBg' => '#e23b3b',
+        'bannerTitle'  => 'Retainer Agreement Cancelled',
+        'introHtml'    => $introClient,
+        'fields'       => $fields,
+        'consultant'   => $agreement['consultant_name'] ?? 'Sia Immigration',
+    ]);
+
+    if (!empty(trim($agreement['client_email'] ?? ''))) {
+        sia_agreement_send(
+            trim($agreement['client_email']),
+            sia_agreement_subject('Retainer Agreement Cancelled', $agreement, $typeLabel),
+            $clientHtml
+        );
+    }
+
+    $introTeam = '<div style="margin-top:18px;font-size:13.5px;color:#555;line-height:1.6;">
+      The Retainer Agreement has been cancelled' . ($wasSigned ? ' (it was previously signed — the signed PDF and full history remain saved in the CRM)' : '') . '.
+    </div>';
+
+    $teamHtml = sia_agreement_email_shell([
+        'bannerEmoji'  => '&#128683;',
+        'bannerBg'     => '#fdecec',
+        'bannerIconBg' => '#e23b3b',
+        'bannerTitle'  => 'Retainer Agreement Cancelled',
+        'introHtml'    => $introTeam,
+        'fields'       => $fields,
+        'consultant'   => $agreement['consultant_name'] ?? 'Sia Immigration',
+    ]);
+
+    sia_agreement_send(
+        sia_team_emails(),
+        sia_agreement_subject('Agreement Cancelled', $agreement, $typeLabel),
+        $teamHtml
     );
 }

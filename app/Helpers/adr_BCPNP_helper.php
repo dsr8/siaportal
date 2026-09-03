@@ -30,7 +30,7 @@ helper('smtp_helper');
     $email1->initialize($config);
 $message1 = preg_replace('/\\\\/', '', $message);
 						$to = array('no-reply@siaimmigration.com');
-				$cc = ['info@siaimmigration.com,admin@siaimmigration.com,office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com,consult@siaimmigration.com'];
+				$cc = ['info@siaimmigration.com,admin@siaimmigration.com,office@siaimmigration.com,kam@siaimmigration.com,mkj@siaimmigration.com,no-reply@siaimmigration.com,Reach@siaimmigration.com,support@siaimmigration.com,consult@siaimmigration.com,care@siaimmigration.com'];
 
 			
 				

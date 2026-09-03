@@ -23,7 +23,12 @@ class Agreement_model extends Model
         'client_signature', 'client_signature_type', 'client_typed_name', 'consent_accepted',
         'client_signed_at', 'client_signed_ip', 'client_signed_device',
         'declined_at', 'decline_reason', 'custom_clauses', 'pdf_path',
+        'cancelled_at', 'cancel_reason', 'cancelled_by',
     ];
+
+    // Statuses from which staff can still cancel the agreement — not already cancelled/declined,
+    // and a draft that was never sent has nothing to cancel (archive it instead).
+    public const CANCELLABLE_STATUSES = ['sent', 'viewed', 'signed'];
 
     // Latest non-hidden agreement for a specific application, or null if none exists yet.
     public function getByApplicationId(int $applicationId): ?array
