@@ -7127,6 +7127,45 @@ $data = array_merge([
 		return redirect()->to(base_url('Siaportal/view_prospect'));
 	}
 
+	public function view_hidden_prospects()
+	{
+		if (session()->get('isLoggedIn') != true) return redirect()->to('index');
+
+		$q = trim((string) ($this->request->getGet('q') ?? ''));
+
+		$Prospect = new Prospect_model();
+		$builder = $Prospect
+			->select('id,heading,email,number,pstatus,team_member,insert_on,hide_prospect_on')
+			->where('entery_status', 'prospect')
+			->where('hide_prospect', 1);
+		if ($q !== '') {
+			$builder->groupStart()
+				->like('heading', $q)
+				->orLike('email', $q)
+				->orLike('number', $q)
+				->groupEnd();
+		}
+		$data['prospect'] = $builder->orderBy('hide_prospect_on', 'desc')->paginate(50);
+		$data['pager']    = $Prospect->pager;
+		$data['q']        = $q;
+
+		$ProspectCount = new Prospect_model();
+		$data['totalHidden'] = $ProspectCount
+			->where('entery_status', 'prospect')
+			->where('hide_prospect', 1)
+			->countAllResults();
+
+		return view('admin/prospect/view_hidden_prospects', $data);
+	}
+
+	public function unhide_prospect($id)
+	{
+		if (session()->get('isLoggedIn') != true) return redirect()->to('index');
+		$Prospect = new Prospect_model();
+		$Prospect->where('id', (int)$id)->set(['hide_prospect' => 0])->update();
+		return redirect()->to(base_url('Siaportal/view_hidden_prospects'));
+	}
+
 	public function send_duplicate_alert($id)
 	{
 		if (session()->get('isLoggedIn') != true) return redirect()->to('index');
@@ -13003,7 +13042,7 @@ $insert=$Adr->insert([
 	'insert_on'=>date( 'Y-m-d H:i:s' )
 ]);
 if($insert){
-   echo $sia_id = $this->request->getPost('sia_id');
+   $sia_id = $this->request->getPost('sia_id');
 	$client_name = $this->request->getPost('client_name');
 	$notes = $this->request->getPost('notes');
 	$adr_start_date = $this->request->getPost('adr_start_date');
@@ -13099,7 +13138,13 @@ $message1 = preg_replace('/\\\\/', '', $message);
 }
 
 $Adr = new Adr_model();
-		$data['adr'] = $Adr->getAllWithTeamMember();
+		$get = $this->request->getGet();
+		$filters = [
+			'q'      => trim((string) ($get['q'] ?? '')),
+			'status' => trim((string) ($get['status'] ?? '')),
+		];
+		$data['adr']     = $Adr->getAllWithTeamMember($filters);
+		$data['filters'] = $filters;
 
 		return view('admin/adr/view_adr',$data);
 	}

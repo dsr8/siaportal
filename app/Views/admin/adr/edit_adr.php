@@ -1,158 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAUlL6ANPK/ACAY/8Ae17/AJ+K/wAAAO0ALwD/AKWR/wDq5v8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmgAAAAACGYGaAAAUAAIZgZoAABQAAhmBmgAZmZgCGYGaAVmZnUIZgZok2FhY5hmBmiUVmZUmGYGaAAEZAAIZgZoAAhoAAhmBmgAACAACGYGaAAAAAAIZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAH/EAAB7xAAAe8QAAGDEAABARAAAAAQAAAAEAABxxAAAccQAAHvEAAB/xAAD//wAA//8AAP//AAD//wAA" rel="icon" type="image/x-icon" />
-        <title>Siaportal</title>
-        <link href="<?php echo base_url();?>/public/dist/css/styles.css" rel="stylesheet" />
-        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
-         <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Edit ADR — Siaportal</title>
+    <link href="<?php echo base_url();?>/public/dist/css/styles.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+    <style>
+        * { box-sizing: border-box; }
+        .adr-form-wrap { max-width: 720px; margin: 30px auto; padding: 0 16px 60px; }
+        .form-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.09); overflow: hidden; }
+        .form-card-head {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            padding: 22px 28px; color: #fff;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .form-card-head .head-icon {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .form-card-head h2 { font-size: 18px; font-weight: 700; margin: 0; }
+        .form-card-head p  { font-size: 12px; opacity: 0.8; margin: 2px 0 0; }
+        .form-card-body { padding: 28px; }
 
-         <style>
-  label.error {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-  padding:1px 20px 1px 20px;
-}
-  </style>
+        .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-    </head>
-    <body class="sb-nav-fixed">
-       <?= view ('admininclude/header.php');  ?>
-        <div id="layoutSidenav">
-            <div id="layoutSidenav_nav">
-                
+        .fgroup { margin-bottom: 16px; }
+        .fgroup label {
+            display: block; font-size: 12px; font-weight: 700;
+            color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        .fgroup label .req { color: #e74c3c; margin-left: 2px; }
+        .fgroup input, .fgroup textarea, .fgroup select {
+            width: 100%; padding: 10px 14px;
+            border: 2px solid #e8ecf0; border-radius: 8px;
+            font-size: 13px; color: #333; background: #fafbfc;
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .fgroup input:focus, .fgroup textarea:focus {
+            border-color: #4CAF50; box-shadow: 0 0 0 3px rgba(76,175,80,0.12);
+            background: #fff;
+        }
+        .fgroup textarea { resize: vertical; min-height: 90px; }
+        .fgroup input[type="file"] { padding: 8px 10px; background: #fafbfc; }
 
-<?= view('admininclude/admin_nav'); ?>
+        .current-doc {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: #2E7D32; border: 1px solid #bfe3c2; background: #eef8ef;
+            border-radius: 6px; padding: 6px 12px; font-size: 12.5px; font-weight: 600;
+            text-decoration: none; margin-bottom: 10px;
+        }
+        .current-doc:hover { background: #e2f3e3; color: #2E7D32; text-decoration: none; }
 
-                 
-            </div>
-            <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid">
-                        <h1 class="mt-4">Add Adr</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active"></li>
-                        </ol>
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: #fff; border: none; padding: 13px;
+            border-radius: 10px; font-size: 15px; font-weight: 700;
+            cursor: pointer; margin-top: 8px;
+            transition: opacity 0.2s, transform 0.1s;
+            box-shadow: 0 4px 14px rgba(76,175,80,0.3);
+        }
+        .btn-submit:hover  { opacity: 0.92; }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: #2E7D32; text-decoration: none; font-size: 13px;
+            font-weight: 600; margin-bottom: 20px;
+        }
+        .btn-back:hover { text-decoration: underline; color: #2E7D32; }
 
-                       <form id="myform" method="post" action="<?php echo base_url();?>/Siaportal/edit_adr/<?php echo $adr['0']['id'];?>" enctype="multipart/form-data"> 
-                        <div class="row">
-                          <div class="col-xl-3 col-md-3"></div>
-                            <div class="col-xl-6 col-md-6 selectEntry">
-                                
-<div class="form-group"><label class="small mb-1" for="inputFirstName">Sia id</label>
-    <input class="form-control py-4" name="sia_id" id="sia_id" type="text" placeholder="Enter Sia Id" required value="<?php echo $adr['0']['sia_id'];?>" /></div>
-<div class="form-group"><label class="small mb-1" for="inputFirstName">Client Name</label>
-    <input class="form-control py-4" name="client_name" id="client_name" type="text" placeholder="Enter Client Name" required value="<?php echo $adr['0']['client_name'];?>" /></div>
+        @media(max-width: 560px) { .frow { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <?= view('admininclude/header.php'); ?>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <?= view('admininclude/admin_nav'); ?>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="adr-form-wrap">
 
-    <div class="form-group"><label class="small mb-1" for="inputFirstName">Notes</label>
-    <textarea class="form-control py-4" required name="notes" id="notes"  placeholder="Enter Notes" ><?php echo $adr['0']['notes'];?></textarea></div>
+                    <a href="<?php echo base_url('Siaportal/view_adr'); ?>" class="btn-back">&#8592; Back to ADR List</a>
 
-     <div class="form-group"><label class="small mb-1" for="inputFirstName">Start Date</label>
-    <input class="form-control py-4" name="adr_start_date" id="adr_start_date" value="<?php echo $adr['0']['adr_start_date'];?>" required type="date" placeholder="Enter Start Date" /></div>
-
-    <div class="form-group"><label class="small mb-1" for="inputFirstName">End Date</label>
-    <input class="form-control py-4" name="adr_end_date" id="adr_end_date" value="<?php echo $adr['0']['adr_end_date'];?>" required type="date" placeholder="Enter End Date" /></div>
-
-    <div class="form-group"><label class="small mb-1" for="inputFirstName">Application Number</label>
-    <input class="form-control py-4" name="app_number" id="app_number" value="<?php echo $adr['0']['app_number'];?>" required type="text" placeholder="Enter Application Number" /></div>
-
-
-    <div class="form-group"><label class="small mb-1" for="inputFirstName">Upload Document</label>
-    <input class="form-control py-4" name="adr_doc" id="adr_doc" type="file"  />
-
-<input class="form-control py-4" name="adr_doc" id="adr_doc_link" type="hidden" value="<?php echo $adr['0']['link'];?>"  />
-<input class="form-control py-4" name="adr_doc" id="adr_doc_name" type="hidden" value="<?php echo $adr['0']['name'];?>" />
-</div>
-    
- <div class="form-group">
- <input type="submit" class="form-control py-4" style="background-color: green;text-align: center;color: white" name="submit" value="Submit">
-</div>
-
-
-                            </div>
-                            <div class="col-xl-3 col-md-3">                       
-
-
-
-                            </div>
-        
-
-         </form>                   
-                           
-                        </div>
-                        
-                </main>
-                 <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted"></div>
+                    <div class="form-card">
+                        <div class="form-card-head">
+                            <div class="head-icon">&#9998;</div>
                             <div>
-                                <a href="#"></a>
-                               
-                                <a href="#"></a>
+                                <h2>Edit ADR</h2>
+                                <p>Update the ADR record below</p>
                             </div>
+                        </div>
+                        <div class="form-card-body">
+
+                            <form id="myform" method="post" action="<?php echo base_url();?>/Siaportal/edit_adr/<?php echo $adr['0']['id'];?>" enctype="multipart/form-data">
+
+                                <div class="frow">
+                                    <div class="fgroup">
+                                        <label>Sia Id <span class="req">*</span></label>
+                                        <input type="text" name="sia_id" id="sia_id" placeholder="Enter Sia Id" required value="<?php echo htmlspecialchars($adr['0']['sia_id']); ?>">
+                                    </div>
+                                    <div class="fgroup">
+                                        <label>Client Name <span class="req">*</span></label>
+                                        <input type="text" name="client_name" id="client_name" placeholder="Enter Client Name" required value="<?php echo htmlspecialchars($adr['0']['client_name']); ?>">
+                                    </div>
+                                </div>
+
+                                <div class="fgroup">
+                                    <label>Notes <span class="req">*</span></label>
+                                    <textarea name="notes" id="notes" placeholder="Enter Notes" required><?php echo htmlspecialchars($adr['0']['notes']); ?></textarea>
+                                </div>
+
+                                <div class="frow">
+                                    <div class="fgroup">
+                                        <label>Start Date <span class="req">*</span></label>
+                                        <input type="date" name="adr_start_date" id="adr_start_date" value="<?php echo htmlspecialchars($adr['0']['adr_start_date']); ?>" required>
+                                    </div>
+                                    <div class="fgroup">
+                                        <label>End Date <span class="req">*</span></label>
+                                        <input type="date" name="adr_end_date" id="adr_end_date" value="<?php echo htmlspecialchars($adr['0']['adr_end_date']); ?>" required>
+                                    </div>
+                                </div>
+
+                                <div class="fgroup">
+                                    <label>Application Number <span class="req">*</span></label>
+                                    <input type="text" name="app_number" id="app_number" value="<?php echo htmlspecialchars($adr['0']['app_number']); ?>" required>
+                                </div>
+
+                                <div class="fgroup">
+                                    <label>Upload Document</label>
+                                    <?php if (!empty($adr['0']['link'])): ?>
+                                    <div>
+                                        <a class="current-doc" target="_blank" href="<?php echo htmlspecialchars($adr['0']['link']); ?>">
+                                            <i class="fas fa-file-alt"></i> View Current Document
+                                        </a>
+                                    </div>
+                                    <?php endif; ?>
+                                    <input type="file" name="adr_doc" id="adr_doc">
+                                </div>
+
+                                <button type="submit" class="btn-submit" name="submit" value="Submit">Update</button>
+                            </form>
+
                         </div>
                     </div>
-                </footer>
-            </div>
+
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted"></div>
+                        <div>
+                            <a href="#"></a>
+                            <a href="#"></a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="<?php echo base_url();?>/public/dist/js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="<?php echo base_url();?>/public/dist/assets/demo/chart-area-demo.js"></script>
-        <script src="<?php echo base_url();?>/public/dist/assets/demo/chart-bar-demo.js"></script>
-        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-        <script src="<?php echo base_url();?>/public/dist/assets/demo/datatables-demo.js"></script>
-
-
-
-         <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
-
-
-
-    
-        <script>
-
-$(document).ready(function () {
-
-    $('#myform').validate({ // initialize the plugin
-        rules: {
-            heading: {
-                required: true
-               
-            },
-            
-             form_body: {
-                required: true
-               
-            },
-           
-           
-        },
-        messages: {
-        heading: "Heading Is required",
-         form_body: "Body  Is required",
-          
-           
-              
-       
-         }
-        
-    });
-
-});
-</script>
-    </body>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="<?php echo base_url();?>/public/dist/js/scripts.js"></script>
+</body>
 </html>

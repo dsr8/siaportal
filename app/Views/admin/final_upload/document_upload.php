@@ -202,21 +202,21 @@ where tbl_client_application.`siaportalid` =$ddd ";
   $user="sia_user";
   $password="Sia@8080";
 
-$c=$GetData['category'];
-$t=$GetData['type'];
-$s=$GetData['application_status'];
-$a=$GetData['id'];
-
 $con = mysqli_connect($host,$user,$password,'sia_database')or die(mysqli_error());
  //$CI =& get_instance();
    // $CI->load->model('Backoffice_model');
 
+$c=mysqli_real_escape_string($con, (string) ($GetData['category'] ?? ''));
+$t=mysqli_real_escape_string($con, (string) ($GetData['type'] ?? ''));
+$s=mysqli_real_escape_string($con, (string) ($GetData['application_status'] ?? ''));
+$a=mysqli_real_escape_string($con, (string) ($GetData['id'] ?? ''));
+
   $SelQuery1 = "SELECT  tbl_client_document.*
 FROM  tbl_client_document
 
-where tbl_client_document.`category` =$c  AND tbl_client_document.`type` =$t AND tbl_client_document.`status` =$s AND tbl_client_document.`application_id` =$a  "; 
+where tbl_client_document.`category` ='$c'  AND tbl_client_document.`type` ='$t' AND tbl_client_document.`status` ='$s' AND tbl_client_document.`application_id` ='$a'  ";
    //exit();
-    
+
   $Query1=mysqli_query($con,$SelQuery1) or die(mysqli_error());
      $GetData1=mysqli_num_rows($Query1);
                     ?>

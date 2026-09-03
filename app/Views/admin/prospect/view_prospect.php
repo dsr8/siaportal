@@ -264,26 +264,16 @@ function add_status(id,st)
             .vp-book-btn-done { background: linear-gradient(135deg, #34b874, #27ae60); box-shadow: 0 3px 8px rgba(39,174,96,0.28); opacity: .9; cursor: default; }
             .vp-book-btn-done:hover { transform: none; opacity: .9; }
 
-            /* Agreement / Consent cell: only a category line + two clickable status chips show
-               on the page; the fee breakdown / sign status / actions open in a shared popup
-               (#acWrap) instead of taking up permanent row space. */
+            /* Agreement / Consent cell: a category line + two status chips, with the full
+               fee breakdown / sign status / actions always shown inline below them. */
             .vp-ac-cell { min-width: 210px; }
             .vp-ac-grid { display: flex; flex-wrap: wrap; gap: 8px; }
             .vp-ac-chip {
                 flex: 1 1 90px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
-                border: 1px solid #e2e3e5; border-radius: 8px; padding: 7px 10px; cursor: pointer;
-                font-family: inherit; text-align: left; transition: box-shadow .12s ease, transform .12s ease;
+                border: 1px solid #e2e3e5; border-radius: 8px; padding: 7px 10px;
+                font-family: inherit; text-align: left;
             }
-            .vp-ac-chip:hover { box-shadow: 0 2px 8px rgba(20,20,43,0.1); transform: translateY(-1px); }
             .vp-ac-chip-label { font-size: 9.5px; font-weight: 800; color: #6b7280; text-transform: uppercase; letter-spacing: .05em; }
-
-            /* Shared popup for Agreement / Consent full detail. */
-            #acWrap { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; overflow-y: auto; background: rgba(0,0,0,0.55); }
-            #acBox { background: #fff; border-radius: 10px; width: 420px; max-width: 94%; margin: 60px auto; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
-            #acBox .ac-head { background: #1f2430; color: #fff; padding: 14px 18px; border-radius: 10px 10px 0 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-            #acBox .ac-head strong { font-size: 14px; }
-            #acBox .ac-head span { font-size: 20px; cursor: pointer; line-height: 1; }
-            #acBox .ac-body { padding: 16px 18px; }
 
             /* Table scroll container: slim, unobtrusive scrollbar instead of the bulky OS default. */
             .vp-table-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -354,7 +344,12 @@ function add_status(id,st)
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid vp-page">
-                        <h1 class="mt-4">View Prospect</h1>
+                        <div class="d-flex align-items-center justify-content-between flex-wrap mt-4" style="gap:10px;">
+                            <h1 style="margin:0;">View Prospect</h1>
+                            <a href="<?php echo base_url('Siaportal/view_hidden_prospects'); ?>" style="display:inline-flex;align-items:center;gap:8px;background:#f1f2f4;color:#6b7280;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;text-decoration:none;">
+                                <i class="fas fa-eye-slash"></i> View Hidden Prospects
+                            </a>
+                        </div>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active"></li>
                         </ol>
@@ -400,7 +395,7 @@ function add_status(id,st)
                                         </div>
                                     </div>
                                 </form>
-                                <div class="table-responsive vp-table-scroll" style="max-height:75vh; overflow-y:auto; overflow-x:auto;">
+                                <div class="table-responsive vp-table-scroll" style="overflow-x:auto;">
                                     <table class="table table-bordered vp-table" id="dataTable1" width="50%" cellspacing="0">
                                         <thead style="position:sticky;top:0;z-index:10;background:#fff;">
                                             <tr>
@@ -434,7 +429,10 @@ function add_status(id,st)
                                                             </a>
                                                         </div>
 
-                                                        <div class="vp-id-name"><?php echo $allcat['heading'];?></div>
+                                                        <div class="vp-id-name" style="display:flex;align-items:center;gap:6px;">
+                                                            <span><?php echo $allcat['heading'];?></span>
+                                                            <button onclick="copyVal(this)" data-copy="<?php echo htmlspecialchars($allcat['id'].' '.$allcat['heading']);?>" class="vp-id-copy" title="Copy ID + Name"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                                                        </div>
 
                                                         <?php if (!empty($dupProspectIds[$pid])): ?>
                                                             <?php
@@ -545,7 +543,7 @@ function add_status(id,st)
                                                  
                                                  
                                                  
-                                                   <a href="#" style="color:white; width: 177px; font-size: 13px; background: black; margin-bottom: 5px;" class="on" onclick="move_to_client(<?php echo $allcat['id'];?>,<?php echo $allcat['number'];?>)"><i class="fas fa-user-check" style="margin-right:5px;"></i>Move To client</a>
+                                                   <a href="#" style="color:white; width: 177px; font-size: 13px; background: black; margin-bottom: 5px;" class="on" onclick="move_to_client(<?php echo (int)$allcat['id'];?>,'<?php echo esc($allcat['number'], 'js');?>')"><i class="fas fa-user-check" style="margin-right:5px;"></i>Move To client</a>
 
     <?php if (!empty($bookedIds[(int)$allcat['id']])): ?>
     <button type="button"
@@ -657,21 +655,20 @@ function add_status(id,st)
                                                             $acDcId = 'ac-detail-dc-' . (int) $pApp['id'];
                                                         ?>
 
-                                                        <!-- Compact summary shown on the page — click either chip for the full
-                                                             fee breakdown / sign status / actions in a popup. -->
+                                                        <!-- Compact summary always shown on the page. -->
                                                         <div class="vp-ac-grid">
-                                                            <button type="button" class="vp-ac-chip" style="background:<?php echo $pAgTheme['bg']; ?>;border-color:<?php echo $pAgTheme['border']; ?>;" onclick="vpOpenAcModal('<?php echo $acAgId; ?>', 'Agreement — <?php echo htmlspecialchars($pApp['ct'] ?? ''); ?>')">
+                                                            <div class="vp-ac-chip" style="background:<?php echo $pAgTheme['bg']; ?>;border-color:<?php echo $pAgTheme['border']; ?>;">
                                                                 <span class="vp-ac-chip-label">Agreement</span>
                                                                 <span class="vp-pill" style="background:<?php echo $pAgTheme['pill']; ?>;color:#fff;"><?php echo $pAgRow ? esc(ucfirst($pAgRow['status'])) : 'None'; ?></span>
-                                                            </button>
-                                                            <button type="button" class="vp-ac-chip" style="background:<?php echo $pDcTheme['bg']; ?>;border-color:<?php echo $pDcTheme['border']; ?>;" onclick="vpOpenAcModal('<?php echo $acDcId; ?>', 'Consent — <?php echo htmlspecialchars($pApp['ct'] ?? ''); ?>')">
+                                                            </div>
+                                                            <div class="vp-ac-chip" style="background:<?php echo $pDcTheme['bg']; ?>;border-color:<?php echo $pDcTheme['border']; ?>;">
                                                                 <span class="vp-ac-chip-label">Consent</span>
                                                                 <span class="vp-pill" style="background:<?php echo $pDcTheme['pill']; ?>;color:#fff;"><?php echo $pDcRow ? esc(ucfirst($pDcRow['status'])) : 'None'; ?></span>
-                                                            </button>
+                                                            </div>
                                                         </div>
 
-                                                        <!-- Full detail — hidden on the page, cloned into the shared popup on click. -->
-                                                        <div id="<?php echo $acAgId; ?>" style="display:none;">
+                                                        <!-- Full detail — always shown inline below the chips. -->
+                                                        <div id="<?php echo $acAgId; ?>" style="margin-top:8px;">
                                                             <?php echo view('admin/partials/agreement_card', [
                                                                 'agRow'         => $pAgRow,
                                                                 'applicationId' => (int) $pApp['id'],
@@ -679,7 +676,7 @@ function add_status(id,st)
                                                                 'typeLabel'     => $pApp['ty'] ?? '',
                                                             ]); ?>
                                                         </div>
-                                                        <div id="<?php echo $acDcId; ?>" style="display:none;">
+                                                        <div id="<?php echo $acDcId; ?>" style="margin-top:8px;">
                                                             <?php if ($pDcRow): ?>
                                                                 <div style="background:<?php echo $pDcTheme['bg']; ?>;border:1px solid <?php echo $pDcTheme['border']; ?>;border-radius:6px;padding:10px 12px;width:100%;box-sizing:border-box;font-size:11px;">
                                                                     <div style="font-weight:700;color:#1f2430;">Status:
@@ -917,35 +914,6 @@ function sendDupAlert(btn, id) {
 
   });
 </script>
-
-<!-- ===== Agreement / Consent Detail Popup ===== -->
-<div id="acWrap" onclick="vpAcMaybeClose(event)">
-  <div id="acBox">
-    <div class="ac-head">
-      <strong id="acTitle">Detail</strong>
-      <span onclick="vpCloseAcModal()">&times;</span>
-    </div>
-    <div class="ac-body" id="acBody"></div>
-  </div>
-</div>
-<script>
-function vpOpenAcModal(sourceId, title) {
-    var source = document.getElementById(sourceId);
-    if (!source) return;
-    document.getElementById('acTitle').textContent = title;
-    document.getElementById('acBody').innerHTML = source.innerHTML;
-    document.getElementById('acWrap').style.display = 'block';
-    document.body.style.overflow = 'hidden';
-}
-function vpCloseAcModal() {
-    document.getElementById('acWrap').style.display = 'none';
-    document.body.style.overflow = '';
-}
-function vpAcMaybeClose(e) {
-    if (e.target === document.getElementById('acWrap')) vpCloseAcModal();
-}
-</script>
-<!-- ===== End Agreement / Consent Detail Popup ===== -->
 
 <!-- ===== Book Appointment Modal ===== -->
 <style>

@@ -20,12 +20,26 @@ class Adr_model extends Model {
     	return $this->findAll();
     }
 
-    public function getAllWithTeamMember(): array
+    public function getAllWithTeamMember(array $filters = []): array
     {
-        return $this->db->table('adr a')
+        $builder = $this->db->table('adr a')
             ->select('a.*, cp.team_member AS team_member_name', false)
-            ->join('client_prospect cp', 'cp.id = a.sia_id', 'left')
-            ->orderBy('a.id', 'DESC')
+            ->join('client_prospect cp', 'cp.id = a.sia_id', 'left');
+
+        if (!empty($filters['q'])) {
+            $q = $filters['q'];
+            $builder->groupStart()
+                ->like('a.client_name', $q)
+                ->orLike('a.sia_id', $q)
+                ->orLike('a.app_number', $q)
+                ->groupEnd();
+        }
+
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $builder->where('a.status', $filters['status']);
+        }
+
+        return $builder->orderBy('a.id', 'DESC')
             ->get()
             ->getResultArray();
     }

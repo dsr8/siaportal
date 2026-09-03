@@ -133,8 +133,11 @@
             .ag-table-card thead th .sort-arrows { display: inline-flex; flex-direction: column; margin-left: 4px; vertical-align: middle; color: #c8ccd2; }
             .ag-table-card tbody td { padding: 16px 18px; border-bottom: 1px solid #f1f2f4; font-size: 14px; color: #1f2430; white-space: nowrap; }
             .ag-table-card tbody tr:last-child td { border-bottom: none; }
-            .ag-client-id { font-weight: 700; color: #1f2430; }
+            .ag-client-cell { white-space: normal; max-width: 220px; }
+            .ag-client-id { font-weight: 700; color: #1f2430; white-space: normal; word-break: break-word; }
             .ag-client-sia { font-size: 12px; color: #9aa0aa; margin-top: 2px; }
+            .ag-fee-cell, .ag-date-cell { white-space: normal; font-size: 12.5px; line-height: 1.6; }
+            .ag-fee-cell .ag-fee-total { font-weight: 700; color: #1f2430; font-size: 13.5px; }
 
             /* CRM status (client_prospect.entery_status) at the time the dashboard is viewed —
                distinct from the agreement's own status badge — so staff can tell whether an
@@ -388,18 +391,15 @@
                                     <tr>
                                         <th>Client (SIA ID) <span class="sort-arrows">&#9650;&#9660;</span></th>
                                         <th>Application Type</th>
-                                        <th>Service Fee<br>(Incl. GST)</th>
-                                        <th>Government Fee<br>(No GST)</th>
-                                        <th>Total Amount</th>
+                                        <th>Fees</th>
                                         <th>Status</th>
-                                        <th>Sent Date</th>
-                                        <th>Signed Date</th>
+                                        <th>Sent / Signed</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($rows)): ?>
-                                        <tr><td colspan="9">
+                                        <tr><td colspan="6">
                                             <div class="ag-empty-state">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
                                                 <div class="t">No agreements found</div>
@@ -414,7 +414,9 @@
                                         // rather than the dashboard's own bucketed Pending/Signed/Declined.
                                         $badgeLabel = ucfirst($row['status']);
                                         $badgeClass = 'ag-badge-' . $row['status'];
-                                        $typeLabel = trim(($row['category_name'] ?? '') . ' — ' . ($row['type_name'] ?? ''), ' —') ?: '—';
+                                        $typeCategory = esc($row['category_name'] ?? '');
+                                        $typeName     = esc($row['type_name'] ?? '');
+                                        $typeLabel = trim($typeCategory . '<br>— ' . $typeName, ' —') ?: '—';
                                         $canSend = in_array($row['status'], ['draft', 'sent', 'viewed'], true);
                                         // last_sent_at is only populated by sends made after this column existed —
                                         // for older agreements that are already viewed/signed/declined (so we know
@@ -427,14 +429,18 @@
                                         $entryBadgeUrl = base_url($entryStatus === 'prospect' ? 'Siaportal/view_prospect' : 'Siaportal/view_client');
                                         ?>
                                         <tr>
-                                            <td><div class="ag-client-id">#<?php echo (int) $row['id']; ?> &nbsp;<?php echo esc($row['client_name']); ?></div><div class="ag-client-sia">SiaID: <?php echo (int) $row['prospect_id']; ?><a href="<?php echo $entryBadgeUrl; ?>" class="ag-entry-badge <?php echo $entryBadgeClass; ?>"><?php echo esc($entryBadgeLabel); ?></a></div></td>
-                                            <td><?php echo esc($typeLabel); ?></td>
-                                            <td>$<?php echo number_format((float) $row['service_fee'] + (float) $row['gst_amount'], 2); ?></td>
-                                            <td>$<?php echo number_format(\App\Libraries\Agreement\AgreementClauses::governmentFeeTotal($row), 2); ?></td>
-                                            <td>$<?php echo number_format((float) $row['total_amount'], 2); ?></td>
+                                            <td class="ag-client-cell"><div class="ag-client-id">#<?php echo (int) $row['id']; ?> &nbsp;<?php echo esc($row['client_name']); ?></div><div class="ag-client-sia">SiaID: <?php echo (int) $row['prospect_id']; ?><a href="<?php echo $entryBadgeUrl; ?>" class="ag-entry-badge <?php echo $entryBadgeClass; ?>"><?php echo esc($entryBadgeLabel); ?></a></div></td>
+                                            <td><?php echo $typeLabel; ?></td>
+                                            <td class="ag-fee-cell">
+                                                <div>Service: $<?php echo number_format((float) $row['service_fee'] + (float) $row['gst_amount'], 2); ?></div>
+                                                <div>Govt: $<?php echo number_format(\App\Libraries\Agreement\AgreementClauses::governmentFeeTotal($row), 2); ?></div>
+                                                <div class="ag-fee-total">Total: $<?php echo number_format((float) $row['total_amount'], 2); ?></div>
+                                            </td>
                                             <td><span class="ag-badge <?php echo $badgeClass; ?>"><?php echo esc($badgeLabel); ?></span></td>
-                                            <td><?php echo !empty($sentAt) ? esc(date('d M Y', strtotime($sentAt))) : '&ndash;'; ?></td>
-                                            <td><?php echo !empty($row['client_signed_at']) ? esc(date('d M Y', strtotime($row['client_signed_at']))) : '&ndash;'; ?></td>
+                                            <td class="ag-date-cell">
+                                                <div>Sent: <?php echo !empty($sentAt) ? esc(date('d M Y', strtotime($sentAt))) : '&ndash;'; ?></div>
+                                                <div>Signed: <?php echo !empty($row['client_signed_at']) ? esc(date('d M Y', strtotime($row['client_signed_at']))) : '&ndash;'; ?></div>
+                                            </td>
                                             <td>
                                                 <div class="ag-actions">
                                                     <a href="<?php echo base_url('agreement/Agreement/detail/' . $row['id']); ?>" title="View">

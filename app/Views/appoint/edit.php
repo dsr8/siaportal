@@ -149,6 +149,12 @@
                         </div>
                         <div class="form-card-body">
 
+                            <?php if (session()->getFlashdata('slot_error')): ?>
+                                <div style="background:#fde8e8;border:1px solid #f5c6c6;color:#a00;padding:10px 14px;border-radius:6px;margin-bottom:14px;">
+                                    &#9888; <?php echo session()->getFlashdata('slot_error'); ?>
+                                </div>
+                            <?php endif; ?>
+
                             <form id="editForm" method="post"
                                 action="<?php echo base_url('appoint/Appoint/edit/'.$appointment['id']); ?>?from=<?php echo urlencode($from); ?>">
 
@@ -255,26 +261,47 @@
                                     </select>
                                 </div>
 
-                                <!-- Consultation Type — display only (not editable) -->
-                                <?php if (!empty($appointment['consultation_type'])): ?>
+                                <!-- Consultation Type -->
+                                <?php $curConsultType = $appointment['consultation_type'] ?? ''; ?>
                                 <div class="fgroup">
-                                    <label>Consultation Type</label>
-                                    <div class="info-badge">
-                                        <?php if ($appointment['consultation_type'] === 'Telephonic'): ?>
-                                            &#128222; Telephonic
-                                            <?php if (!empty($appointment['contact_method'])): ?>
-                                                &nbsp;—&nbsp;<?php echo htmlspecialchars($appointment['contact_method']); ?>
-                                            <?php endif; ?>
-                                        <?php else: ?>
-                                            &#127970; In-Person
-                                            <?php if (!empty($appointment['office_location'])): ?>
-                                                &nbsp;—&nbsp;&#128205; <?php echo htmlspecialchars($appointment['office_location']); ?>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
+                                    <label>Consultation Type <span class="req">*</span></label>
+                                    <div style="display:flex;gap:20px;padding:10px 0;">
+                                        <label style="font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                                            <input type="radio" name="consultation_type" value="Telephonic" required onchange="toggleConsultType(this.value)" <?php echo ($curConsultType === 'Telephonic') ? 'checked' : ''; ?>> &#128222; Telephonic
+                                        </label>
+                                        <label style="font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                                            <input type="radio" name="consultation_type" value="In-Person" required onchange="toggleConsultType(this.value)" <?php echo ($curConsultType === 'In-Person') ? 'checked' : ''; ?>> &#127970; In-Person
+                                        </label>
                                     </div>
-                                    <input type="hidden" name="consultation_type" value="<?php echo htmlspecialchars($appointment['consultation_type']); ?>" />
                                 </div>
-                                <?php endif; ?>
+
+                                <div class="fgroup" id="contactMethodWrap" style="<?php echo ($curConsultType === 'Telephonic') ? '' : 'display:none;'; ?>">
+                                    <label>Preferred Contact Method <span class="req">*</span></label>
+                                    <select name="contact_method" id="contactMethodSelect" <?php echo ($curConsultType === 'Telephonic') ? 'required' : ''; ?>>
+                                        <option value="">-- Select Contact Method --</option>
+                                        <option value="Phone Call" <?php echo (($appointment['contact_method'] ?? '') === 'Phone Call') ? 'selected' : ''; ?>>Phone Call</option>
+                                        <option value="WhatsApp" <?php echo (($appointment['contact_method'] ?? '') === 'WhatsApp') ? 'selected' : ''; ?>>WhatsApp</option>
+                                    </select>
+                                </div>
+
+                                <div class="fgroup" id="officeLocationWrap" style="<?php echo ($curConsultType === 'In-Person') ? '' : 'display:none;'; ?>">
+                                    <label>Office Location <span class="req">*</span></label>
+                                    <select name="office_location" id="officeLocationSelect" <?php echo ($curConsultType === 'In-Person') ? 'required' : ''; ?>>
+                                        <option value="">-- Select Office Location --</option>
+                                        <option value="Surrey" <?php echo (($appointment['office_location'] ?? '') === 'Surrey') ? 'selected' : ''; ?>>Surrey Office</option>
+                                        <option value="Kamloops" <?php echo (($appointment['office_location'] ?? '') === 'Kamloops') ? 'selected' : ''; ?>>Kamloops Office</option>
+                                    </select>
+                                </div>
+                                <script>
+                                function toggleConsultType(val) {
+                                    document.getElementById('contactMethodWrap').style.display  = (val === 'Telephonic') ? '' : 'none';
+                                    document.getElementById('officeLocationWrap').style.display = (val === 'In-Person')  ? '' : 'none';
+                                    document.getElementById('contactMethodSelect').required  = (val === 'Telephonic');
+                                    document.getElementById('officeLocationSelect').required = (val === 'In-Person');
+                                    if (val !== 'Telephonic') document.getElementById('contactMethodSelect').value  = '';
+                                    if (val !== 'In-Person')  document.getElementById('officeLocationSelect').value = '';
+                                }
+                                </script>
 
                                 <!-- Additional Client Info -->
                                 <div class="form-section-title">&#128203; Additional Info</div>

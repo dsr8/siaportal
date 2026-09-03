@@ -203,6 +203,23 @@ class Appoint extends BaseController
 
             $isRescheduled = ($existing['appointment_date'] !== $newDate || $existing['appointment_time'] !== $newTime);
 
+            $newConsultType = $this->request->getPost('consultation_type') ?? '';
+            $newContactMethod  = $this->request->getPost('contact_method') ?? '';
+            $newOfficeLocation = $this->request->getPost('office_location') ?? '';
+
+            if (!in_array($newConsultType, ['Telephonic', 'In-Person'], true)) {
+                return redirect()->back()->withInput()
+                    ->with('slot_error', 'Please select a Consultation Type.');
+            }
+            if ($newConsultType === 'Telephonic' && empty($newContactMethod)) {
+                return redirect()->back()->withInput()
+                    ->with('slot_error', 'Please select a Preferred Contact Method.');
+            }
+            if ($newConsultType === 'In-Person' && empty($newOfficeLocation)) {
+                return redirect()->back()->withInput()
+                    ->with('slot_error', 'Please select an Office Location.');
+            }
+
             $Appoint->update($id, [
                 'client_email'       => $this->request->getPost('client_email'),
                 'client_phone'       => $this->request->getPost('client_phone'),
@@ -210,6 +227,9 @@ class Appoint extends BaseController
                 'appointment_time'   => $newTime,
                 'service_type'       => $this->request->getPost('service_type'),
                 'appointment_type'   => $this->request->getPost('appointment_type'),
+                'consultation_type'  => $newConsultType,
+                'contact_method'     => ($newConsultType === 'Telephonic') ? $newContactMethod  : '',
+                'office_location'    => ($newConsultType === 'In-Person')  ? $newOfficeLocation : '',
                 'inside_canada'      => $this->request->getPost('inside_canada') ?? '',
                 'existing_client'    => $this->request->getPost('existing_client') ?? '',
                 'immigration_status' => $this->request->getPost('immigration_status') ?? '',

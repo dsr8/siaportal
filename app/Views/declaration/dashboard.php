@@ -321,17 +321,14 @@
                                     <tr>
                                         <th>Client (SiaID)</th>
                                         <th>Application Type</th>
-                                        <th>Document Title</th>
-                                        <th>Status</th>
-                                        <th>Sent Date</th>
-                                        <th>Viewed Date</th>
-                                        <th>Signed Date</th>
+                                        <th>Document / Status</th>
+                                        <th>Sent / Viewed / Signed</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($rows)): ?>
-                                        <tr><td colspan="8">
+                                        <tr><td colspan="5">
                                             <div class="dc-empty-state">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
                                                 <div class="t">No documents found</div>
@@ -346,7 +343,9 @@
                                         <?php
                                         $badgeLabel = ucfirst($row['status']);
                                         $badgeClass = 'dc-badge-' . $row['status'];
-                                        $typeLabel = trim(($row['category_name'] ?? '') . ' — ' . ($row['type_name'] ?? ''), ' —') ?: '—';
+                                        $typeCategory = esc($row['category_name'] ?? '');
+                                        $typeName     = esc($row['type_name'] ?? '');
+                                        $typeLabel = trim($typeCategory . '<br>— ' . $typeName, ' —') ?: '—';
                                         $canSend = in_array($row['status'], ['draft', 'sent', 'viewed'], true);
                                         $initial = strtoupper(substr(trim((string) $row['client_name']), 0, 1)) ?: '?';
                                         $avatarColor = $dcAvatarColors[(int) $row['id'] % count($dcAvatarColors)];
@@ -361,12 +360,16 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td><?php echo esc($typeLabel); ?></td>
-                                            <td><span class="dc-doc-title" title="<?php echo esc($row['title'] ?: ''); ?>"><?php echo esc($row['title'] ?: '—'); ?></span></td>
-                                            <td><span class="dc-badge <?php echo $badgeClass; ?>"><?php echo esc($badgeLabel); ?></span></td>
-                                            <td><?php echo !empty($row['last_sent_at']) ? esc(date('d M Y', strtotime($row['last_sent_at']))) : '&ndash;'; ?></td>
-                                            <td><?php echo !empty($row['viewed_at']) ? esc(date('d M Y', strtotime($row['viewed_at']))) : '&ndash;'; ?></td>
-                                            <td><?php echo !empty($row['client_signed_at']) ? esc(date('d M Y', strtotime($row['client_signed_at']))) : '&ndash;'; ?></td>
+                                            <td><?php echo $typeLabel; ?></td>
+                                            <td style="white-space:normal;">
+                                                <div class="dc-doc-title" title="<?php echo esc($row['title'] ?: ''); ?>"><?php echo esc($row['title'] ?: '—'); ?></div>
+                                                <span class="dc-badge <?php echo $badgeClass; ?>" style="margin-top:6px;display:block;width:fit-content;"><?php echo esc($badgeLabel); ?></span>
+                                            </td>
+                                            <td style="white-space:normal;font-size:12.5px;line-height:1.6;">
+                                                <div>Sent: <?php echo !empty($row['last_sent_at']) ? esc(date('d M Y', strtotime($row['last_sent_at']))) : '&ndash;'; ?></div>
+                                                <div>Viewed: <?php echo !empty($row['viewed_at']) ? esc(date('d M Y', strtotime($row['viewed_at']))) : '&ndash;'; ?></div>
+                                                <div>Signed: <?php echo !empty($row['client_signed_at']) ? esc(date('d M Y', strtotime($row['client_signed_at']))) : '&ndash;'; ?></div>
+                                            </td>
                                             <td>
                                                 <div class="dc-actions">
                                                     <a href="<?php echo base_url('declaration/Declaration/detail/' . $row['id']); ?>" title="View / Edit">
