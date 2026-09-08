@@ -148,11 +148,11 @@ class Agreement_model extends Model
     }
 
     // Dashboard stat cards. "Pending Signature" means the client actually has something to
-    // sign — sent/viewed only. A draft was never sent, so it doesn't belong in that count; it
-    // only shows up in the running total until "Send for eSign" moves it into sent/viewed.
+    // sign — sent/viewed only. A draft was never sent, so it gets its own bucket rather than
+    // being counted as pending; it still contributes to the running total either way.
     public function getDashboardCounts(): array
     {
-        $counts = ['pending' => 0, 'signed' => 0, 'declined' => 0, 'total' => 0];
+        $counts = ['draft' => 0, 'pending' => 0, 'signed' => 0, 'declined' => 0, 'total' => 0];
 
         $rows = $this->db->table($this->table)
             ->select('status, COUNT(*) as c')
@@ -163,7 +163,9 @@ class Agreement_model extends Model
         foreach ($rows as $row) {
             $c = (int) $row['c'];
             $counts['total'] += $c;
-            if (in_array($row['status'], ['sent', 'viewed'], true)) {
+            if ($row['status'] === 'draft') {
+                $counts['draft'] += $c;
+            } elseif (in_array($row['status'], ['sent', 'viewed'], true)) {
                 $counts['pending'] += $c;
             } elseif ($row['status'] === 'signed') {
                 $counts['signed'] += $c;

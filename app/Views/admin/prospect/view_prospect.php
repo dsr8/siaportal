@@ -282,6 +282,34 @@ function add_status(id,st)
             .vp-table-scroll::-webkit-scrollbar-thumb:hover { background: #b9bcc6; }
 
             @media (max-width: 700px) {
+                /* The site-wide stylesheet (public/dist/css/styles.css) has its own generic
+                   "@media (max-width: 991.98px) .table { white-space: nowrap; }" rule that
+                   applies to every table on every page, this one included (it carries both
+                   class="table" and class="vp-table"). That nowrap is what was actually forcing
+                   every stacked card row onto one unbroken line and pushing it off-screen —
+                   overriding display:block alone was never enough since text still refused to
+                   wrap inside it. Must be reset back to normal for the stacked-card layout below
+                   to actually wrap. */
+                .vp-table, .vp-table * { white-space: normal !important; }
+
+                /* Safety net: clip any element that still overflows horizontally instead of
+                   letting the whole page pan sideways and cut content off at the screen edge. */
+                body { overflow-x: hidden; }
+                .vp-table-scroll { overflow-x: hidden !important; }
+
+                /* Flex children default to min-width:auto, so a long unbroken string (e.g. an
+                   appointment's service/consultation type) refuses to wrap and instead forces
+                   the whole row — and the card and page around it — wider than the screen. */
+                .vp-appt-row, .vp-appt-assigned, .vp-appt-top, .vp-appt-datetime { min-width: 0; }
+                .vp-appt-row span, .vp-appt-assigned span { min-width: 0; overflow-wrap: anywhere; }
+
+                /* Same flex-child min-width:auto trap as the appointment card above, but for
+                   every other flex row in the table that can carry an unbroken long value
+                   (name, team/admin text, status label, agreement chips) — any one of these
+                   was enough to force its row, card and the whole table wider than the screen. */
+                .vp-id-card-top, .vp-id-name, .vp-meta-row, .vp-status-label, .vp-ac-grid, .vp-ac-chip { min-width: 0; }
+                .vp-id-name span, .vp-meta-row span { min-width: 0; overflow-wrap: anywhere; }
+
                 .vp-card > .card-body { padding: 16px 14px; }
                 .vp-search-row { flex-direction: column; align-items: stretch; }
                 .vp-search-row > div { flex: 1 1 auto; min-width: 0; width: 100%; }
@@ -902,17 +930,11 @@ function sendDupAlert(btn, id) {
  </SCRIPT>
 
              <script>
-  $(function () {
-          $('#dataTable1').dataTable( {
-  "iDisplayLength": 20,
-  "bPaginate":false,
-  "showNEntries" : false,
-   "bInfo" : false,
-   "ordering": false,
-   "autoWidth": false
-});
-
-  });
+  // DataTables used to run here, but none of its features were enabled (no sort/pagination/
+  // info) — it only added a redundant "Search:" box duplicating the page's own search form
+  // above, while its post-load DOM rewrite fought the mobile card-stacking CSS: the page would
+  // render correctly on first paint, then DataTables would initialize a moment later and break
+  // the layout. Removed entirely rather than fought with CSS overrides.
 </script>
 
 <!-- ===== Book Appointment Modal ===== -->

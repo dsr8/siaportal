@@ -230,10 +230,16 @@
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
                             Sign Document
                         </button>
-                        <button type="button" class="sg-btn sg-btn-decline" onclick="sgDecline()">
+                        <button type="button" class="sg-btn sg-btn-decline" id="sgDeclineBtn">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
                             Decline
                         </button>
+                    </div>
+
+                    <div id="sgDeclineBox" style="display:none;margin-top:14px;">
+                        <label style="font-size:12.5px;font-weight:700;color:#1f2430;display:block;margin-bottom:6px;">Reason for Declining (required)</label>
+                        <textarea id="sgDeclineReasonInput" required placeholder="Please tell us why you're declining this document" style="width:100%;max-width:480px;padding:8px;border:1px solid #d8dce1;border-radius:6px;font-size:13px;" rows="3"></textarea><br>
+                        <button type="button" class="sg-btn sg-btn-decline" style="margin-top:8px;" onclick="sgDecline()">Confirm Decline</button>
                     </div>
                 </form>
 
@@ -407,9 +413,23 @@
         });
     }
 
+    var sgDeclineBtnEl = document.getElementById('sgDeclineBtn');
+    if (sgDeclineBtnEl) {
+        sgDeclineBtnEl.addEventListener('click', function () {
+            var box = document.getElementById('sgDeclineBox');
+            box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        });
+    }
+
     function sgDecline() {
-        var reason = prompt('Optional: let us know why you\'re declining this document.', '');
-        if (reason === null) return;
+        var reason = document.getElementById('sgDeclineReasonInput').value.trim();
+        if (reason === '') {
+            alert('Please enter a reason for declining.');
+            return;
+        }
+        if (!confirm('Are you sure you want to decline this document? This cannot be undone — a new document will need to be created if you wish to proceed later.')) {
+            return;
+        }
         document.getElementById('sgDeclineReason').value = reason;
         document.getElementById('sgDeclineForm').submit();
     }

@@ -306,7 +306,7 @@ footer .text-muted { color:#6B7280 !important; font-size:12.5px; }
                 <div class="col-xl-6">
                     <div class="dash-section-card sc-yellow">
                         <div class="dash-section-header">
-                            <h6><i class="fas fa-birthday-cake"></i>Birth Day</h6>
+                            <h6><i class="fas fa-birthday-cake"></i>Client Birth Day</h6>
                             <a href="#" class="view-all-btn">View All</a>
                         </div>
                         <div class="dash-section-body">

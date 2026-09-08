@@ -1,3 +1,11 @@
+<?php
+// Today's team birthdays — this dashboard has its own standalone layout (no admininclude/header.php),
+// so the banner/decor markup is duplicated here rather than shared.
+$todayBirthdays = [];
+if (session()->get('isLoggedIn') == true) {
+    $todayBirthdays = (new \App\Models\Birthday_model())->getToday();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -367,6 +375,67 @@
             .stats-row { grid-template-columns: repeat(2, 1fr); }
             .wrap { padding: 12px; }
         }
+
+        /* ── Birthday celebration (mirrors admininclude/header.php) ── */
+        .birthday-banner {
+          display: flex; align-items: center; gap: 8px;
+          background: linear-gradient(90deg, #FF4D5A, #FF8A65);
+          color: #fff; font-weight: 600; font-size: 12.5px;
+          padding: 5px 14px; border-radius: 20px;
+          margin-left: 18px;
+          max-width: 40%;
+          overflow: hidden;
+        }
+        .birthday-banner .bb-text-wrap { overflow: hidden; flex: 1; min-width: 0; }
+        .birthday-banner .bb-text {
+          display: inline-block; white-space: nowrap;
+          animation: bbScroll var(--bb-scroll-duration, 14s) linear infinite;
+          padding-left: 100%;
+        }
+        .birthday-banner .bb-text.bb-text-short { animation: none; padding-left: 0; }
+        @keyframes bbScroll {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-100%); }
+        }
+        .birthday-banner .bb-emoji { font-size: 15px; flex-shrink: 0; }
+        @media (max-width: 767px) {
+          .birthday-banner { max-width: 50%; font-size: 10.5px; padding: 4px 10px; margin-left: 8px; gap: 6px; }
+          .birthday-banner .bb-emoji { font-size: 12px; }
+        }
+        .birthday-decor { position: fixed; inset: 0; pointer-events: none; z-index: 1060; overflow: hidden; }
+        .birthday-decor span {
+          position: absolute; font-size: 34px; opacity: 0.35; animation: birthdayFloat 6s ease-in-out infinite;
+          filter: drop-shadow(0 1px 3px rgba(0,0,0,0.35));
+        }
+        .birthday-decor span:nth-child(1)  { top: 6%;  left: 4%;  animation-delay: 0s;    font-size: 30px; }
+        .birthday-decor span:nth-child(2)  { top: 10%; left: 24%; animation-delay: 0.8s;  font-size: 22px; }
+        .birthday-decor span:nth-child(3)  { top: 16%; left: 44%; animation-delay: 1.5s;  font-size: 26px; }
+        .birthday-decor span:nth-child(4)  { top: 8%;  left: 64%; animation-delay: 0.4s;  font-size: 24px; }
+        .birthday-decor span:nth-child(5)  { top: 18%; left: 88%; animation-delay: 1.1s;  font-size: 26px; }
+        .birthday-decor span:nth-child(6)  { top: 30%; left: 12%; animation-delay: 1.9s;  font-size: 22px; }
+        .birthday-decor span:nth-child(7)  { top: 32%; left: 30%; animation-delay: 0.5s;  font-size: 24px; }
+        .birthday-decor span:nth-child(8)  { top: 28%; left: 55%; animation-delay: 1.3s;  font-size: 28px; }
+        .birthday-decor span:nth-child(9)  { top: 40%; left: 75%; animation-delay: 1.7s;  font-size: 32px; }
+        .birthday-decor span:nth-child(10) { top: 36%; left: 95%; animation-delay: 0.2s;  font-size: 22px; }
+        .birthday-decor span:nth-child(11) { top: 48%; left: 6%;  animation-delay: 1.0s;  font-size: 26px; }
+        .birthday-decor span:nth-child(12) { top: 55%; left: 22%; animation-delay: 0.3s;  font-size: 28px; }
+        .birthday-decor span:nth-child(13) { top: 50%; left: 42%; animation-delay: 1.6s;  font-size: 24px; }
+        .birthday-decor span:nth-child(14) { top: 58%; left: 62%; animation-delay: 2.0s;  font-size: 24px; }
+        .birthday-decor span:nth-child(15) { top: 52%; left: 82%; animation-delay: 0.6s;  font-size: 30px; }
+        .birthday-decor span:nth-child(16) { top: 72%; left: 14%; animation-delay: 1.4s;  font-size: 26px; }
+        .birthday-decor span:nth-child(17) { top: 68%; left: 34%; animation-delay: 0.9s;  font-size: 22px; }
+        .birthday-decor span:nth-child(18) { top: 74%; left: 54%; animation-delay: 1.8s;  font-size: 28px; }
+        .birthday-decor span:nth-child(19) { top: 70%; left: 74%; animation-delay: 0.7s;  font-size: 24px; }
+        .birthday-decor span:nth-child(20) { top: 72%; left: 90%; animation-delay: 1.2s;  font-size: 30px; }
+        .birthday-decor span:nth-child(21) { top: 88%; left: 8%;  animation-delay: 0.5s;  font-size: 24px; }
+        .birthday-decor span:nth-child(22) { top: 84%; left: 28%; animation-delay: 1.5s;  font-size: 28px; }
+        .birthday-decor span:nth-child(23) { top: 90%; left: 48%; animation-delay: 0.1s;  font-size: 22px; }
+        .birthday-decor span:nth-child(24) { top: 86%; left: 68%; animation-delay: 1.1s;  font-size: 26px; }
+        .birthday-decor span:nth-child(25) { top: 92%; left: 88%; animation-delay: 1.9s;  font-size: 28px; }
+        @keyframes birthdayFloat {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-14px) rotate(6deg); }
+        }
     </style>
 </head>
 <body>
@@ -374,11 +443,43 @@
 <!-- Navbar -->
 <div class="navbar">
     <div class="brand">&#128197; Appointment Admin</div>
+
+    <?php if (!empty($todayBirthdays)) {
+        if (count($todayBirthdays) > 1) {
+            $bbNames = array_map(function($r){ return esc($r['name']); }, $todayBirthdays);
+            $bbText = 'Happy Birthday, ' . implode(', ', array_slice($bbNames, 0, -1)) . ' & ' . end($bbNames) . '!';
+        } else {
+            $singleName = $todayBirthdays[0]['name'];
+            $bbText = (stripos($singleName, 'happy birthday') !== false)
+                ? esc($singleName)
+                : 'Happy Birthday, ' . esc($singleName) . '!';
+        }
+        $bbIsLong = mb_strlen($bbText) > 28;
+        $bbDuration = max(10, round(mb_strlen($bbText) / 6));
+    ?>
+    <div class="birthday-banner" id="birthdayBanner">
+        <span class="bb-emoji">&#127881;&#127874;&#127880;</span>
+        <span class="bb-text-wrap">
+            <span class="bb-text<?php echo $bbIsLong ? '' : ' bb-text-short'; ?>" style="--bb-scroll-duration: <?php echo $bbDuration; ?>s;"><?php echo $bbText; ?></span>
+        </span>
+    </div>
+    <?php } ?>
+
     <div class="nav-right">
         <a href="<?php echo base_url('Siaportal/dashboard'); ?>" class="btn-logout" style="background:#6c757d;margin-right:8px;">&#8592; Back</a>
         <a href="<?php echo base_url('appoint/AppointAdmin/logout'); ?>" class="btn-logout">Logout</a>
     </div>
 </div>
+
+<?php if (!empty($todayBirthdays)) { ?>
+<div class="birthday-decor" id="birthdayDecor">
+  <span>&#127880;</span><span>&#127880;</span><span>&#127882;</span><span>&#127880;</span><span>&#127881;</span>
+  <span>&#127882;</span><span>&#127880;</span><span>&#127882;</span><span>&#127881;</span><span>&#127882;</span>
+  <span>&#127880;</span><span>&#127882;</span><span>&#127882;</span><span>&#127880;</span><span>&#127881;</span>
+  <span>&#127882;</span><span>&#127880;</span><span>&#127882;</span><span>&#127881;</span><span>&#127882;</span>
+  <span>&#127880;</span><span>&#127882;</span><span>&#127882;</span><span>&#127880;</span><span>&#127881;</span>
+</div>
+<?php } ?>
 
 <?php
 $allApptDates = [];

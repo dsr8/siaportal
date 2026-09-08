@@ -594,6 +594,7 @@
                               <!---->
 
                                   <!---->
+                                  <?php if (session()->get('id') == 44): ?>
                                   <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#cat" aria-expanded="false" aria-controls="cat"
                                 ><div class="sb-nav-link-icon"><i style="color:#9CA3AF" class="fas fa-cog"></i></div>
                                 Admin Settings
@@ -639,16 +640,17 @@
   <a class="nav-link" href="<?php echo base_url();?>/Siaportal/view_invoice">View Invoice</a>
          <a class="nav-link" href="<?php echo base_url();?>/Siaportal/add_student_need_job">Add Student need job</a>
 
-                                    <a class="nav-link" href="<?php echo base_url();?>/Siaportal/view_employe_for_student">View Student need job</a>  
+                                    <a class="nav-link" href="<?php echo base_url();?>/Siaportal/view_employe_for_student">View Student need job</a>
 
 
                                      <a class="nav-link" href="<?php echo base_url();?>/Siaportal/add_lmia_needed">Add LMIA Needed</a>
-                                   
+
                                     <a class="nav-link" href="<?php echo base_url();?>/Siaportal/view_lmia_needed">View LMIA Needed</a>
-                                                                
+
                                 </nav>
                             </div>
                               <!---->
+                              <?php endif; ?>
                                   <!--a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#type" aria-expanded="false" aria-controls="type"
                                 ><div class="sb-nav-link-icon"><i class="fas fa fa-users"></i></div>
                                 Type

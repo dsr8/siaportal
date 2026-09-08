@@ -142,7 +142,7 @@ function sia_agreement_email_shell(array $opts): string
   <tr><td style="padding:24px 30px 16px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
       <td valign="middle"><img src="' . $siaLogo . '" alt="SIA Immigration" height="40" style="display:block;border:0;"></td>
-      <td valign="middle" align="right"><img src="' . $rcicLogo . '" alt="RCIC" height="34" style="display:block;border:0;"></td>
+      <td valign="middle" align="right"><img src="' . $rcicLogo . '" alt="RCIC" height="50" style="display:block;border:0;"></td>
     </tr></table>
   </td></tr>
   <tr><td style="height:4px;background:linear-gradient(90deg,#e23b3b,#f39c12,#2ecc71,#3498db,#8e44ad);font-size:0;line-height:0;">&nbsp;</td></tr>
@@ -563,24 +563,78 @@ function sia_send_agreement_accounting_signed_email(array $agreement): void
     );
 }
 
-// 7. TEAM – AGREEMENT DECLINED
+// Reusable "Reason for Declining" highlighted box (red-tinted, like the case-description box)
+// so the client's stated reason stands out from the rest of the email instead of blending
+// into a plain field row.
+function sia_agreement_decline_reason_box(string $reason): string
+{
+    if ($reason === '') {
+        return '';
+    }
+    return '<div style="margin-top:14px;padding:12px 14px;background:#fdecec;border-radius:8px;">'
+        . '<div style="font-size:11.5px;font-weight:700;color:#e23b3b;text-transform:uppercase;letter-spacing:.3px;">Reason for Declining</div>'
+        . '<div style="margin-top:4px;font-size:13px;color:#1f2430;line-height:1.6;">' . nl2br(esc($reason)) . '</div>'
+        . '</div>';
+}
+
+// Dispatcher: client decline-confirmation + team decline-notification, triggered once from
+// Sign::decline() — mirrors sia_send_agreement_cancelled_email()'s client+team pattern.
 function sia_send_agreement_declined_email(array $agreement): void
 {
+    sia_send_agreement_client_declined_email($agreement);
+    sia_send_agreement_team_declined_email($agreement);
+}
+
+// CLIENT – AGREEMENT DECLINED (confirmation that their decline was received; to proceed later
+// a brand new agreement must be created/sent — this one is dead-ended).
+function sia_send_agreement_client_declined_email(array $agreement): void
+{
+    $toEmail = trim($agreement['client_email'] ?? '');
+    if ($toEmail === '') {
+        log_message('error', '[SiaAgreementEmail] Skipped client-declined email: agreement id ' . ($agreement['id'] ?? '?') . ' has no client_email.');
+        return;
+    }
+
     $typeLabel = sia_agreement_type_label($agreement);
+    $reason = trim((string) ($agreement['decline_reason'] ?? ''));
+
+    $intro = '<div style="margin-top:18px;font-size:15px;font-weight:700;color:#1f2430;">Hello ' . esc(sia_agreement_first_name($agreement)) . ',</div>
+    <div style="margin-top:8px;font-size:13.5px;color:#555;line-height:1.6;">
+      This confirms that you have declined to sign your Retainer Agreement.<br>
+      If you would like to proceed at a later date, please contact us and a new agreement will be prepared for your signature.
+    </div>' . sia_agreement_decline_reason_box($reason);
+
+    $html = sia_agreement_email_shell([
+        'bannerEmoji'  => '&#10060;',
+        'bannerBg'     => '#fdecec',
+        'bannerIconBg' => '#e23b3b',
+        'bannerTitle'  => 'Retainer Agreement Declined',
+        'introHtml'    => $intro,
+        'consultant'   => $agreement['consultant_name'] ?? 'Sia Immigration',
+    ]);
+
+    sia_agreement_send(
+        $toEmail,
+        sia_agreement_subject('Retainer Agreement Declined', $agreement, $typeLabel),
+        $html
+    );
+}
+
+// 7. TEAM – AGREEMENT DECLINED
+function sia_send_agreement_team_declined_email(array $agreement): void
+{
+    $typeLabel = sia_agreement_type_label($agreement);
+    $reason = trim((string) ($agreement['decline_reason'] ?? ''));
 
     $intro = '<div style="margin-top:18px;font-size:13.5px;color:#555;line-height:1.6;">
       The client has declined the Retainer Agreement.
-    </div>';
+    </div>' . sia_agreement_decline_reason_box($reason);
 
     $fields = [
         ['label' => 'Client', 'value' => $agreement['client_name'] ?? '—'],
         ['label' => 'Application', 'value' => $typeLabel],
         ['label' => 'SiaID', 'value' => (string) (int) $agreement['prospect_id']],
     ];
-    $reason = trim((string) ($agreement['decline_reason'] ?? ''));
-    if ($reason !== '') {
-        $fields[] = ['label' => 'Reason', 'value' => $reason];
-    }
 
     $html = sia_agreement_email_shell([
         'bannerEmoji'  => '&#10060;',
@@ -589,7 +643,7 @@ function sia_send_agreement_declined_email(array $agreement): void
         'bannerTitle'  => 'Retainer Agreement Declined',
         'introHtml'    => $intro,
         'fields'       => $fields,
-        'outroHtml'    => 'Please follow up with the client if required.',
+        'outroHtml'    => 'Please follow up with the client if required. If we need to proceed later, a new agreement must be created and sent.',
         'consultant'   => $agreement['consultant_name'] ?? 'Sia Immigration',
     ]);
 

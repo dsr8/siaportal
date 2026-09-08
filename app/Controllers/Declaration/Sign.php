@@ -178,15 +178,22 @@ class Sign extends BaseController
             return redirect()->to(base_url('declaration/sign/' . $token));
         }
 
+        $declineReason = trim((string) $this->request->getPost('reason'));
+        if ($declineReason === '') {
+            return redirect()->to(base_url('declaration/sign/' . $token))
+                ->with('sign_error', 'Please enter a reason for declining.');
+        }
+
         (new Declaration_model())->update($declaration['id'], [
             'status'         => 'declined',
             'declined_at'    => date('Y-m-d H:i:s'),
-            'decline_reason' => trim((string) $this->request->getPost('reason')),
+            'decline_reason' => $declineReason,
         ]);
 
         helper('declaration_email_helper');
         sia_send_declaration_declined_email(array_merge($declaration, [
-            'decline_reason' => trim((string) $this->request->getPost('reason')),
+            'status'         => 'declined',
+            'decline_reason' => $declineReason,
         ]));
 
         return redirect()->to(base_url('declaration/sign/' . $token))

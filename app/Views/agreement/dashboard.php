@@ -41,7 +41,7 @@
             .ag-archived-banner a { color: #2f5fd6; font-weight: 700; margin-left: auto; }
 
             /* ── Stat cards ── */
-            .ag-stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 22px; }
+            .ag-stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; margin-bottom: 22px; }
             .ag-stat-card {
                 background: #fff; border-radius: 14px; padding: 20px 22px;
                 border-left: 4px solid transparent; box-shadow: 0 2px 10px rgba(20,20,43,0.05);
@@ -52,6 +52,10 @@
             .ag-stat-body .val { font-size: 28px; font-weight: 800; line-height: 1.1; }
             .ag-stat-body .lbl { font-size: 13.5px; color: #6b7280; margin-top: 2px; font-weight: 500; }
             .ag-stat-body .view-all { font-size: 13px; font-weight: 700; margin-top: 10px; display: inline-flex; align-items: center; gap: 5px; }
+
+            .ag-stat-draft    { border-left-color: #9aa0aa; }
+            .ag-stat-draft    .ag-stat-icon { background: #9aa0aa; }
+            .ag-stat-draft    .val, .ag-stat-draft    .view-all { color: #9aa0aa; }
 
             .ag-stat-pending  { border-left-color: #f5a623; }
             .ag-stat-pending  .ag-stat-icon { background: #f5a623; }
@@ -284,6 +288,16 @@
                         <!-- ── Stat cards ── -->
                         <?php if (!$isArchived): ?>
                         <div class="ag-stats-row">
+                            <div class="ag-stat-card ag-stat-draft">
+                                <div class="ag-stat-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                                </div>
+                                <div class="ag-stat-body">
+                                    <div class="val"><?php echo (int) $counts['draft']; ?></div>
+                                    <div class="lbl">Draft</div>
+                                    <a class="view-all" href="<?php echo base_url('agreement/Agreement/dashboard?status=draft'); ?>">View all &rarr;</a>
+                                </div>
+                            </div>
                             <div class="ag-stat-card ag-stat-pending">
                                 <div class="ag-stat-icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
@@ -363,7 +377,7 @@
                                 <div class="f-label">Status</div>
                                 <div class="f-value">
                                     <select name="status" id="agStatusFilter" onchange="document.getElementById('agFilterForm').submit();">
-                                        <?php $statusOptions = ['' => 'All Status', 'pending' => 'Pending', 'sent' => 'Sent', 'viewed' => 'Viewed', 'signed' => 'Signed', 'declined' => 'Declined', 'cancelled' => 'Cancelled']; ?>
+                                        <?php $statusOptions = ['' => 'All Status', 'draft' => 'Draft', 'pending' => 'Pending', 'sent' => 'Sent', 'viewed' => 'Viewed', 'signed' => 'Signed', 'declined' => 'Declined', 'cancelled' => 'Cancelled']; ?>
                                         <?php foreach ($statusOptions as $val => $label): ?>
                                             <option value="<?php echo esc($val); ?>" <?php echo ($filters['status_bucket'] ?? '') === $val ? 'selected' : ''; ?>><?php echo esc($label); ?></option>
                                         <?php endforeach; ?>

@@ -124,12 +124,37 @@
             .af-toolbar { flex-direction: column; align-items: stretch; }
             .dataTables_wrapper .dataTables_filter input { width: 100%; min-width: 0; }
 
-            /* Below ~991px the table no longer fits its container; letting it scroll
-               horizontally at a real width keeps cell text readable instead of the
-               fixed % columns squeezing every word onto its own vertical letter. */
-            .af-table { table-layout: auto; min-width: 760px; }
-            .af-table tbody td { overflow-wrap: normal; word-break: normal; }
-            .af-gc-val { word-break: normal; overflow-wrap: normal; white-space: nowrap; }
+            /* A 7-column table never reads well on a phone, no matter how it's scaled —
+               fixed % columns squeeze words onto single letters, and auto-layout just
+               moves the squeeze into a sideways scroll. Turn each row into a stacked card
+               instead, using the data-label the createdCell hooks above stamp on every
+               <td> as that field's mini-heading. */
+            body { overflow-x: hidden; }
+            .table-responsive { overflow-x: hidden !important; }
+            .af-table { table-layout: auto; min-width: 0; border: none; }
+            .af-table thead { display: none; }
+            .af-table, .af-table tbody, .af-table tr { display: block; width: 100%; }
+            .af-table tr {
+                margin-bottom: 14px; border: 1px solid #eef0f2; border-radius: 14px;
+                box-shadow: 0 2px 10px rgba(20,20,43,0.06); overflow: hidden;
+            }
+            .af-table tbody tr:nth-child(even) { background: #fff; }
+            .af-table td {
+                display: block; width: 100% !important; box-sizing: border-box;
+                border: none !important; border-bottom: 1px solid #f4f5f7 !important;
+                padding: 10px 14px !important; text-align: left !important;
+                overflow-wrap: normal; word-break: normal;
+            }
+            .af-table tr td:last-child { border-bottom: none !important; }
+            .af-table td[data-label]::before {
+                content: attr(data-label);
+                display: block; font-size: 10.5px; font-weight: 800; color: #2E7D32;
+                text-transform: uppercase; letter-spacing: .04em; margin-bottom: 5px;
+            }
+
+            /* GC Key values (usernames/passwords) are long unspaced strings — must stay
+               wrapping so a long value can't spill sideways out of its card. */
+            .af-gc-val { word-break: break-all; overflow-wrap: anywhere; white-space: normal; }
         }
     </style>
 </head>
@@ -213,18 +238,22 @@
             "type": "POST"
         },
         "columns": [
-            { "data": "id", "className": "af-col-center", "render": function (d) { return '<span class="af-id-pill">#' + afEsc(d) + '</span>'; } },
-            { "data": "siaportalid", "className": "af-col-center" },
+            { "data": "id", "className": "af-col-center", "render": function (d) { return '<span class="af-id-pill">#' + afEsc(d) + '</span>'; },
+              "createdCell": function (td) { td.setAttribute('data-label', 'Id'); } },
+            { "data": "siaportalid", "className": "af-col-center",
+              "createdCell": function (td) { td.setAttribute('data-label', 'Sia Portal Id'); } },
             { "data": null, "render": function (row) {
                 var team = row.team_member_name || row.team_member_col || '';
                 if (['Default', 'Defult'].indexOf(team) !== -1) team = '';
                 var html = '<div class="af-name">' + afEsc(row.name || '') + '</div>';
                 html += '<div class="af-team">' + (team ? afEsc(team) : '&ndash;') + '</div>';
                 return html;
-            }},
+            },
+              "createdCell": function (td) { td.setAttribute('data-label', 'Name / Team Member'); } },
             { "data": "application_number", "render": function (d) {
                 return d ? '<span class="af-appnum">' + afEsc(d) + '</span>' : '<span class="af-gc-none">&ndash;</span>';
-            }},
+            },
+              "createdCell": function (td) { td.setAttribute('data-label', 'Application Number'); } },
             { "data": null, "render": function (row) {
                 if (!row.gc_username && !row.gc_password) {
                     return '<span class="af-gc-none">&ndash;</span>';
@@ -234,10 +263,12 @@
                 html += '<div class="af-gc-line"><i class="fas fa-lock"></i><span class="af-gc-label">Pass</span> <span class="af-gc-val">' + afEsc(row.gc_password || '&ndash;') + '</span></div>';
                 html += '</div>';
                 return html;
-            }},
+            },
+              "createdCell": function (td) { td.setAttribute('data-label', 'GC Key'); } },
             { "data": "app_sub_date", "render": function (d) {
                 return (!d || d.indexOf('0000-00-00') === 0) ? '<span class="af-gc-none">&ndash;</span>' : afEsc(d);
-            }},
+            },
+              "createdCell": function (td) { td.setAttribute('data-label', 'Date Of Submission'); } },
             { "data": null, "render": function (row) {
                 var st = (row.st || '').toLowerCase();
                 var cardCls = 'af-card-default';
@@ -251,7 +282,8 @@
                 html += '<span class="af-badge ' + badgeCls + '">' + afEsc(row.st || 'N/A') + '</span>';
                 html += '</div>';
                 return html;
-            }}
+            },
+              "createdCell": function (td) { td.setAttribute('data-label', 'Category / Type / Status'); } }
         ]
     });
     </script>

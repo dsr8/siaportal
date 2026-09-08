@@ -2804,7 +2804,7 @@ $emailService->initialize($config);
 
 // Set recipient email addresses
 $to = [$email]; // Use actual email address(es) here
-$cc = ['no-reply@siaimmigration.com', 'ds@siaimmigration.com','care@siaimmigration.com']; // Keep as an array
+$cc = ['no-reply@siaimmigration.com', 'ds@siaimmigration.com']; // Keep as an array
 
 // Set email fields
 $emailService->setFrom('no-reply@siaimmigration.com', 'Sia Immigration');
@@ -10202,10 +10202,20 @@ public function full_view_client_application($category,$id,$sid,$type)
 	else if($category=='23' && $type=='85'){
 		$url = 'Visitor_extension_inland/full_visitor_extension_inland/'.$category.'/'.$id.'/'.$sid.'';
 					echo'
-					<script>					
+					<script>
 					window.location.href = "'.base_url().'/'.$url.'";
 					</script>
-					';	
+					';
+
+	}
+
+	else if($category=='8' && ($type=='22' || $type=='208')){
+		$url = 'Study_permit_application_inland/full_study_permit_application_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
 
 	}
 
@@ -10878,6 +10888,479 @@ else if($category=='21' && $type=='94'){
 	///////////////
 	
 
+
+	else if($category=='2' && $type=='144'){
+		$url = 'BC_pnp_int_grd/full_bc_pnp_int_grd/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='3' && $type=='202'){
+		$url = 'Canadian_exp_class/full_canadian_exp_class/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='3' && $type=='151'){
+		$url = 'Canadian_exp_class/full_canadian_exp_class/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='4' && $type=='206'){
+		$url = 'Spausal_sponsorship_inland/full_spausal_sponsorship_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='4' && $type=='182'){
+		$url = 'Spausal_sponsorship_inland/full_spausal_sponsorship_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='5' && $type=='162'){
+		$url = 'Intl_stu_spousal_open_wp_inland/full_intl_stu_spousal_open_wp_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='6' && $type=='200'){
+		$url = 'Worker_spousal_open_wp_inland/full_worker_spousal_open_wp_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='6' && $type=='171'){
+		$url = 'Worker_spousal_open_wp_inland/full_worker_spousal_open_wp_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='7' && $type=='180'){
+		$url = 'Study_permit_extension_inland/full_study_permit_extension_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='8' && $type=='181'){
+		$url = 'Study_permit_application_inland/full_study_permit_application_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='9' && $type=='198'){
+		$url = 'PGWP_application_inland/full_PGWP_application_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='9' && $type=='191'){
+		$url = 'PGWP_application_inland/full_PGWP_application_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='10' && $type=='190'){
+		$url = 'PGWP_extension_inland/full_PGWP_extension_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='11' && $type=='159'){
+		$url = 'FSW_na/full_fsw_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='12' && $type=='158'){
+		$url = 'FSTW_na/full_fstw_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='13' && $type=='197'){
+		$url = 'Bc_pnp_int_pg/full_bc_pnp_int_pg/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='13' && $type=='145'){
+		$url = 'BC_pnp_int_pg_exp_entery/full_bc_pnp_int_pg_exp_entery/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='14' && $type=='147'){
+		$url = 'BC_pnp_sw_in_can_na/full_bc_pnp_sw_in_can_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='15' && $type=='148'){
+		$url = 'Bc_pnp_sw_overseas_na/full_bc_pnp_sw_overseas_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='16' && $type=='146'){
+		$url = 'BC_PNP_semi_skilled_long_haul_truck/full_bc_pnp_semi_skilled_long_haul_truck/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='17' && $type=='143'){
+		$url = 'BC_PNP_heathcare_prof_na/full_bc_pnp_heathcare_prof_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='18' && $type=='185'){
+		$url = 'RNIP_west_kootenay_na/full_rnip_west_kootenay_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='19' && $type=='179'){
+		$url = 'Super_visa_outland/full_super_visa_outland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='20' && $type=='157'){
+		$url = 'Family_sponsorship_na/full_family_sponsorship_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='21' && $type=='201'){
+		$url = 'Visitor_visa_canada/full_visitor_visa_canada/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='21' && $type=='173'){
+		$url = 'Visitor_visa_canada/full_visitor_visa_canada/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='22' && $type=='177'){
+		$url = 'Tourist_visa_canada/full_toutist_visa_canada/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='23' && $type=='174'){
+		$url = 'Visitor_extension_inland/full_visitor_extension_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='24' && $type=='188'){
+		$url = 'Restoration_Of_Status_worker/full_worker_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='25' && $type=='141'){
+		$url = 'Aipp_na/full_aipp_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='26' && $type=='140'){
+		$url = 'Ainp_na/full_ainp_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='27' && $type=='161'){
+		$url = 'International_exp_class_na/full_international_exp_class_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='28' && $type=='168'){
+		$url = 'Minp_na/full_minp_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='29' && $type=='152'){
+		$url = 'Caregivers_na/full_caregivers_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='30' && $type=='184'){
+		$url = 'SINP_na/full_sinp_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='32' && $type=='195'){
+		$url = 'Lmia_wp_hg/full_lmia_wp_high_wage/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='32' && $type=='166'){
+		$url = 'Lmia_wp_hg/full_lmia_wp_high_wage/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='33' && $type=='194'){
+		$url = 'Passport_na/full_passport_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='34' && $type=='153'){
+		$url = 'Citizenship_application_na/full_citizenship_application_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='35' && $type=='189'){
+		$url = 'Pr_card_na/full_pr_card_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='36' && $type=='150'){
+		$url = 'Bridging_open_wp_na/full_bridging_open_wp_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='37' && $type=='155'){
+		$url = 'Co_op_wp/full_co_op_wp/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='38' && $type=='176'){
+		$url = 'Travel_doc_application_na/full_travel_doc_application_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='39' && $type=='154'){
+		$url = 'Citizenship_certi_application_adult/full_citizenship_certi_application_adult/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='40' && $type=='186'){
+		$url = 'RNIP_vernon_na/full_rnip_vernon_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='41' && $type=='187'){
+		$url = 'RNIP_sault_na/full_rnip_sault_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='42' && $type=='165'){
+		$url = 'Lmia_pr_lg/full_lmia_pr_low_wage/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='43' && $type=='163'){
+		$url = 'Lmia_dual_int_hg/full_lmia_dual_int_high_wage/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='44' && $type=='167'){
+		$url = 'Lmia_global/full_lmia_global_tlnt_high_wage/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='47' && $type=='142'){
+		$url = 'Amend_immi_doc_na/full_amend_immi_doc_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='50' && $type=='149'){
+		$url = 'BC_PNP_tech_pilot_skill_worker/full_bc_pnp_tech_pilot_skill_worker/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='54' && $type=='193'){
+		$url = 'Temporary_resident_visa_na/full_temporary_resident_visa_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='54' && $type=='178'){
+		$url = 'Temporary_resident_visa_na/full_temporary_resident_visa_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='55' && $type=='160'){
+		$url = 'Immigration_application_na/full_immigration_application_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='56' && $type=='172'){
+		$url = 'Work_permit_LMIA_inland/full_Work_permit_LMIA_inland/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='57' && $type=='199'){
+		$url = 'Other_open_work_permit_extention/full_other_open_work_permit_extention/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='57' && $type=='192'){
+		$url = 'Other_open_work_permit_new_application/full_other_open_work_permit_new_application/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='58' && $type=='196'){
+		$url = 'LMIA_exempt_na/full_LMIA_exempt_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='58' && $type=='164'){
+		$url = 'LMIA_exempt_na/full_LMIA_exempt_na/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
 		else{
 
 $url = 'Siaportal/view_client/'.$category.'/'.$id.'/'.$sid.'';
@@ -11558,10 +12041,19 @@ else if($category=='9' && $type=='32'){
 	else if($category=='8' && $type=='22'){
 		$url = 'Study_permit_application_inland/edit_study_permit_application_inland/'.$category.'/'.$id.'/'.$sid.'';
 					echo'
-					<script>					
+					<script>
 					window.location.href = "'.base_url().'/'.$url.'";
 					</script>
-					';	
+					';
+	}
+
+	else if($category=='8' && $type=='208'){
+		$url = 'Study_permit_application_inland/edit_study_permit_application_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
 	}
 
 
@@ -12316,6 +12808,495 @@ else if($category=='21' && $type=='94'){
 	
 	
 
+
+	else if($category=='2' && $type=='144'){
+		$url = 'BC_pnp_int_grd/edit_bc_pnp_int_grd_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='3' && $type=='202'){
+		$url = 'Canadian_exp_class/edit_canadian_exp_class_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='3' && $type=='151'){
+		$url = 'Canadian_exp_class/edit_canadian_exp_class_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='4' && $type=='206'){
+		$url = 'Spausal_sponsorship_inland/edit_spausal_sponsorship_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='4' && $type=='182'){
+		$url = 'Spausal_sponsorship_inland/edit_spausal_sponsorship_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='5' && $type=='162'){
+		$url = 'Intl_stu_spousal_open_wp_inland/edit_intl_stu_spousal_open_wp_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='6' && $type=='200'){
+		$url = 'Worker_spousal_open_wp_inland/edit_worker_spousal_open_wp_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='6' && $type=='171'){
+		$url = 'Worker_spousal_open_wp_inland/edit_worker_spousal_open_wp_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='7' && $type=='180'){
+		$url = 'Study_permit_extension_inland/edit_study_permit_extension_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='8' && $type=='181'){
+		$url = 'Study_permit_application_inland/edit_study_permit_application_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='9' && $type=='198'){
+		$url = 'PGWP_application_inland/edit_PGWP_application_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='9' && $type=='191'){
+		$url = 'PGWP_application_inland/edit_PGWP_application_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='10' && $type=='190'){
+		$url = 'PGWP_extension_inland/edit_PGWP_extension_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='11' && $type=='159'){
+		$url = 'FSW_na/edit_fsw_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='12' && $type=='158'){
+		$url = 'FSTW_na/edit_fstw_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='13' && $type=='197'){
+		$url = 'Bc_pnp_int_pg/edit_bc_pnp_int_pg_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='13' && $type=='145'){
+		$url = 'BC_pnp_int_pg_exp_entery/edit_bc_pnp_int_pg_exp_entery_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='14' && $type=='147'){
+		$url = 'BC_pnp_sw_in_can_na/edit_bc_pnp_sw_in_can_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='15' && $type=='148'){
+		$url = 'Bc_pnp_sw_overseas_na/edit_bc_pnp_sw_overseas_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='16' && $type=='146'){
+		$url = 'BC_PNP_Semi_Skilled_na/edit_BC_PNP_Semi_Skilled_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='17' && $type=='143'){
+		$url = 'BC_PNP_heathcare_prof_na/edit_bc_pnp_heathcare_prof_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='18' && $type=='185'){
+		$url = 'RNIP_west_kootenay_na/edit_rnip_west_kootenay_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='19' && $type=='179'){
+		$url = 'Super_visa_outland/edit_super_visa_outland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='20' && $type=='157'){
+		$url = 'Family_sponsorship_na/edit_family_sponsorship_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='21' && $type=='201'){
+		$url = 'Visitor_visa_canada/edit_visitor_visa_canada_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='21' && $type=='173'){
+		$url = 'Visitor_visa_canada/edit_visitor_visa_canada_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='22' && $type=='177'){
+		$url = 'Tourist_visa_canada/edit_toutist_visa_canada_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='23' && $type=='174'){
+		$url = 'Visitor_extension_inland/edit_visitor_extension_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='24' && $type=='188'){
+		$url = 'Restoration_Of_Status_worker/edit_worker_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='25' && $type=='141'){
+		$url = 'Aipp_na/edit_aipp_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='26' && $type=='140'){
+		$url = 'Ainp_na/edit_ainp_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='27' && $type=='161'){
+		$url = 'International_exp_class_na/edit_international_exp_class_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='28' && $type=='168'){
+		$url = 'Minp_na/edit_minp_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='29' && $type=='152'){
+		$url = 'Caregivers_na/edit_caregivers_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='30' && $type=='184'){
+		$url = 'SINP_na/edit_sinp_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='31' && $type=='156'){
+		$url = 'Common_law_part_sps_inland/edit_common_law_part_sps_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='32' && $type=='195'){
+		$url = 'Lmia_wp_hg/edit_lmia_wp_high_wage_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='32' && $type=='166'){
+		$url = 'Lmia_wp_hg/edit_lmia_wp_high_wage_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='33' && $type=='194'){
+		$url = 'Passport_na/edit_passport_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='34' && $type=='153'){
+		$url = 'Citizenship_application_na/edit_citizenship_application_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='35' && $type=='189'){
+		$url = 'Pr_card_na/edit_pr_card_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='36' && $type=='150'){
+		$url = 'Bridging_open_wp_na/edit_bridging_open_wp_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='37' && $type=='155'){
+		$url = 'Co_op_wp/edit_co_op_wp_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='38' && $type=='176'){
+		$url = 'Travel_doc_application_na/edit_travel_doc_application_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='39' && $type=='154'){
+		$url = 'Citizenship_certi_application_adult/edit_citizenship_certi_application_adult_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='40' && $type=='186'){
+		$url = 'RNIP_vernon_na/edit_rnip_vernon_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='41' && $type=='187'){
+		$url = 'RNIP_sault_na/edit_rnip_sault_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='42' && $type=='165'){
+		$url = 'Lmia_pr_lg/edit_lmia_pr_low_wage_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='43' && $type=='163'){
+		$url = 'Lmia_dual_int_hg/edit_lmia_dual_int_high_wage_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='44' && $type=='167'){
+		$url = 'Lmia_global/edit_lmia_global_tlnt_high_wage_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='47' && $type=='142'){
+		$url = 'Amend_immi_doc_na/edit_amend_immi_doc_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='50' && $type=='149'){
+		$url = 'BC_PNP_tech_pilot_skill_worker/edit_bc_pnp_tech_pilot_skill_worker_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='54' && $type=='193'){
+		$url = 'Temporary_resident_visa_na/edit_temporary_resident_visa_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='54' && $type=='178'){
+		$url = 'Temporary_resident_visa_na/edit_temporary_resident_visa_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='55' && $type=='160'){
+		$url = 'Immigration_application_na/edit_immigration_application_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='56' && $type=='172'){
+		$url = 'Work_permit_LMIA_inland/edit_Work_permit_LMIA_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='57' && $type=='199'){
+		$url = 'Other_open_work_permit_extention/edit_other_open_work_permit_extention_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='57' && $type=='192'){
+		$url = 'Other_open_work_permit_new_application/edit_other_open_work_permit_new_application_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='58' && $type=='196'){
+		$url = 'LMIA_exempt_na/edit_LMIA_exempt_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='58' && $type=='164'){
+		$url = 'LMIA_exempt_na/edit_LMIA_exempt_na_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
+	else if($category=='59' && $type=='169'){
+		$url = 'New_public_policy_for_PR/edit_new_public_policy_for_PR_inland_new/'.$category.'/'.$id.'/'.$sid.'';
+					echo'
+					<script>
+					window.location.href = "'.base_url().'/'.$url.'";
+					</script>
+					';
+	}
 	else{
 
 $url = 'Siaportal/view_client/'.$category.'/'.$id.'/'.$sid.'';

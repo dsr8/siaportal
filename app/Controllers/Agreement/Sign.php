@@ -268,6 +268,11 @@ class Sign extends BaseController
         }
 
         $declineReason = trim((string) $this->request->getPost('reason'));
+        if ($declineReason === '') {
+            return redirect()->to(base_url('agreement/sign/' . $token))
+                ->with('sign_error', 'Please enter a reason for declining.');
+        }
+
         (new Agreement_model())->update($agreement['id'], [
             'status'         => 'declined',
             'declined_at'    => date('Y-m-d H:i:s'),

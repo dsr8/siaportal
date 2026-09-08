@@ -301,8 +301,69 @@ function sia_send_declaration_team_signed_email(array $declaration): void
 
 // 7. ACCOUNTING — no email required, per spec. No function.
 
-// 8. TEAM – DISCLAIMER DECLINED
+// Reusable "Reason for Declining" highlighted box, mirroring the Agreement module's version,
+// so the client's stated reason stands out rather than blending into a plain table row.
+function sia_declaration_decline_reason_box(string $reason): string
+{
+    if ($reason === '') {
+        return '';
+    }
+    return '<table cellpadding="0" cellspacing="0" style="width:100%;margin:14px 0;"><tr><td style="background:#fdecec;border-radius:8px;padding:12px 14px;">'
+        . '<div style="font-size:11.5px;font-weight:700;color:#e23b3b;text-transform:uppercase;letter-spacing:.3px;">Reason for Declining</div>'
+        . '<div style="margin-top:4px;font-size:13px;color:#1f2430;line-height:1.6;">' . nl2br(esc($reason)) . '</div>'
+        . '</td></tr></table>';
+}
+
+// Dispatcher: client decline-confirmation + team decline-notification, triggered once from
+// Sign::decline() — mirrors the Agreement module's client+team pattern.
 function sia_send_declaration_declined_email(array $declaration): void
+{
+    sia_send_declaration_client_declined_email($declaration);
+    sia_send_declaration_team_declined_email($declaration);
+}
+
+// CLIENT – DISCLAIMER DECLINED (confirmation that their decline was received; to proceed later
+// a brand new document must be created/sent — this one is dead-ended).
+function sia_send_declaration_client_declined_email(array $declaration): void
+{
+    $toEmail = trim($declaration['client_email'] ?? '');
+    if ($toEmail === '') {
+        log_message('error', '[SiaDeclarationEmail] Skipped client-declined email: declaration id ' . ($declaration['id'] ?? '?') . ' has no client_email.');
+        return;
+    }
+
+    helper('smtp_helper');
+    helper('appointment_email_helper');
+
+    $reason = trim((string) ($declaration['decline_reason'] ?? ''));
+    $firstName = esc(sia_declaration_first_name($declaration));
+    $body = '
+      <h2 style="margin:0 0 14px;color:#c0392b;">Disclaimer / Consent Declined</h2>
+      <p>Hello ' . $firstName . ',</p>
+      <p>This confirms that you have declined to sign your Disclaimer / Consent document.</p>
+      <p>If you would like to proceed at a later date, please contact us and a new document will be prepared for your signature.</p>
+      ' . sia_declaration_decline_reason_box($reason) . '
+      <p>Regards,<br>' . esc($declaration['consultant_name'] ?: 'Sia Immigration Solutions Inc.') . '<br>Sia Immigration Solutions Inc.</p>
+    ';
+
+    try {
+        $emailSvc = \Config\Services::email();
+        $config   = get_smtp_settings();
+        $emailSvc->initialize($config);
+        $emailSvc->setFrom('no-reply@siaimmigration.com', 'Declaration Consent Sia Immigration');
+        $emailSvc->setCC('no-reply@siaimmigration.com');
+        $emailSvc->setReplyTo('consult@siaimmigration.com', 'SIA Immigration');
+        $emailSvc->setTo($toEmail);
+        $emailSvc->setSubject(sia_declaration_subject('Disclaimer / Consent Declined', $declaration));
+        $emailSvc->setMessage(sia_appt_html($body));
+        $emailSvc->send();
+    } catch (\Exception $e) {
+        log_message('error', '[SiaDeclarationEmail] ' . $e->getMessage());
+    }
+}
+
+// 8. TEAM – DISCLAIMER DECLINED
+function sia_send_declaration_team_declined_email(array $declaration): void
 {
     helper('smtp_helper');
     helper('appointment_email_helper');
@@ -311,13 +372,13 @@ function sia_send_declaration_declined_email(array $declaration): void
     $body = '
       <h2 style="margin:0 0 14px;color:#c0392b;">Disclaimer Declined</h2>
       <p>The client has declined the Disclaimer / Consent document.</p>
-      <p>Please follow up with the client if required.</p>
+      ' . sia_declaration_decline_reason_box($reason) . '
+      <p>Please follow up with the client if required. If we need to proceed later, a new document must be created and sent.</p>
       <table cellpadding="6" cellspacing="0" style="width:100%;font-size:13.5px;border:1px solid #eee;">
         <tr><td style="font-weight:700;width:35%;">Client</td><td>' . esc($declaration['client_name'] ?? '—') . '</td></tr>
         <tr><td style="font-weight:700;">SiaID</td><td>' . (int) $declaration['prospect_id'] . '</td></tr>
         <tr><td style="font-weight:700;">Document Type</td><td>' . esc(sia_declaration_document_type($declaration)) . '</td></tr>
         <tr><td style="font-weight:700;">Declined On</td><td>' . esc(date('F j, Y g:i A')) . '</td></tr>
-        ' . ($reason !== '' ? '<tr><td style="font-weight:700;">Reason</td><td>' . esc($reason) . '</td></tr>' : '') . '
       </table>
     ';
 

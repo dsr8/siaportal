@@ -463,7 +463,8 @@
                                     </form>
 
                                     <form id="sgDeclineForm" method="post" action="<?php echo base_url('agreement/sign/' . $agreement['sign_token'] . '/decline'); ?>" style="display:none;margin-top:14px;">
-                                        <textarea name="reason" placeholder="Optional: let us know why you're declining" style="width:100%;max-width:480px;padding:8px;border:1px solid #d8dce1;border-radius:6px;font-size:13px;" rows="3"></textarea><br>
+                                        <label style="font-size:12.5px;font-weight:700;color:#1f2430;display:block;margin-bottom:6px;">Reason for Declining (required)</label>
+                                        <textarea name="reason" id="sgDeclineReason" required placeholder="Please tell us why you're declining this agreement" style="width:100%;max-width:480px;padding:8px;border:1px solid #d8dce1;border-radius:6px;font-size:13px;" rows="3"></textarea><br>
                                         <button type="submit" class="sg-btn sg-btn-danger-outline" style="margin-top:8px;">Confirm Decline</button>
                                     </form>
                                 </div>
@@ -930,6 +931,18 @@
             var sgDeclining = false;
             document.getElementById('sgDeclineForm').addEventListener('submit', function (e) {
                 if (sgDeclining) { e.preventDefault(); return; }
+
+                var reason = document.getElementById('sgDeclineReason').value.trim();
+                if (reason === '') {
+                    e.preventDefault();
+                    alert('Please enter a reason for declining.');
+                    return;
+                }
+                if (!confirm('Are you sure you want to decline this agreement? This cannot be undone — a new agreement will need to be created if you wish to proceed later.')) {
+                    e.preventDefault();
+                    return;
+                }
+
                 sgDeclining = true;
                 var declineBtn = this.querySelector('button[type="submit"]');
                 if (declineBtn) { declineBtn.disabled = true; declineBtn.textContent = 'Declining…'; }

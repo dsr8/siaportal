@@ -24,6 +24,7 @@ if (session()->get('isLoggedIn') == true) {
   font-weight: 700;
   font-size: 1.15rem;
   display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
 }
 .brand-logo-circle {
   width: 34px; height: 34px;
@@ -31,6 +32,7 @@ if (session()->get('isLoggedIn') == true) {
   background: #fff;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .brand-logo-circle img { width: 24px; height: 24px; object-fit: contain; }
 #sidebarToggle {
@@ -42,6 +44,7 @@ if (session()->get('isLoggedIn') == true) {
   font-size: 14px;
   font-weight: 500;
   display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
 }
 .welcome-user .user-avatar {
   color: #FF4D5A; font-size: 18px;
@@ -125,6 +128,8 @@ if (session()->get('isLoggedIn') == true) {
   padding: 5px 14px; border-radius: 20px;
   font-family: 'Poppins', sans-serif;
   margin-left: 18px;
+  flex: 1 1 auto;
+  min-width: 0;
   max-width: 45%;
   overflow: hidden;
 }
@@ -149,7 +154,23 @@ if (session()->get('isLoggedIn') == true) {
 }
 .birthday-banner .bb-emoji { font-size: 15px; flex-shrink: 0; }
 @media (max-width: 767px) {
-  .birthday-banner { display: none !important; }
+  /* Drop non-essential labels first so the wish itself actually has room to render
+     instead of being squeezed to near-zero width by the brand name + "Welcome X" text,
+     which the fixed-height nowrap navbar can't wrap onto a second line without hiding it.
+     styles.css also hard-sets .sb-topnav .navbar-brand { width: 225px } (sized to line up
+     with the desktop sidebar) — that alone eats most of a phone screen, so it must be
+     reset here too or hiding the brand text does nothing. */
+  .sb-topnav .navbar-brand { width: auto !important; padding-left: 0; padding-right: 0; }
+  .sb-topnav .navbar-brand .brand-text { display: none; }
+  .welcome-user .welcome-text { display: none; }
+  .birthday-banner {
+    max-width: none;
+    font-size: 10.5px;
+    padding: 4px 10px;
+    margin-left: 8px;
+    gap: 6px;
+  }
+  .birthday-banner .bb-emoji { font-size: 12px; }
 }
 /* Full-page balloon/ribbon overlay — position:fixed against the real viewport (this file has no
    transformed ancestor, unlike admin_nav.php's sidebar, which would otherwise re-anchor a fixed
@@ -197,7 +218,7 @@ body.birthday-hidden .birthday-decor { display: none !important; }
   <button class="btn btn-link btn-sm" id="sidebarToggle"><i class="fas fa-bars"></i></button>
   <a class="navbar-brand" href="<?php echo base_url(); ?>/Siaportal/dashboard" style="margin-left:6px;">
     <div class="brand-logo-circle"><img src="<?php echo base_url(); ?>/public/assets_client/img/sia_icon.png" alt="Siaportal"></div>
-    Siaportal
+    <span class="brand-text">Siaportal</span>
   </a>
 
   <?php if (!empty($todayBirthdays)) {
@@ -235,7 +256,7 @@ body.birthday-hidden .birthday-decor { display: none !important; }
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" id="welcomeUserDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display:flex;align-items:center;">
         <div class="welcome-user">
-          Welcome <?php echo session()->get('firstname'); ?>
+          <span class="welcome-text">Welcome <?php echo session()->get('firstname'); ?></span>
           <?php $initial = strtoupper(substr((string) session()->get('firstname'), 0, 1)) ?: 'U'; ?>
           <span class="topbar-avatar"><?php echo esc($initial); ?></span>
         </div>
