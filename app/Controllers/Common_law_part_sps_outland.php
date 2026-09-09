@@ -805,7 +805,7 @@ $data['cpml'] = $cpm->where('id',$id)
                    ->findAll();
 
 
-    return view('admin/common_law_part_sps_outlandfull_common_law_part_sps_outland',$data);
+    return view('admin/common_law_part_sps_outland/edit_common_law_part_sps_outland',$data);
 }
 
 }

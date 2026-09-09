@@ -189,7 +189,7 @@
                      <div class="form-group">
  <label class="small mb-1" for="inputFirstName">Assign Team Member</label>
 
-  <input  class="form-control aa" readonly  name="exp_date_to_apply" id="exp_date_to_apply"  type="text" placeholder="Enter information request sent on" value="<?php echo $team['0']['firstname'];?> <?php echo $team['0']['lastname'];?>"  readonly="readonly"  />
+  <input  class="form-control aa" readonly  name="exp_date_to_apply" id="exp_date_to_apply"  type="text" placeholder="Enter information request sent on" value="<?php echo isset($team['0']) ? $team['0']['firstname'].' '.$team['0']['lastname'] : '';?>"  readonly="readonly"  />
 
 </div>
      

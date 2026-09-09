@@ -198,7 +198,7 @@ border-left: none;
                      <div class="form-group">
  <label class="small mb-1" for="inputFirstName"> Assign Team Member</label>
 
- <input  class="form-control aa" reado<?php echo $team['0']['firstname'];?> <?php echo $team['0']['lastname'];?><?php echo $cpm['0']['assign_to'];?>"  readonly="readonly"  />
+ <input  class="form-control aa" reado<?php echo isset($team['0']) ? $team['0']['firstname'].' '.$team['0']['lastname'] : '';?><?php echo $cpm['0']['assign_to'];?>"  readonly="readonly"  />
 
 
 

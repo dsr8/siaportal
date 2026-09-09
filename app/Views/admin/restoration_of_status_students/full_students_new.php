@@ -192,7 +192,7 @@
                   <div class="col-lg-3 col-md-3 col-sm-3 mb-3">
                      <div class="form-group">
  <label class="small mb-1" for="inputFirstName"> Assign Team Member</label>
- <input  class="form-control aa" readonly   placeholder="Enter date of application received" value="<?php echo $team['0']['firstname'];?> <?php echo $team['0']['lastname'];?>"  readonly="readonly"  />
+ <input  class="form-control aa" readonly   placeholder="Enter date of application received" value="<?php echo isset($team['0']) ? $team['0']['firstname'].' '.$team['0']['lastname'] : '';?>"  readonly="readonly"  />
 
 </div>
  <div class="form-group  " id="1">

@@ -1389,7 +1389,7 @@ $data['cpml'] = $cpm->where('id',$id)
                    ->findAll();
 
 
-    return view('admin/common_law_part_sps_inland/full_common_law_part_sps_inland',$data);
+    return view('admin/common_law_part_sps_inland/edit_common_law_part_sps_inland_new',$data);
 }
 
 }

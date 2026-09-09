@@ -138,7 +138,7 @@
                                     <label class="small mb-1" for="inputFirstName"> Status</label>
     <select class="form-control" id="application_status"  name="application_status" onchange="show_hide_div()" >
 
-       <option value="<?php echo $cpm['0']['application_status'];?>"><?php echo  $app_st=$cpm['0']['st'];?></option>
+       <option value="<?php echo $cpm['0']['application_status'];?>"><?php echo  $app_st=isset($cpm['0']['st']) ? $cpm['0']['st'] : '';?></option>
     
        
         <option value="2">Profile in Process</option>
