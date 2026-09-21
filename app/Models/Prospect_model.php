@@ -56,30 +56,9 @@ public function getentery_client(){
                    ->findAll();
     }
 
-    // Client-only search (entery_status='client') for the "Create New Agreement" client picker,
-    // since only clients have applications to attach an agreement to.
-    public function searchActiveClients(string $q = '', int $limit = 50): array
-    {
-        $builder = $this->select('id, heading, email, number, cc')
-            ->where('entery_status', 'client')
-            ->groupStart()->where('hide_prospect', null)->orWhere('hide_prospect !=', 1)->groupEnd()
-            ->orderBy('id', 'desc');
-
-        if ($q !== '') {
-            $builder->groupStart()
-                ->like('heading', $q)->orLike('id', $q)->orLike('number', $q)->orLike('email', $q)
-                ->groupEnd();
-        }
-
-        // findAll()'s own $limit param always wins over an earlier ->limit() call
-        // (it unconditionally re-applies limit(0) internally when called bare), so pass it here.
-        return $builder->findAll($limit);
-    }
-
-    // Client + Prospect search for Declaration/Consent's client picker — unlike Agreement,
-    // a disclaimer/consent can be started for someone who hasn't converted to a client yet,
-    // so prospects must show up in search results too (searchActiveClients() above deliberately
-    // excludes them since an Agreement needs an existing CRM application to attach to).
+    // Client + Prospect search shared by the Agreement and Declaration/Consent client pickers —
+    // both flows can quick-add a CRM application on the fly, so a prospect who hasn't converted
+    // to a client yet still needs to show up in search results.
     public function searchActiveClientsAndProspects(string $q = '', int $limit = 50): array
     {
         $builder = $this->select('id, heading, email, number, cc')

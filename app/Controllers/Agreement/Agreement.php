@@ -192,7 +192,7 @@ class Agreement extends BaseController
 
         $q = trim($this->request->getGet('q') ?? '');
         $Prospect = new Prospect_model();
-        $rows = $Prospect->searchActiveClients($q);
+        $rows = $Prospect->searchActiveClientsAndProspects($q);
 
         $results = [];
         foreach ($rows as $r) {
