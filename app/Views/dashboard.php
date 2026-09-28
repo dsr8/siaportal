@@ -190,6 +190,41 @@ h1.mt-4 { color:#1F2937 !important; font-size:22px; font-weight:700; margin-bott
     white-space:nowrap;
 }
 
+/* ── All Links banner ───────────────────────────────────── */
+.dash-links-card {
+    background:#EAF2FF; border:1px solid #DCE8FC; border-radius:16px;
+    margin-bottom:22px; padding:20px 26px;
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+    animation: fadeUp .4s ease both; animation-delay:.14s;
+}
+.dash-links-icon {
+    width:52px; height:52px; border-radius:14px; flex-shrink:0;
+    background:#2f6fed; color:#fff; font-size:20px;
+    display:flex; align-items:center; justify-content:center;
+}
+.dash-links-body { flex:1 1 320px; min-width:0; }
+.dash-links-body h5 { color:#1F2937; font-size:17px; font-weight:700; margin:0 0 2px; }
+.dash-links-body p { color:#6B7280; font-size:13px; margin:0 0 10px; }
+.dash-links-tags { display:flex; flex-wrap:wrap; gap:8px; }
+.dash-links-tags span {
+    font-size:12px; font-weight:700; padding:5px 13px; border-radius:20px;
+    display:inline-block; border:1px solid transparent;
+}
+.dash-links-tags span.tag-forms      { background:#DCEBFF; color:#2f6fed; }
+.dash-links-tags span.tag-inquiries  { background:#D7F5EC; color:#0e9e73; }
+.dash-links-tags span.tag-admissions { background:#FCE7CF; color:#c2740b; }
+.dash-links-tags span.tag-payments   { background:#E7DEFB; color:#7c3aed; }
+.dash-links-tags span.tag-internal   { background:#FBDCE3; color:#d94343; }
+.dash-links-tags span.tag-booking    { background:#DDE3EC; color:#4b5563; }
+.dash-links-action { display:flex; flex-direction:column; align-items:flex-end; gap:8px; flex-shrink:0; }
+.dash-links-btn {
+    background:#111827; color:#fff; font-size:13.5px; font-weight:600;
+    padding:10px 20px; border-radius:10px;
+    display:inline-flex; align-items:center; gap:8px; transition:background .2s;
+}
+.dash-links-card:hover .dash-links-btn { background:#2f6fed; }
+.dash-links-note { color:#6B7280; font-size:11.5px; display:flex; align-items:center; gap:5px; }
+
 /* ── Footer ──────────────────────────────────────────────── */
 footer.py-4 { background:#fff !important; border-top:1px solid #E5E7EB; }
 footer .text-muted { color:#6B7280 !important; font-size:12.5px; }
@@ -250,6 +285,27 @@ footer .text-muted { color:#6B7280 !important; font-size:12.5px; }
                             <i class="fas fa-arrow-down"></i> 3% <span class="muted">this week</span>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- ── All Links banner ── -->
+            <div class="dash-links-card" onclick="window.open('https://www.siaimmigration.com/Home/sia_links','_blank')" style="cursor:pointer;">
+                <div class="dash-links-icon"><i class="fas fa-link"></i></div>
+                <div class="dash-links-body">
+                    <h5>All Links &ndash; Sia Team</h5>
+                    <p>Everything the team needs in one place</p>
+                    <div class="dash-links-tags">
+                        <span class="tag-forms">Forms</span>
+                        <span class="tag-inquiries">Inquiries</span>
+                        <span class="tag-admissions">Admissions</span>
+                        <span class="tag-payments">Payments</span>
+                        <span class="tag-internal">Internal References</span>
+                        <span class="tag-booking">Booking &amp; Reviews</span>
+                    </div>
+                </div>
+                <div class="dash-links-action">
+                    <span class="dash-links-btn"><i class="fas fa-external-link-alt"></i> Open All Links <i class="fas fa-arrow-right"></i></span>
+                    <div class="dash-links-note"><i class="fas fa-info-circle"></i> Always use this page for the latest team links.</div>
                 </div>
             </div>
 

@@ -238,7 +238,7 @@
 
                     <div id="sgDeclineBox" style="display:none;margin-top:14px;">
                         <label style="font-size:12.5px;font-weight:700;color:#1f2430;display:block;margin-bottom:6px;">Reason for Declining (required)</label>
-                        <textarea id="sgDeclineReasonInput" required placeholder="Please tell us why you're declining this document" style="width:100%;max-width:480px;padding:8px;border:1px solid #d8dce1;border-radius:6px;font-size:13px;" rows="3"></textarea><br>
+                        <textarea id="sgDeclineReasonInput" placeholder="Please tell us why you're declining this document" style="width:100%;max-width:480px;padding:8px;border:1px solid #d8dce1;border-radius:6px;font-size:13px;" rows="3"></textarea><br>
                         <button type="button" class="sg-btn sg-btn-decline" style="margin-top:8px;" onclick="sgDecline()">Confirm Decline</button>
                     </div>
                 </form>
