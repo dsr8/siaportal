@@ -141,6 +141,12 @@
             .ag-client-id { font-weight: 700; color: #1f2430; white-space: normal; word-break: break-word; }
             .ag-client-sia { font-size: 12px; color: #9aa0aa; margin-top: 2px; }
             .ag-fee-cell, .ag-date-cell { white-space: normal; font-size: 12.5px; line-height: 1.6; }
+            .ag-note-cell { min-width: 200px; }
+            .ag-note { display: block; width: 100%; min-height: 58px; padding: 6px 8px; border: 1px solid #d6dae1; border-radius: 6px; font-size: 12.5px; line-height: 1.45; color: #1f2937; resize: vertical; background: #fff; }
+            .ag-note:focus { outline: none; border-color: #4c3ff5; box-shadow: 0 0 0 3px rgba(76, 63, 245, .15); }
+            .ag-note-status { display: block; min-height: 15px; margin-top: 2px; font-size: 11px; color: #6b7280; }
+            .ag-note-status.ok { color: #16a34a; }
+            .ag-note-status.err { color: #e23b3b; }
             .ag-fee-cell .ag-fee-total { font-weight: 700; color: #1f2430; font-size: 13.5px; }
 
             /* CRM status (client_prospect.entery_status) at the time the dashboard is viewed —
@@ -408,12 +414,13 @@
                                         <th>Fees</th>
                                         <th>Status</th>
                                         <th>Sent / Signed</th>
+                                        <th>Note</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($rows)): ?>
-                                        <tr><td colspan="6">
+                                        <tr><td colspan="7">
                                             <div class="ag-empty-state">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
                                                 <div class="t">No agreements found</div>
@@ -454,6 +461,10 @@
                                             <td class="ag-date-cell">
                                                 <div>Sent: <?php echo !empty($sentAt) ? esc(date('d M Y', strtotime($sentAt))) : '&ndash;'; ?></div>
                                                 <div>Signed: <?php echo !empty($row['client_signed_at']) ? esc(date('d M Y', strtotime($row['client_signed_at']))) : '&ndash;'; ?></div>
+                                            </td>
+                                            <td class="ag-note-cell">
+                                                <textarea class="ag-note" name="agreement_note" maxlength="5000" placeholder="Write a note..." data-id="<?php echo (int) $row['id']; ?>"><?php echo esc($row['agreement_note'] ?? ''); ?></textarea>
+                                                <span class="ag-note-status"></span>
                                             </td>
                                             <td>
                                                 <div class="ag-actions">
@@ -744,6 +755,42 @@
                     form.submit();
                 });
             }
+
+            // Note textarea: saved by AJAX on keyup (after a short pause in typing) and on blur.
+            // Each note keeps its own timer, and an older response never overwrites a newer status.
+            $(function () {
+                var timers = {}, seq = {};
+                function saveNote(el) {
+                    var id = el.dataset.id, val = el.value, $st = $(el).siblings('.ag-note-status');
+                    if (el.dataset.saved === val) return;
+                    var n = seq[id] = (seq[id] || 0) + 1;
+                    $st.removeClass('ok err').text('Saving...');
+                    $.post(AG_BASE + 'agreement/Agreement/save_note/' + id, { agreement_note: val }, null, 'json')
+                        .done(function (res) {
+                            if (n !== seq[id]) return;
+                            if (res && res.ok) {
+                                el.dataset.saved = val;
+                                $st.addClass('ok').text('Saved');
+                            } else {
+                                $st.addClass('err').text((res && res.message) || 'Could not save.');
+                            }
+                        })
+                        .fail(function (xhr) {
+                            if (n !== seq[id]) return;
+                            $st.addClass('err').text((xhr.responseJSON && xhr.responseJSON.message) || 'Could not save. Please try again.');
+                        });
+                }
+                $('.ag-note').each(function () { this.dataset.saved = this.value; })
+                    .on('keyup', function () {
+                        var el = this;
+                        clearTimeout(timers[el.dataset.id]);
+                        timers[el.dataset.id] = setTimeout(function () { saveNote(el); }, 600);
+                    })
+                    .on('blur', function () {
+                        clearTimeout(timers[this.dataset.id]);
+                        saveNote(this);
+                    });
+            });
 
             function agRestore(id) {
                 Swal.fire({

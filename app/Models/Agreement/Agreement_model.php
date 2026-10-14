@@ -24,6 +24,7 @@ class Agreement_model extends Model
         'client_signed_at', 'client_signed_ip', 'client_signed_device',
         'declined_at', 'decline_reason', 'custom_clauses', 'pdf_path',
         'cancelled_at', 'cancel_reason', 'cancelled_by',
+        'agreement_note',
     ];
 
     // Statuses from which staff can still cancel the agreement — not already cancelled/declined,
@@ -238,6 +239,16 @@ class Agreement_model extends Model
             ->orderBy('a.id', 'desc')
             ->limit($perPage, ($page - 1) * $perPage)
             ->get()->getResultArray();
+    }
+
+    // Staff's free-text dashboard note. Saved on its own, at any status (it is an internal
+    // note, not part of the agreement document). Returns false when the row doesn't exist.
+    public function saveNote(int $id, ?string $note): bool
+    {
+        if ($this->builder()->where('id', $id)->countAllResults() === 0) {
+            return false;
+        }
+        return (bool) $this->builder()->where('id', $id)->update(['agreement_note' => $note]);
     }
 
     public function findByToken(string $token): ?array

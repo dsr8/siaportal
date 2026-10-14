@@ -184,6 +184,28 @@ class Agreement extends BaseController
         return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('message', 'Agreement cancelled.');
     }
 
+    // Dashboard "Note" textarea — saved by AJAX as staff type (keyup, debounced) and on blur.
+    public function save_note($id = null)
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response->setStatusCode(401)->setJSON(['ok' => false, 'message' => 'Please log in again.']);
+        }
+        if ($this->request->getMethod() !== 'post') {
+            return $this->response->setStatusCode(405)->setJSON(['ok' => false, 'message' => 'Invalid request.']);
+        }
+
+        $note = trim((string) $this->request->getPost('agreement_note'));
+        if (mb_strlen($note) > 5000) {
+            return $this->response->setJSON(['ok' => false, 'message' => 'Note is too long (max 5000 characters).']);
+        }
+
+        $AgreementModel = new Agreement_model();
+        if (!$AgreementModel->saveNote((int) $id, $note !== '' ? $note : null)) {
+            return $this->response->setStatusCode(404)->setJSON(['ok' => false, 'message' => 'Agreement not found.']);
+        }
+        return $this->response->setJSON(['ok' => true]);
+    }
+
     public function search_clients()
     {
         if (!$this->isAuthorized()) {
