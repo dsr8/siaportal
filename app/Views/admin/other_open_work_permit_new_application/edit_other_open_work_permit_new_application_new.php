@@ -24,7 +24,7 @@
 }
   </style>
 
-    </head>
+    <?= view('admininclude/edit_application_theme'); ?></head>
     <body class="sb-nav-fixed">
         <?= view ('admininclude/header.php'); ?>
         <div id="layoutSidenav">

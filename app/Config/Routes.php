@@ -126,6 +126,12 @@ $routes->post('declaration/sign/(:any)/draft',     'Declaration\Sign::draft/$1')
 $routes->post('declaration/sign/(:any)/submit',    'Declaration\Sign::submit/$1');
 $routes->post('declaration/sign/(:any)/decline',   'Declaration\Sign::decline/$1');
 
+// --- Invitation Received dashboard + reminder emails ---
+$routes->get( 'invitation/Invitation/dashboard',          'Invitation\Invitation::dashboard');
+$routes->post('invitation/Invitation/archive',            'Invitation\Invitation::archive');
+$routes->post('invitation/Invitation/restore',            'Invitation\Invitation::restore');
+$routes->get( 'invitation/Invitation/cron_daily',         'Invitation\Invitation::cron_daily');
+
 
 /**
  * --------------------------------------------------------------------

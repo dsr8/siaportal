@@ -154,6 +154,11 @@
                                 </nav>
                             </div>
                               <!---->
+                                  <a class="nav-link" href="<?php echo base_url();?>/invitation/Invitation/dashboard"
+                                ><div class="sb-nav-link-icon"><i style="color:#79B63C" class="fas fa-envelope-open-text"></i></div>
+                                Invitation Received
+                            </a>
+                              <!---->
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts"
                                 ><div class="sb-nav-link-icon"><i style="color:#F4B400" class="fa fa-user-circle"></i></div>
                                Clients

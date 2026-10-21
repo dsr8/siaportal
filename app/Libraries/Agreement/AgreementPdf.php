@@ -80,7 +80,7 @@ class AgreementPdf extends \TCPDF
         $this->SetFont('helvetica', '', 7.5);
         $this->SetTextColor(120, 120, 120);
         $this->SetX(15);
-        $this->Cell(120, 5, '+1 778-238-8172   |   Consult@siaimmigration.com   |   www.siaimmigration.com', 0, 0, 'L');
+        $this->Cell(120, 5, '+1 (778) 228-1017   |   Consult@siaimmigration.com   |   www.siaimmigration.com', 0, 0, 'L');
 
         $this->SetFont('helvetica', 'B', 8);
         $this->SetTextColor(226, 59, 59);
