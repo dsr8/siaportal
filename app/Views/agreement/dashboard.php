@@ -473,7 +473,7 @@
                                                     </a>
                                                     <?php if (!$isArchived): ?>
                                                         <?php if ($canSend): ?>
-                                                        <a href="#" title="Send for eSign" onclick="agSend(<?php echo (int) $row['id']; ?>); return false;">
+                                                        <a href="#" title="Send for eSign" data-email="<?php echo esc($row['client_email'] ?? '', 'attr'); ?>" onclick="agSend(<?php echo (int) $row['id']; ?>, this.dataset.email); return false;">
                                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
                                                         </a>
                                                         <?php else: ?>
@@ -613,22 +613,58 @@
                 agToast(msg, 'info');
             }
 
+            function agEscAttr(s) {
+                return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+
             // Same POST-to-generate_link flow as the Create/Edit Agreement page's "Send for
-            // eSign" button, triggered from a dashboard row instead.
-            function agSend(id) {
+            // eSign" button, triggered from a dashboard row instead. The popup lets staff send
+            // to a different email (this send only) and add CC addresses.
+            // SweetAlert2 here is v7.24.1: `type` (not `icon`), Swal.showValidationError().
+            function agSend(id, email) {
+                var emailRe = /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/;
                 Swal.fire({
                     title: 'Send for eSign?',
-                    text: 'Send this agreement to the client\'s email now for e-signature?',
-                    icon: 'question',
+                    type: 'question',
+                    html: '<div style="text-align:left;font-size:13.5px;">'
+                        + '<label for="agSendTo" style="display:block;font-weight:700;margin:6px 0 4px;">Send To</label>'
+                        + '<input id="agSendTo" type="email" class="swal2-input" style="margin:0 0 12px;" value="' + agEscAttr(email) + '">'
+                        + '<label for="agSendCc" style="display:block;font-weight:700;margin:6px 0 4px;">CC <span style="font-weight:400;color:#9aa0aa;">(optional, separate with commas)</span></label>'
+                        + '<input id="agSendCc" type="text" class="swal2-input" style="margin:0;" placeholder="name@example.com, other@example.com">'
+                        + '</div>',
+                    focusConfirm: false,
                     showCancelButton: true,
                     confirmButtonText: 'Yes, Send It',
                     cancelButtonText: 'Cancel',
                     confirmButtonColor: '#4c3ff5',
-                    reverseButtons: true
+                    reverseButtons: true,
+                    preConfirm: function () {
+                        var to = document.getElementById('agSendTo').value.trim();
+                        var cc = document.getElementById('agSendCc').value.split(/[,;\s]+/).filter(function (s) { return s !== ''; });
+                        if (!emailRe.test(to)) {
+                            Swal.showValidationError('Please enter a valid Send To email.');
+                            return false;
+                        }
+                        for (var i = 0; i < cc.length; i++) {
+                            if (!emailRe.test(cc[i])) {
+                                Swal.showValidationError('Invalid CC email: ' + cc[i]);
+                                return false;
+                            }
+                        }
+                        return { to: to, cc: cc.join(',') };
+                    }
                 }).then(function (result) {
                     if (!result.value) return;
                     var form = document.getElementById('agActionForm');
                     form.action = AG_BASE + 'agreement/Agreement/generate_link/' + id + '?notify=1';
+                    form.innerHTML = '';
+                    [['send_to', result.value.to], ['send_cc', result.value.cc]].forEach(function (f) {
+                        var input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = f[0];
+                        input.value = f[1];
+                        form.appendChild(input);
+                    });
                     form.submit();
                 });
             }

@@ -571,10 +571,24 @@ class Agreement extends BaseController
                         : 'This agreement was declined by the client. Create a new agreement instead of resending this one.'));
         }
 
-        // Both "Send for eSign" and "Generate Signing Link" submit the full edit form straight
-        // here (no separate Save click first) — persist it now so the token/PDF/email always
-        // reflect what's currently in the form, not a stale/never-saved DB row.
-        $agreement = $this->persistAgreementForm($id, $agreement);
+        // Dashboard Send popup: optional "Send To" (this send only — the saved client_email is
+        // not changed) and comma-separated "CC" addresses.
+        $sendTo = trim((string) $this->request->getPost('send_to'));
+        $sendCc = array_values(array_filter(array_map('trim', preg_split('/[,;\s]+/', (string) $this->request->getPost('send_cc')))));
+        foreach (array_merge($sendTo !== '' ? [$sendTo] : [], $sendCc) as $addr) {
+            if (!filter_var($addr, FILTER_VALIDATE_EMAIL)) {
+                return redirect()->to(base_url('agreement/Agreement/dashboard'))->with('error', 'Invalid email address: ' . $addr);
+            }
+        }
+
+        // Both "Send for eSign" and "Generate Signing Link" on the detail page submit the full
+        // edit form straight here (no separate Save click first) — persist it now so the
+        // token/PDF/email always reflect what's currently in the form, not a stale DB row.
+        // The dashboard's Send button posts no form fields, so it must not persist (that
+        // would overwrite the saved fees and milestones with zero/empty values).
+        if ($this->request->getPost('service_fee') !== null) {
+            $agreement = $this->persistAgreementForm($id, $agreement);
+        }
 
         $agreement = $AgreementModel->ensureSignToken($agreement);
         $wasFirstSend = $agreement['status'] === 'draft';
@@ -585,6 +599,9 @@ class Agreement extends BaseController
         // "Send for eSign" passes ?notify=1 to actually email the client; the plain
         // "Generate Signing Link" utility omits it to just produce a copyable link.
         if ($this->request->getGet('notify') === '1') {
+            if ($sendTo !== '') {
+                $agreement['client_email'] = $sendTo;
+            }
             if (empty($agreement['client_email'])) {
                 return redirect()->to(base_url('agreement/Agreement/detail/' . $id))->with('error', 'Signing link generated, but no client email is on file — could not send.');
             }
@@ -598,7 +615,7 @@ class Agreement extends BaseController
             if (!$justSent) {
                 helper('agreement_email_helper');
                 $signUrl = base_url('agreement/sign/' . $agreement['sign_token']);
-                sia_send_agreement_email($agreement, $signUrl);
+                sia_send_agreement_email($agreement, $signUrl, $sendCc);
                 $AgreementModel->update($id, ['last_sent_at' => date('Y-m-d H:i:s')]);
             }
 

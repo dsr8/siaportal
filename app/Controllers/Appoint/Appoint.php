@@ -422,6 +422,31 @@ class Appoint extends BaseController
         return redirect()->to(base_url('appoint/Appoint/index'));
     }
 
+    // Reschedule/Cancel links stay in old emails — block them once the appointment is cancelled, completed or past
+    private function closedLinkPage(array $appt, string $action)
+    {
+        $status = (int)($appt['status'] ?? 0);
+        $past   = strtotime($appt['appointment_date'] . ' ' . $appt['appointment_time']) < time();
+
+        if ($status === 3) {
+            $msg = 'This appointment has already been cancelled.';
+        } elseif ($status === 2 || $past) {
+            $msg = 'This appointment has already been completed.';
+        } else {
+            return null;
+        }
+
+        $siaId = 'SIA-' . ($appt['prospect_id'] ?: $appt['id']);
+        return $this->response->setBody('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Link Not Available</title></head><body style="font-family:Arial,sans-serif;text-align:center;padding:60px;background:#f5f5f5;">
+<div style="background:#fff;border-radius:12px;padding:40px;max-width:480px;margin:0 auto;box-shadow:0 4px 20px rgba(0,0,0,.1);">
+<div style="font-size:48px;margin-bottom:16px;color:#999;">&#9888;</div>
+<h2 style="color:#555;">' . $action . ' Not Available</h2>
+<p style="color:#666;">' . $msg . '</p>
+<p style="color:#666;">To book a new appointment, please contact us at ' . SIA_PHONE . ' or ' . SIA_EMAIL . '.</p>
+<p style="color:#aaa;font-size:13px;">Reference: ' . $siaId . '</p>
+</div></body></html>');
+    }
+
     // ── Client: Reschedule Request ────────────────────────────────────────────
     public function reschedule_request(int $id, string $token)
     {
@@ -433,6 +458,9 @@ class Appoint extends BaseController
         $appt  = $model->find($id);
         if (!$appt) {
             return $this->response->setBody('<h2 style="font-family:Arial;color:#c0392b;text-align:center;margin-top:60px;">Appointment not found.</h2>');
+        }
+        if ($closed = $this->closedLinkPage($appt, 'Reschedule')) {
+            return $closed;
         }
 
         if ($this->request->getMethod() === 'post') {
@@ -507,6 +535,9 @@ input,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;f
         $appt  = $model->find($id);
         if (!$appt) {
             return $this->response->setBody('<h2 style="font-family:Arial;color:#c0392b;text-align:center;margin-top:60px;">Appointment not found.</h2>');
+        }
+        if ($closed = $this->closedLinkPage($appt, 'Cancellation')) {
+            return $closed;
         }
 
         if ($this->request->getMethod() === 'post') {

@@ -50,8 +50,9 @@ function sia_agreement_pdf_disk_path(array $agreement): ?string
 
 // Shared send plumbing (init/from/reply-to/cc/subject/message/optional attachment/send) so
 // every one of the functions below is just "build the body, call this." $to may be a single
-// address or an array (e.g. sia_team_emails()).
-function sia_agreement_send($to, string $subject, string $html, ?string $attachPath = null): void
+// address or an array (e.g. sia_team_emails()). $cc adds extra CC addresses on top of the
+// standard no-reply CC (used by the dashboard's Send popup).
+function sia_agreement_send($to, string $subject, string $html, ?string $attachPath = null, array $cc = []): void
 {
     helper('smtp_helper');
 
@@ -67,7 +68,7 @@ function sia_agreement_send($to, string $subject, string $html, ?string $attachP
         $emailSvc->setFrom(SIA_AGREEMENT_FROM_EMAIL, SIA_AGREEMENT_FROM_NAME);
         $emailSvc->setReplyTo(SIA_AGREEMENT_REPLY_TO, 'SIA Immigration');
         $emailSvc->setTo($to);
-        $emailSvc->setCC(SIA_AGREEMENT_FROM_EMAIL);
+        $emailSvc->setCC(array_merge([SIA_AGREEMENT_FROM_EMAIL], $cc));
         $emailSvc->setSubject($subject);
         if ($attachPath !== null) {
             $emailSvc->attach($attachPath);
@@ -270,14 +271,14 @@ function sia_agreement_money(array $agreement, $amount): string
 // Dispatcher: sends the client "ready for review" email AND the internal team notification
 // together — triggered once from Agreement::generate_link() for both the first send and
 // every resend (no separate copy is defined for a resend).
-function sia_send_agreement_email(array $agreement, string $signUrl): void
+function sia_send_agreement_email(array $agreement, string $signUrl, array $cc = []): void
 {
-    sia_send_agreement_client_sent_email($agreement, $signUrl);
+    sia_send_agreement_client_sent_email($agreement, $signUrl, $cc);
     sia_send_agreement_team_sent_email($agreement);
 }
 
 // 1. CLIENT – RETAINER AGREEMENT SENT
-function sia_send_agreement_client_sent_email(array $agreement, string $signUrl): void
+function sia_send_agreement_client_sent_email(array $agreement, string $signUrl, array $cc = []): void
 {
     $toEmail = trim($agreement['client_email'] ?? '');
     if ($toEmail === '') {
@@ -329,7 +330,9 @@ function sia_send_agreement_client_sent_email(array $agreement, string $signUrl)
     sia_agreement_send(
         $toEmail,
         sia_agreement_subject('Action Required | Retainer Agreement', $agreement, $typeLabel),
-        $html
+        $html,
+        null,
+        $cc
     );
 }
 

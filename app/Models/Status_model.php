@@ -10,7 +10,7 @@ class Status_model extends Model {
     protected $returnType     = 'array';
    // protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['id', 'category_id','type_id','app_status','status','insert_on','update_on'];
+    protected $allowedFields = ['id', 'category_id','type_id','app_status','status','sort_order','insert_on','update_on'];
 
    // protected $useTimestamps = false;
     //protected $createdField  = 'created_at';
@@ -53,7 +53,7 @@ public function getpost_status($tp){
        return $this->db->table('status')
        ->select('status.*')
       ->where('type_id ',$tp)
-     
+      ->orderBy('IF(sort_order > 0, sort_order, id * 10)', 'asc', false)
       ->orderBy('status.id','asc')
       ->limit('1')
       ->get()->getResultArray();
@@ -63,11 +63,17 @@ public function getpost_status($tp){
 
     public function getpost_status35($tp,$ap){
 
+       // Dropdown order: sort_order if set, else id * 10 (see Database/invitation/invitation_received_status.sql)
+       $key = 'IF(sort_order > 0, sort_order, id * 10)';
+       $cur = $this->db->table('status')->select("$key AS k", false)->where('id', $ap)->get()->getRowArray();
+       $curKey = $cur ? (int) $cur['k'] : 0;
+
        return $this->db->table('status')
        ->select('status.*')
       ->where('type_id ',$tp)
-      ->where('id >=',$ap)
-     
+      ->where("$key >= $curKey", null, false)
+
+      ->orderBy($key, 'asc', false)
       ->orderBy('status.id','asc')
      // ->limit('2')
       //->limit('2')

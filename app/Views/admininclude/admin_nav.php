@@ -173,11 +173,11 @@
                                     <!--a class="nav-link" href="<?php echo base_url();?>/Siaportal/add_view_client">Test client</a--></nav>
                             </div>
 
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                            <!--div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="<?php echo base_url()?>/Final_document_upload/final_document">Final Document Upload</a>
                                 </nav>
-                            </div>
+                            </div-->
 
 
 
