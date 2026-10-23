@@ -143,7 +143,8 @@
         
          <option value="590">Profile in process</option>
           <option value="591">Profile created</option>
-           <option value="592">Profile submitted</option> 
+           <option value="592">Profile submitted</option>
+           <option value="603">Invitation Received</option>
         
         
         <option value="381">Application in Process</option>

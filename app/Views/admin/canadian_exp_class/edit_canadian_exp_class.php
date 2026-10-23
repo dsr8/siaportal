@@ -162,8 +162,11 @@
         <?php } else if ($cpm['0']['application_status']==18) { ?> 
        
         <option value="19">Application in Process</option>
-       <?php } else if ($cpm['0']['application_status']==19) { ?> 
-        <option value="20">Application Submitted</option> 
+       <?php } else if ($cpm['0']['application_status']==19) { ?>
+        <option value="596">Invitation Received</option>
+        <option value="20">Application Submitted</option>
+       <?php } else if ($cpm['0']['application_status']==596) { ?>
+        <option value="20">Application Submitted</option>
           <?php } else if ($cpm['0']['application_status']==20) { ?> 
          <option value="21">Approved</option> 
          <option value="22">Refused</option> 

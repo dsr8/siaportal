@@ -149,8 +149,11 @@ if($app_st=='35'){ ?>
         <option value="380">Assign Team Member</option> 
          <?php } elseif($app_st=='380'){ ?> 
         <option value="381">Application in Process</option>
-         <?php } elseif($app_st=='381'){ ?> 
-        <option value="382">Application Submitted</option> 
+         <?php } elseif($app_st=='381'){ ?>
+        <option value="603">Invitation Received</option>
+        <option value="382">Application Submitted</option>
+         <?php } elseif($app_st=='603'){ ?>
+        <option value="382">Application Submitted</option>
           <?php } elseif($app_st=='382'){ ?> 
          <option value="383">Approved</option> 
          <option value="384">Refused</option> 

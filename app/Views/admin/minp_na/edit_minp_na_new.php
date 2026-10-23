@@ -151,6 +151,7 @@
        
        
         <option value="396">Application in Process</option>
+        <option value="597">Invitation Received</option>
         
         <option value="397">Application Submitted</option> 
         

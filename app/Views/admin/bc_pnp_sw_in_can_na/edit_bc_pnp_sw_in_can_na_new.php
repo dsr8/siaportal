@@ -144,6 +144,7 @@
         <option value="350">Assign Team Member</option>
        
         <option value="351">Application in Process</option>
+        <option value="600">Invitation Received</option>
      
         <option value="352">Application Submitted</option> 
       
