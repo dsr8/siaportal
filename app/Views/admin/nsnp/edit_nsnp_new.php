@@ -150,16 +150,17 @@
 
 
 
-        <option value="511">Assign Team Member</option>
+        <option value="593">Assign Team Member</option>
 
 
 
-        <option value="512">Application in Process</option>
+        <option value="594">Application in Process</option>
 
-        <option value="513">Application Submitted</option>
+        <option value="605">Invitation Received</option>
+        <option value="611">Application Submitted</option>
 
-         <option value="514">Approved</option>
-         <option value="515">Refused</option>
+         <option value="612">Approved</option>
+         <option value="613">Refused</option>
 
 
 
@@ -194,7 +195,7 @@
 
                         <div class="row">
 
- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="511" style="margin-top:1px;">
+ <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="593" style="margin-top:1px;">
             <div class="right-side">
               <div class="content" >
                 <h2 >Assign Team Member</h2>
@@ -261,7 +262,7 @@
 
 
                            <!--section Start -->
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="512" style="margin-top:1px;">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="594" style="margin-top:1px;">
             <div class="right-side">
               <div class="content" >
                 <h2 >Application In Process</h2>
@@ -323,7 +324,31 @@
 
 
  <!--section Start -->
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="513" style="margin-top:1px;">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="605" style="margin-top:1px;">
+            <div class="right-side">
+              <div class="content" >
+                <h2 >Invitation Received</h2>
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-6 mb-6">
+                     <div class="form-group">
+ <label class="small mb-1" for="invitation_date_tantative">Tentative Submission Date </label>
+ <input type="text" name="invitation_date_tantative" id="invitation_date_tantative" class="form-control" placeholder="Enter tentative submission date" value="<?php echo $cpm['0']['invitation_date_tantative'];?>" readonly=""    />
+</div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-6 mb-6">
+                     <div class="form-group">
+ <label class="small mb-1" for="invitation_date_final"> Final Submission Date  </label>
+ <input type="text" name="invitation_date_final" id="invitation_date_final" value="<?php echo $cpm['0']['invitation_date_final'];?>" class="form-control" readonly=""   placeholder="Enter final submission date "  />
+</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  <!--section End -->
+
+  <!--section Start -->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="611" style="margin-top:1px;">
             <div class="right-side">
               <div class="content" >
                 <h2 >Application Submitted</h2>
@@ -461,7 +486,7 @@
 
 
    <!--section Start -->
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide" id="515" style="margin-top:1px;">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide" id="613" style="margin-top:1px;">
             <div class="right-side">
               <div class="content" >
                 <h2 >Refused</h2>
@@ -511,7 +536,7 @@
 
   <!--section End -->
    <!--section Start -->
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide" id="514" style="margin-top:1px;">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide" id="612" style="margin-top:1px;">
             <div class="right-side">
               <div class="content" >
                 <h2 >Approved</h2>
@@ -1035,44 +1060,50 @@ $( "#client" ).removeClass( "hide" ).addClass( "show" );
   function show_hide_div(){
 var app_status =document.getElementById("application_status").value;
 
-if(app_status=='511'){
-$( "#511" ).removeClass( "hide" ).addClass( "show" );
+$( "#605" ).removeClass( "show" ).addClass( "hide" );
+if(app_status=='605'){
+$.each(['593','594','611','612','613'], function(i,v){ $( "#"+v ).removeClass( "show" ).addClass( "hide" ); });
+$( "#605" ).removeClass( "hide" ).addClass( "show" );
+}
+
+if(app_status=='593'){
+$( "#593" ).removeClass( "hide" ).addClass( "show" );
 $("#note").prop('required',true);
  $("p").css("color", "red");
 }
-else if(app_status=='512'){
-$( "#511" ).removeClass( "show" ).addClass( "hide" );
-$( "#512" ).removeClass( "hide" ).addClass( "show" );
+else if(app_status=='594'){
+$( "#593" ).removeClass( "show" ).addClass( "hide" );
+$( "#594" ).removeClass( "hide" ).addClass( "show" );
 
 }
-else if(app_status=='513'){
+else if(app_status=='611'){
 
-$( "#511" ).removeClass( "show" ).addClass( "hide" );
+$( "#593" ).removeClass( "show" ).addClass( "hide" );
 
-$( "#512" ).removeClass( "show" ).addClass( "hide" );
+$( "#594" ).removeClass( "show" ).addClass( "hide" );
 
-$( "#513" ).removeClass( "hide" ).addClass( "show" );
+$( "#611" ).removeClass( "hide" ).addClass( "show" );
 $("#note").prop('required',true);
  $("p").css("color", "red");
 }
-else if(app_status=='514'){
+else if(app_status=='612'){
 
-$( "#511" ).removeClass( "show" ).addClass( "hide" );
-$( "#512" ).removeClass( "show" ).addClass( "hide" );
-$( "#513" ).removeClass( "show" ).addClass( "hide" );
-$( "#515" ).removeClass( "show" ).addClass( "hide" );
-$( "#514" ).removeClass( "hide" ).addClass( "show" );
+$( "#593" ).removeClass( "show" ).addClass( "hide" );
+$( "#594" ).removeClass( "show" ).addClass( "hide" );
+$( "#611" ).removeClass( "show" ).addClass( "hide" );
+$( "#613" ).removeClass( "show" ).addClass( "hide" );
+$( "#612" ).removeClass( "hide" ).addClass( "show" );
 $("#note").prop('required',true);
  $("p").css("color", "red");
 }
 
-else if(app_status=='515'){
+else if(app_status=='613'){
 
-$( "#511" ).removeClass( "show" ).addClass( "hide" );
-$( "#512" ).removeClass( "show" ).addClass( "hide" );
-$( "#513" ).removeClass( "show" ).addClass( "hide" );
-$( "#514" ).removeClass( "show" ).addClass( "hide" );
-$( "#515" ).removeClass( "hide" ).addClass( "show" );
+$( "#593" ).removeClass( "show" ).addClass( "hide" );
+$( "#594" ).removeClass( "show" ).addClass( "hide" );
+$( "#611" ).removeClass( "show" ).addClass( "hide" );
+$( "#612" ).removeClass( "show" ).addClass( "hide" );
+$( "#613" ).removeClass( "hide" ).addClass( "show" );
 $("#note").prop('required',true);
  $("p").css("color", "red");
 }
@@ -1100,6 +1131,18 @@ dateFormat: 'yy-mm-dd'
     });
 
      $( "#date_work_permit" ).datepicker({
+
+dateFormat: 'yy-mm-dd'
+
+    });
+
+     $( "#invitation_date_tantative" ).datepicker({
+
+dateFormat: 'yy-mm-dd'
+
+    });
+
+     $( "#invitation_date_final" ).datepicker({
 
 dateFormat: 'yy-mm-dd'
 

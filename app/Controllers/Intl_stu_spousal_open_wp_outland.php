@@ -379,6 +379,10 @@ $insert= $ACC->insert([
     }
   ///account end
 $stt=$this->request->getPost('application_status');
+// Statuses with no mail block below: mail picked by status name (status_change_mail_helper)
+if(in_array($stt, array('63'))) {
+status_change_mail($id,$stt,$this->request);
+}
 
 if($stt=='45') {
 
@@ -1370,6 +1374,10 @@ if($updatee){
 
 	
 $stt=$this->request->getPost('application_status');
+// Statuses with no mail block below: mail picked by status name (status_change_mail_helper)
+if(in_array($stt, array('63'))) {
+status_change_mail($id,$stt,$this->request);
+}
 
 if($stt=='45') {
 

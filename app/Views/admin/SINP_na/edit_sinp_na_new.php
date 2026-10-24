@@ -157,8 +157,9 @@
        
        
         <option value="431">Application in Process</option>
-     
-        <option value="432">Application Submitted</option> 
+
+        <option value="604">Invitation Received</option>
+        <option value="432">Application Submitted</option>
       
          <option value="433">Approved</option> 
          <option value="434">Refused</option> 
@@ -336,6 +337,30 @@
 
   
  
+  <!--section Start -->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="604" style="margin-top:1px;">
+            <div class="right-side">
+              <div class="content" >
+                <h2 >Invitation Received</h2>
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-6 mb-6">
+                     <div class="form-group">
+ <label class="small mb-1" for="invitation_date_tantative">Tentative Submission Date </label>
+ <input type="text" name="invitation_date_tantative" id="invitation_date_tantative" class="form-control" placeholder="Enter tentative submission date" value="<?php echo $cpm['0']['invitation_date_tantative'];?>" readonly=""    />
+</div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-6 mb-6">
+                     <div class="form-group">
+ <label class="small mb-1" for="invitation_date_final"> Final Submission Date  </label>
+ <input type="text" name="invitation_date_final" id="invitation_date_final" value="<?php echo $cpm['0']['invitation_date_final'];?>" class="form-control" readonly=""   placeholder="Enter final submission date "  />
+</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  <!--section End -->
+
   <!--section Start -->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="432" style="margin-top:1px;">
             <div class="right-side">
@@ -1337,6 +1362,12 @@ $( "#reason" ).removeClass( "hide" ).addClass( "show" );
   function show_hide_div(){
 var app_status =document.getElementById("application_status").value;
 
+$( "#604" ).removeClass( "show" ).addClass( "hide" );
+if(app_status=='604'){
+$.each(['430','431','432','433','434'], function(i,v){ $( "#"+v ).removeClass( "show" ).addClass( "hide" ); });
+$( "#604" ).removeClass( "hide" ).addClass( "show" );
+}
+
 if(app_status=='430'){  
 $( "#430" ).removeClass( "hide" ).addClass( "show" );
 $("#note").prop('required',true);
@@ -1701,6 +1732,12 @@ dateFormat: 'yy-mm-dd'
 
 
 
+
+     $( "#invitation_date_tantative" ).datepicker({
+
+dateFormat: 'yy-mm-dd'
+
+    });
 
      $( "#invitation_date_final" ).datepicker({
 

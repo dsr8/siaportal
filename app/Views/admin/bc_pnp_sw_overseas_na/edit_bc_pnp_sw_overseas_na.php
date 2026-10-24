@@ -319,6 +319,30 @@ if($app_st=='35'){ ?>
   
  
   <!--section Start -->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="601" style="margin-top:1px;">
+            <div class="right-side">
+              <div class="content" >
+                <h2 >Invitation Received</h2>
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-6 mb-6">
+                     <div class="form-group">
+ <label class="small mb-1" for="invitation_date_tantative">Tentative Submission Date </label>
+ <input type="text" name="invitation_date_tantative" id="invitation_date_tantative" class="form-control" placeholder="Enter tentative submission date" value="<?php echo $cpm['0']['invitation_date_tantative'];?>" readonly=""    />
+</div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-6 mb-6">
+                     <div class="form-group">
+ <label class="small mb-1" for="invitation_date_final"> Final Submission Date  </label>
+ <input type="text" name="invitation_date_final" id="invitation_date_final" value="<?php echo $cpm['0']['invitation_date_final'];?>" class="form-control" readonly=""   placeholder="Enter final submission date "  />
+</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  <!--section End -->
+
+  <!--section Start -->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hide " id="357" style="margin-top:1px;">
             <div class="right-side">
               <div class="content" >
@@ -1235,6 +1259,12 @@ $( "#reason" ).removeClass( "hide" ).addClass( "show" );
   function show_hide_div(){
 var app_status =document.getElementById("application_status").value;
 
+$( "#601" ).removeClass( "show" ).addClass( "hide" );
+if(app_status=='601'){
+$.each(['355','356','357','358','359'], function(i,v){ $( "#"+v ).removeClass( "show" ).addClass( "hide" ); });
+$( "#601" ).removeClass( "hide" ).addClass( "show" );
+}
+
 if(app_status=='355'){  
 $( "#355" ).removeClass( "hide" ).addClass( "show" );
 }
@@ -1540,6 +1570,12 @@ dateFormat: 'yy-mm-dd'
 
 
 
+
+     $( "#invitation_date_tantative" ).datepicker({
+
+dateFormat: 'yy-mm-dd'
+
+    });
 
      $( "#invitation_date_final" ).datepicker({
 

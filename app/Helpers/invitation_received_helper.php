@@ -41,8 +41,29 @@ $message1 = preg_replace('/\\\\/', '', $message);
     $email1->setSubject($subject);
     $email1->setMessage($message1);
     $email1->send();
-    
-    
+
+
+}
+
+// Invitation Received for FSW, FSTW, CEC, AINP, MINP, SINP, NSNP, BC PNP SW In Can / Overseas / Healthcare:
+// finds the client + assigned team member from the application, then team mail + SMS + client mail.
+function invitation_received_status_mail($app_id,$assign_to,$invitation_date_tantative,$invitation_date_final){
+    $app = (new \App\Models\Client_application_model())->where('id',$app_id)->first();
+    if(empty($app)) return;
+
+    $pm = (new \App\Models\Prospect_model())->where('id',$app['siaportalid'])->first();
+    if(empty($pm)) return;
+
+    $tm = $assign_to ? (new \App\Models\Team_model())->where('id',$assign_to)->first() : null;
+    $fname   = $tm['firstname'] ?? '';
+    $tmobile = $tm['mobile_no'] ?? '';
+
+    invitation_received_team_mail($pm['id'],$pm['heading'],$invitation_date_tantative,$invitation_date_final);
+
+    $message1="Hi Team Invitation received-".$pm['id']." -Name-".$pm['heading']." - Final Submission Date-".$invitation_date_final." ";
+    send_sms($message1,array('12368661740'));
+
+    invitation_received_client_mail_msg($pm['heading'],$fname,$tmobile,$pm['number'],$pm['email']);
 }
 
 //function invitation_received_client_mail_msg($name,$tname,$tmobile,$cmobile,$email){}

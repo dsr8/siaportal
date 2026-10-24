@@ -243,6 +243,11 @@ $approval_letter_link='';
 	'update_on'=>date( 'Y-m-d H:i:s' )
 ];
 
+// Invitation Received: save the submission dates only for this status, so other statuses keep them
+if($this->request->getPost('application_status')=='603'){
+	$data['invitation_date_tantative']=$this->request->getPost('invitation_date_tantative');
+	$data['invitation_date_final']=$this->request->getPost('invitation_date_final');
+}
 $cam = new Client_application_model(); 
 $updatee=$cam->update($id, $data);
 if($updatee){
@@ -370,6 +375,13 @@ $insert= $ACC->insert([
   ///account end
 
 $stt=$this->request->getPost('application_status');
+// Statuses with no mail block below: mail picked by status name (status_change_mail_helper)
+if(in_array($stt, array('590','591','592'))) {
+status_change_mail($id,$stt,$this->request);
+}
+if($stt=='603') {
+invitation_received_status_mail($id,$this->request->getPost('assign_to'),$this->request->getPost('invitation_date_tantative'),$this->request->getPost('invitation_date_final'));
+}
 if($stt=='380') {
 
 
@@ -944,12 +956,24 @@ $approval_letter_link='';
 	'update_on'=>date( 'Y-m-d H:i:s' )
 ];
 
+// Invitation Received: save the submission dates only for this status, so other statuses keep them
+if($this->request->getPost('application_status')=='603'){
+	$data['invitation_date_tantative']=$this->request->getPost('invitation_date_tantative');
+	$data['invitation_date_final']=$this->request->getPost('invitation_date_final');
+}
 $cam = new Client_application_model(); 
 $updatee=$cam->update($id, $data);
 if($updatee){
 
   
 $stt=$this->request->getPost('application_status');
+// Statuses with no mail block below: mail picked by status name (status_change_mail_helper)
+if(in_array($stt, array('590','591','592'))) {
+status_change_mail($id,$stt,$this->request);
+}
+if($stt=='603') {
+invitation_received_status_mail($id,$this->request->getPost('assign_to'),$this->request->getPost('invitation_date_tantative'),$this->request->getPost('invitation_date_final'));
+}
 if($stt=='380') {
 
 

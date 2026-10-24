@@ -249,6 +249,10 @@ if($updatee){
     // account (sia_account) is not part of this form, so it is not written here
 
 $stt=$this->request->getPost('application_status');
+// Statuses with no mail block below: mail picked by status name (status_change_mail_helper)
+if(in_array($stt, array('516','517','518','519','520'))) {
+status_change_mail($id,$stt,$this->request);
+}
 if($stt=='330') {
 
 

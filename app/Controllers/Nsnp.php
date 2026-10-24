@@ -243,6 +243,11 @@ $approval_letter_link='';
 	'update_on'=>date( 'Y-m-d H:i:s' )
 ];
 
+// Invitation Received: save the submission dates only for this status, so other statuses keep them
+if($this->request->getPost('application_status')=='605'){
+	$data['invitation_date_tantative']=$this->request->getPost('invitation_date_tantative');
+	$data['invitation_date_final']=$this->request->getPost('invitation_date_final');
+}
 $cam = new Client_application_model();
 $updatee=$cam->update($id, $data);
 if($updatee){
@@ -252,7 +257,10 @@ if($updatee){
 
 
 $stt=$this->request->getPost('application_status');
-if($stt=='511') {
+if($stt=='605') {
+invitation_received_status_mail($id,$this->request->getPost('assign_to'),$this->request->getPost('invitation_date_tantative'),$this->request->getPost('invitation_date_final'));
+}
+if($stt=='593') {
 
 
 		$CC = new Client_application_model();
@@ -302,7 +310,7 @@ assign_team_member($name,$fname,$tmobile,$cmobile,$email);
 
 
 
- else if($stt=='512') {
+ else if($stt=='594') {
 
 
 		$CC = new Client_application_model();
@@ -361,7 +369,7 @@ profile_in_process_client_mail_sms($name,$fname,$tmobile,$cmobile,$email);
 
 
 
-  if($stt=='513') {
+  if($stt=='611') {
 
 
 		$CC = new Client_application_model();
@@ -420,7 +428,7 @@ application_submitted_mail_to_client($name,$fname,$tmobile,$cmobile,$email);
 
 
 
- if($stt=='514') {
+ if($stt=='612') {
 
 
 		$CC = new Client_application_model();
@@ -469,7 +477,7 @@ send_sms($message1,$phone);
 approve_mail_client($name,$fname,$cmobile,$email,$iggd);
 
  }
-if($stt=='515') {
+if($stt=='613') {
 
 
 		$CC = new Client_application_model();
