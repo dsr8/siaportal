@@ -32,7 +32,7 @@ class BC_PNP_semi_skilled_long_haul_truck extends BaseController
 public function edit_bc_pnp_semi_skilled_long_haul_truck($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -739,7 +739,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_bc_pnp_semi_skilled_long_haul_truck_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

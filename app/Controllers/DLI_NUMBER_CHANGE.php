@@ -34,7 +34,7 @@ class DLI_NUMBER_CHANGE extends BaseController
 public function edit_dli_number_change($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -736,7 +736,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_dli_number_change_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

@@ -48,7 +48,7 @@ class Appoint extends BaseController
 
         $from = $this->request->getGet('from') ?? 'index';
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             $Appoint    = new Appointment_model();
             $ct         = $this->request->getPost('consultation_type') ?? '';
             $assignedTo = trim($this->request->getPost('assigned_to') ?? '');
@@ -193,7 +193,7 @@ class Appoint extends BaseController
 
         $from = $this->request->getGet('from') ?? 'index';
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             $newDate     = $this->request->getPost('appointment_date');
             $newTime     = $this->request->getPost('appointment_time');
             $newAssigned = trim($this->request->getPost('assigned_to') ?? '');
@@ -463,7 +463,7 @@ class Appoint extends BaseController
             return $closed;
         }
 
-        if ($this->request->getMethod() === 'post') {
+        if ($this->request->is('post')) {
             $preferred = $this->request->getPost('preferred_date') . ' ' . $this->request->getPost('preferred_time');
             $notes     = $this->request->getPost('notes');
             $siaId     = 'SIA-' . ($appt['prospect_id'] ?: $id);
@@ -540,7 +540,7 @@ input,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;f
             return $closed;
         }
 
-        if ($this->request->getMethod() === 'post') {
+        if ($this->request->is('post')) {
             $reason = $this->request->getPost('reason');
             $siaId  = 'SIA-' . ($appt['prospect_id'] ?: $id);
 

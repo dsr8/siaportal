@@ -33,7 +33,7 @@ class New_public_policy_for_PR extends BaseController
 public function edit_new_public_policy_for_PR_inland($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -734,7 +734,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_new_public_policy_for_PR_inland_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

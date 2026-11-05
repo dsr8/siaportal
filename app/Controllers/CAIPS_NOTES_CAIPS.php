@@ -32,7 +32,7 @@ class CAIPS_NOTES_CAIPS extends BaseController
 public function edit_caips_notes_caips($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -736,7 +736,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_caips_notes_caips_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

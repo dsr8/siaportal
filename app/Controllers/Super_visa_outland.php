@@ -32,7 +32,7 @@ class Super_visa_outland extends BaseController
 public function edit_super_visa_outland($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -944,7 +944,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_super_visa_outland_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

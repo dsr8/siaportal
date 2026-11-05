@@ -21,7 +21,7 @@ class Template extends BaseController
             return redirect()->to(base_url());
         }
 
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -72,7 +72,7 @@ class Template extends BaseController
         if (!$this->isAuthorized()) {
             return $this->response->setJSON(['success' => false]);
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return $this->response->setJSON(['success' => false]);
         }
 

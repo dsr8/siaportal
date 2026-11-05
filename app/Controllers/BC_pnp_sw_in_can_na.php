@@ -32,7 +32,7 @@ class BC_pnp_sw_in_can_na extends BaseController
 public function edit_bc_pnp_sw_in_can_na($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -747,7 +747,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_bc_pnp_sw_in_can_na_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

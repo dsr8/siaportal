@@ -101,7 +101,7 @@ class Agreement extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -122,7 +122,7 @@ class Agreement extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -149,7 +149,7 @@ class Agreement extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -190,7 +190,7 @@ class Agreement extends BaseController
         if (!$this->isAuthorized()) {
             return $this->response->setStatusCode(401)->setJSON(['ok' => false, 'message' => 'Please log in again.']);
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return $this->response->setStatusCode(405)->setJSON(['ok' => false, 'message' => 'Invalid request.']);
         }
 
@@ -311,7 +311,7 @@ class Agreement extends BaseController
         if (!$this->isAuthorized()) {
             return $this->response->setJSON(['success' => false, 'error' => 'Unauthorized']);
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return $this->response->setJSON(['success' => false, 'error' => 'Invalid request']);
         }
 
@@ -358,7 +358,7 @@ class Agreement extends BaseController
             return redirect()->to(base_url());
         }
 
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -520,7 +520,7 @@ class Agreement extends BaseController
             return redirect()->to(base_url());
         }
 
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -552,7 +552,7 @@ class Agreement extends BaseController
             return redirect()->to(base_url());
         }
 
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -666,7 +666,7 @@ class Agreement extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -756,7 +756,7 @@ class Agreement extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 

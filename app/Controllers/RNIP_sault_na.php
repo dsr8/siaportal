@@ -32,7 +32,7 @@ class RNIP_sault_na extends BaseController
 public function edit_rnip_sault_na($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -735,7 +735,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_rnip_sault_na_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

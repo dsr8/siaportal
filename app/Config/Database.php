@@ -14,7 +14,7 @@ class Database extends \CodeIgniter\Database\Config
 	 *
 	 * @var string
 	 */
-	public $filesPath = APPPATH . 'Database/';
+	public string $filesPath = APPPATH . 'Database/';
 
 	/**
 	 * Lets you choose which connection group to
@@ -22,14 +22,14 @@ class Database extends \CodeIgniter\Database\Config
 	 *
 	 * @var string
 	 */
-	public $defaultGroup = 'default';
+	public string $defaultGroup = 'default';
 
 	/**
 	 * The default database connection.
 	 *
 	 * @var array
 	 */
-	public $default = [
+	public array $default = [
 		'DSN'      => '',
 		'hostname' => 'localhost',
 		'username' => 'sia_user',
@@ -58,7 +58,7 @@ class Database extends \CodeIgniter\Database\Config
 	 *
 	 * @var array
 	 */
-	public $tests = [
+	public array $tests = [
 		'DSN'      => '',
 		'hostname' => '127.0.0.1',
 		'username' => '',
@@ -92,21 +92,6 @@ class Database extends \CodeIgniter\Database\Config
 		if (ENVIRONMENT === 'testing')
 		{
 			$this->defaultGroup = 'tests';
-
-			// Under Travis-CI, we can set an ENV var named 'DB_GROUP'
-			// so that we can test against multiple databases.
-			if ($group = getenv('DB'))
-			{
-				if (is_file(TESTPATH . 'travis/Database.php'))
-				{
-					require TESTPATH . 'travis/Database.php';
-
-					if (! empty($dbconfig) && array_key_exists($group, $dbconfig))
-					{
-						$this->tests = $dbconfig[$group];
-					}
-				}
-			}
 		}
 	}
 

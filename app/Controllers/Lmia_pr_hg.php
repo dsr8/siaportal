@@ -33,7 +33,7 @@ class Lmia_pr_hg extends BaseController
 public function edit_lmia_pr_high_wage($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -1187,7 +1187,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_lmia_pr_high_wage_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

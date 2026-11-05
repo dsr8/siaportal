@@ -34,7 +34,7 @@ public function edit_lmia_dual_int_high_wage($category,$id,$sid){
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -1183,7 +1183,7 @@ public function edit_lmia_dual_int_high_wage_new($category,$id,$sid){
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

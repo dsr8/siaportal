@@ -32,7 +32,7 @@ class BC_PNP_tech_pilot_skill_worker extends BaseController
 public function edit_bc_pnp_tech_pilot_skill_worker($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -739,7 +739,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_bc_pnp_tech_pilot_skill_worker_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

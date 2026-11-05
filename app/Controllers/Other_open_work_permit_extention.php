@@ -33,7 +33,7 @@ class Other_open_work_permit_extention extends BaseController
 public function edit_other_open_work_permit_extention($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -736,7 +736,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_other_open_work_permit_extention_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

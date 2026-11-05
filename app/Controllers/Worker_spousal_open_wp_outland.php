@@ -33,7 +33,7 @@ class Worker_spousal_open_wp_outland extends BaseController
 public function edit_worker_spousal_open_wp_outland($category,$id,$sid){
   
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -737,7 +737,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_worker_spousal_open_wp_outland_new($category,$id,$sid){
   
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

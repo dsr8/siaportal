@@ -23,7 +23,7 @@ class Birthday extends BaseController
             return redirect()->to('index');
         }
 
-        if ($this->request->getMethod() === 'post') {
+        if ($this->request->is('post')) {
             $data = [
                 'name'  => $this->request->getPost('name'),
                 'email' => $this->request->getPost('email'),
@@ -44,7 +44,7 @@ class Birthday extends BaseController
             return redirect()->to('index');
         }
 
-        if ($this->request->getMethod() === 'post') {
+        if ($this->request->is('post')) {
             $data = [
                 'name'  => $this->request->getPost('name'),
                 'email' => $this->request->getPost('email'),

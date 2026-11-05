@@ -32,7 +32,7 @@ class Citizenship_certi_application_adult extends BaseController
 public function edit_citizenship_certi_application_adult($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -733,7 +733,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_citizenship_certi_application_adult_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

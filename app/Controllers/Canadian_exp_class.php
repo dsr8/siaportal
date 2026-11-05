@@ -33,7 +33,7 @@ class Canadian_exp_class extends BaseController
 public function edit_canadian_exp_class($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -880,7 +880,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_canadian_exp_class_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

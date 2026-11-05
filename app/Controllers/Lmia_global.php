@@ -34,7 +34,7 @@ public function edit_lmia_global_tlnt_high_wage($category,$id,$sid){
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -1187,7 +1187,7 @@ public function edit_lmia_global_tlnt_high_wage_new($category,$id,$sid){
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

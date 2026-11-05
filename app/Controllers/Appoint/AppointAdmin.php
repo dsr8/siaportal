@@ -32,7 +32,7 @@ class AppointAdmin extends BaseController
 
         $data = ['error' => ''];
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             $user  = trim($this->request->getPost('username'));
             $pass  = $this->request->getPost('password');
             $found = false;

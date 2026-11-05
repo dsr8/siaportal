@@ -167,7 +167,7 @@ function p_status(id,st)
                                                 $p3 = $ag['pay_three'];
                                                 $p4 = $ag['pay_four'];
                                                 $p5 = $ag['pay_five'];
-                                                $p6 = $ag['pay_six'];
+                                                $p6 = ($ag['pay_six'] ?? '');
 
                                                 if($p1=='paid'){
                                                  $pp1= $ag['pay_one_amount'];
@@ -197,7 +197,7 @@ function p_status(id,st)
                                                   $pp5='0';
                                                 }
                                                  if($p6=='paid'){
-                                                 $pp6= $ag['pay_six_amount'];
+                                                 $pp6= ($ag['pay_six_amount'] ?? '');
                                                 }else{
                                                   $pp6='0';
                                                 }
@@ -207,7 +207,7 @@ function p_status(id,st)
 
 
 
-                                                 /*echo $aa=  $ag['pay_one_amount']+$ag['pay_two_amount']+$ag['pay_three_amount']+$ag['pay_four_amount']+$ag['pay_five_amount']+$ag['pay_six_amount'] */
+                                                 /*echo $aa=  $ag['pay_one_amount']+$ag['pay_two_amount']+$ag['pay_three_amount']+$ag['pay_four_amount']+$ag['pay_five_amount']+($ag['pay_six_amount'] ?? '') */
 
 
                                                     ?>/<?php echo $as=$tpa-$aa?>
@@ -245,7 +245,7 @@ $poa=$ag['pay_one_amount'];
  $ptha=$ag['pay_three_amount'];
  $pfa=$ag['pay_four_amount'];
  $pfia=$ag['pay_five_amount'];
- $psa=$ag['pay_six_amount'];
+ $psa=($ag['pay_six_amount'] ?? '');
 
                echo  $rm=$tm-($aa);
 
@@ -429,7 +429,7 @@ $poa=$ag['pay_one_amount'];
              <div class="form-group">
  <label class="small mb-1" for="inputFirstName">6th Payment </label></br>
 
-  <input type="text" class="form-control" readonly=""    value="<?php echo $ag['pay_six'];?>" />
+  <input type="text" class="form-control" readonly=""    value="<?php echo ($ag['pay_six'] ?? '');?>" />
 </div>
 
 
@@ -437,7 +437,7 @@ $poa=$ag['pay_one_amount'];
  <label class="small mb-1" for="inputFirstName"> Note's 6th Payment</label>
  <input type="text" readonly="" class="form-control" name="pay_sex_note" id="pay_sex_note"  placeholder="Enter Note's 6th Payment"  value="<?php echo $ag['pay_sex_note'];?>" /> 
   <label class="small mb-1" for="inputFirstName">6th Payment Amount (IN Number Only)</label>
- <input type="number"readonly="" class="form-control" name="pay_six_amount" id="pay_six_amount"  placeholder="Enter 6th Payment Amount (IN Number Only)"  value="<?php echo $ag['pay_six_amount'];?>" /> 
+ <input type="number"readonly="" class="form-control" name="pay_six_amount" id="pay_six_amount"  placeholder="Enter 6th Payment Amount (IN Number Only)"  value="<?php echo ($ag['pay_six_amount'] ?? '');?>" /> 
   
 </div>     
                      

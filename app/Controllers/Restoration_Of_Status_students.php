@@ -33,7 +33,7 @@ class Restoration_Of_Status_students extends BaseController
 public function edit_worker_spousal_open_wp_outland($category,$id,$sid){
   
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -737,7 +737,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_students_new($category,$id,$sid){
   
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

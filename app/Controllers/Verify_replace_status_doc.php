@@ -34,7 +34,7 @@ public function edit_verify_replace_status_doc_new($category,$id,$sid){
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

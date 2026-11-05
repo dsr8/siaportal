@@ -35,7 +35,7 @@ public function edit_study_permit_application_inland($category,$id,$sid){
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -747,7 +747,7 @@ public function edit_study_permit_application_inland_new($category,$id,$sid){
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

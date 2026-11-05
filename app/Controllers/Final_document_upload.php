@@ -60,7 +60,7 @@ $Prospect = new Prospect_model();
 public function final_document_upload($id)
 	{
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
  if( $this->request->getFileMultiple('resume'))

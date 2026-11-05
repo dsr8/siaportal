@@ -94,7 +94,7 @@ if (session()->get('isLoggedIn') == true) {
   color: #fff !important;
 }
 .sb-sidenav-dark .sb-sidenav-menu .nav-link.active,
-#sidenavAccordion .nav-link[href*="dashboard"] {
+#sidenavAccordion .nav-link[href$="/Siaportal/dashboard"] {
   background: #4CAF50 !important;
   color: #fff !important;
   border-radius: 8px;

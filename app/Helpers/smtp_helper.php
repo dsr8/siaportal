@@ -19,7 +19,7 @@ function get_smtp_settings(){
 $config = array(
     'protocol'       =>  'smtp',
     'SMTPHost'       =>  $smtpSettings['MAIL_HOST'],
-    'SMTPPort'       =>  $smtpSettings['MAIL_PORT'],
+    'SMTPPort'       =>  (int) $smtpSettings['MAIL_PORT'],
     'SMTPUser'       =>  $smtpSettings['MAIL_USERNAME'],
     'SMTPPass'       =>  $smtpSettings['MAIL_PASSWORD'],//'dqghienvgifbkrmi',//'zbhbulunfpakfucg', 
     'SMTPCrypto'     =>  $smtpSettings['MAIL_ENCRYPTION'],  // 'ssl' or 'tls'
@@ -28,7 +28,7 @@ $config = array(
     'mailsubject'    =>   'No subject - Sia Immigration',
     
     'mailType'       => 'html',
-    'SMTPTimeout'    => '10', //in seconds
+    'SMTPTimeout'    => 10, //in seconds
     'charset'        => 'utf-8',
     'newline'        => "\r\n",
     'validate'       => TRUE,

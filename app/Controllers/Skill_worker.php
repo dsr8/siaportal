@@ -34,7 +34,7 @@ public function edit_skill_worker_new($category,$id,$sid){
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

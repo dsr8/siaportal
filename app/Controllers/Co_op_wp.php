@@ -33,7 +33,7 @@ class Co_op_wp extends BaseController
 public function edit_co_op_wp($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -733,7 +733,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_co_op_wp_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

@@ -65,7 +65,7 @@ function forget_pass(){
 
 
 
-	if ($this->request->getMethod() == 'post') {
+	if ($this->request->is('post')) {
 
 $email=$this->request->getPost('email');
 
@@ -385,7 +385,7 @@ public function test_smtp_mail() {
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 	$postData = $this->request->getPost();
 	$data = [
@@ -716,7 +716,7 @@ public function  login()
 
 $data=[];
 
-		if ($this->request->getMethod() == 'post') {
+		if ($this->request->is('post')) {
 
 
 			//let's do the validation here
@@ -1017,7 +1017,7 @@ $New_form = new New_form_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -1308,7 +1308,7 @@ if (session()->get('isClientLoggedIn') !=true) {
 
 	 $data['ccc'] = $cpm->where('siaportalid', $sid)
 	 ->orderBy('id','asc')
-      ->limit('1')
+      ->limit(1)
 	 
                    ->findAll();
 
@@ -1319,7 +1319,7 @@ $tm = new Team_model();
 
 	 $data['asign'] = $tm->where('id', $at)
 	 ->orderBy('id','asc')
-      ->limit('1')
+      ->limit(1)
 	 
                    ->findAll();
 
@@ -1359,7 +1359,7 @@ $tm = new Team_model();
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
  if($img = $this->request->getFile('resume'))
@@ -1533,7 +1533,7 @@ public function add_client()
 
 
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Prospect = new Prospect_model();
 
 $cc=$this->request->getPost('cc');
@@ -2101,7 +2101,7 @@ public function edit_client_prospect($id)
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -2262,7 +2262,7 @@ public function edit_move_to_client($id)
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 	//echo"hi";
 	//echo $id;
@@ -2842,7 +2842,7 @@ public function edit_move_to_client_bkp($id)
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 	//echo"hi";
 	//echo $id;
@@ -3288,7 +3288,7 @@ if($entries=='all'){
 		 if (session()->get('isLoggedIn') !=true) {
 				return redirect()->to('index');		
 }
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 
  			$client_type=$this->request->getPost('client_type');
  			$start_id=$this->request->getPost('start_id');
@@ -3435,7 +3435,7 @@ public function edit_refer_client($id)
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -3559,7 +3559,7 @@ public function add_emp()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Emp = new Emp_model();
 
 $insert=$Emp->insert([
@@ -3718,7 +3718,7 @@ $Emp = new Emp_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -3778,7 +3778,7 @@ public function add_job_lmia()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Lmia_job = new Lmia_job_model();
 
 $insert=$Lmia_job->insert([
@@ -5291,7 +5291,7 @@ $Lmia_job = new Lmia_job_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -5393,7 +5393,7 @@ $Siaportal = new Siaportal_model();
 		
 }
 
-				if ($this->request->getMethod()=='post'){
+				if ($this->request->is('post')){
 
 
  if($img = $this->request->getFile('resume'))
@@ -5626,7 +5626,7 @@ $Lmia = new Prospect_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -5681,7 +5681,7 @@ public function edit_student_need_job($id)
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -5739,7 +5739,7 @@ public function add_student_need_job()
 		
 }
 
-				if ($this->request->getMethod()=='post'){
+				if ($this->request->is('post')){
 
 
  if($img = $this->request->getFile('resume'))
@@ -6024,7 +6024,7 @@ public function add_td_card()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Siaportal = new Siaportal_model();
 
 $insert=$Siaportal->insert([
@@ -6083,7 +6083,7 @@ public function add_agent()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Agents = new Agent_model();
 
 
@@ -6247,7 +6247,7 @@ $Agent = new Agent_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -6315,7 +6315,7 @@ public function add_new_form()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $New_form = new New_form_model();
 
 $insert=$New_form->insert([
@@ -6462,7 +6462,7 @@ $New_form = new New_form_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -6528,7 +6528,7 @@ public function add_prospect()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Prospect = new Prospect_model();
 
 
@@ -6630,7 +6630,7 @@ $Prospect = new Prospect_model();
 
  $entries=$this->request->getPost('entries');
  $Prospect = new Prospect_model(); 
-//if ($this->request->getMethod()=='post'){
+//if ($this->request->is('post')){
 
 	 $entries=$this->request->getPost('entries');
 	 $Prospect = new Prospect_model(); 
@@ -6694,7 +6694,7 @@ public function edit_prospect($id)
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 $num=$this->request->getPost('number');
 $coc=$this->request->getPost('cc');
@@ -8440,7 +8440,7 @@ public function add_client_login()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 
 $rules = [
 'firstname' =>'required|min_length[3]',
@@ -8601,7 +8601,7 @@ public function add_team_login()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 
 $rules = [
 'firstname' =>'required|min_length[3]',
@@ -8840,7 +8840,7 @@ public function edit_team($id)
 }
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -8899,7 +8899,7 @@ public function edit_client($id)
 				return redirect()->to('index');
 		
 }
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -8966,7 +8966,7 @@ public function add_category()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Category = new Category_model();
 
 $insert=$Category->insert([
@@ -9025,7 +9025,7 @@ $Category = new Category_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -9081,7 +9081,7 @@ public function add_type()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Type = new Type_client_model();
 
 $insert=$Type->insert([
@@ -9141,7 +9141,7 @@ $Type = new Type_client_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -9210,7 +9210,7 @@ public function add_status()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Status = new Status_model();
 
 $insert=$Status->insert([
@@ -9277,7 +9277,7 @@ $status = new Status_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -9341,7 +9341,7 @@ public function add_client_application($id)
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $client_application = new Client_application_model();
 
 $insert=$client_application->insert([
@@ -10868,7 +10868,7 @@ public function edit_client_application($category,$id,$sid,$type)
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -11948,7 +11948,7 @@ public function add_adv()
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Adv = new Adv_model();
 
 $insert=$Adv->insert([
@@ -12211,7 +12211,7 @@ $Adv2 = new Client_application_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -12400,7 +12400,7 @@ $message1 = preg_replace('/\\\\/', '', $message);
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Adr = new Adr_model();
 
 if($this->request->getFile('adr_doc') !=''){
@@ -12550,7 +12550,7 @@ $Adr = new Adr_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 if($this->request->getFile('adr_doc') !=''){
@@ -12646,7 +12646,7 @@ $Adr = new Adr_model();
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 
 	$tt=$this->request->getPost('typee');
 			if($tt=='student_need_job' ||$tt=='lmia_needed' ){
@@ -12728,7 +12728,7 @@ public function edit_team_immigration_enquiry($id,$page=NULL)
 
 
    
-  if ($this->request->getMethod()=='post'){
+  if ($this->request->is('post')){
 
 
 	$data = [
@@ -12788,7 +12788,7 @@ public function edit_admin_immigration_enquiry($id,$page=NULL)
 
 
    
-  if ($this->request->getMethod()=='post'){
+  if ($this->request->is('post')){
 
 
 	$data = [
@@ -12840,7 +12840,7 @@ if($updatee){
 
 
 public function mail_immigration_enquiry($id,$page=NULL){
-     if ($this->request->getMethod()=='post'){
+     if ($this->request->is('post')){
          
         	$ss=$this->request->getPost('status');
         	
@@ -13211,7 +13211,7 @@ $Imm = new Immigration_enquiry_model();
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 
 	$tt=$this->request->getPost('typee');
 			if($tt=='student_need_job' ||$tt=='lmia_needed' ){
@@ -13358,7 +13358,7 @@ $Imm = new Immigration_enquiry_model();
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $New = new New_recod_model();
 
 if($this->request->getFile('news_image') !=''){
@@ -13464,7 +13464,7 @@ $New_reco = new New_recod_model();
 		
 }
 
-		if ($this->request->getMethod()=='post'){
+		if ($this->request->is('post')){
 $Adr = new Service_model();
 
 
@@ -13595,7 +13595,7 @@ $Service = new Service_model();
 		
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	$data = [
@@ -13638,7 +13638,7 @@ $url = 'Siaportal/view_service';
 		
 }
 
-	if ($this->request->getMethod()=='post') 
+	if ($this->request->is('post')) 
 		{			
 				
 	
@@ -13885,7 +13885,7 @@ $url = 'Siaportal/view_adr';
 		
 }
 	    
- 		if ($this->request->getMethod()=='post'){
+ 		if ($this->request->is('post')){
 $Refer = new Refer_model();
 
 $sid =session()->get('siaprotal_id');

@@ -78,7 +78,7 @@ class Declaration extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -99,7 +99,7 @@ class Declaration extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -216,7 +216,7 @@ class Declaration extends BaseController
         if (!$this->isAuthorized()) {
             return $this->response->setJSON(['success' => false, 'error' => 'Unauthorized']);
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return $this->response->setJSON(['success' => false, 'error' => 'Invalid request']);
         }
 
@@ -265,7 +265,7 @@ class Declaration extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -347,7 +347,7 @@ class Declaration extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -456,7 +456,7 @@ class Declaration extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -513,7 +513,7 @@ class Declaration extends BaseController
         if (!$this->isAuthorized()) {
             return redirect()->to(base_url());
         }
-        if ($this->request->getMethod() !== 'post') {
+        if (! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 

@@ -33,7 +33,7 @@ class Lmia_wp_hg extends BaseController
 public function edit_lmia_wp_high_wage($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	 if($img = $this->request->getFile('upload_doc'))
@@ -1171,7 +1171,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_lmia_wp_high_wage_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 	 if($img = $this->request->getFile('upload_doc'))

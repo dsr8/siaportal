@@ -152,7 +152,7 @@
 				 
 				 
 				  
-				  <!--td style="width:5px;"><a href="<?php echo base_url();?>assets_admin/uploads/news_image/<?php echo $allcat['image'];?>"target="_blank" download><img  style="height:80px;width:80px;" src="<?php echo base_url();?>assets_admin/uploads/news_image/<?php echo $allcat['image'];?>" ></a>
+				  <!--td style="width:5px;"><a href="<?php echo base_url();?>assets_admin/uploads/news_image/<?php echo $allcat['image'] ?? '';?>"target="_blank" download><img  style="height:80px;width:80px;" src="<?php echo base_url();?>assets_admin/uploads/news_image/<?php echo $allcat['image'] ?? '';?>" ></a>
 				  
 				  
 				  

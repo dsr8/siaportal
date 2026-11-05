@@ -32,7 +32,7 @@ class Study_permit_application_outland extends BaseController
 public function edit_study_permit_application_outland($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

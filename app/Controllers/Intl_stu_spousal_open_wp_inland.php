@@ -32,7 +32,7 @@ class Intl_stu_spousal_open_wp_inland extends BaseController
 
 
 public function edit_intl_stu_spousal_open_wp_inland($category,$id,$sid){
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
  if($img = $this->request->getFile('fee_receipt'))
         {
         //	echo"hih";
@@ -1146,7 +1146,7 @@ $data['cpml'] = $cpm->where('id',$id)
 
 //////////new start
 public function edit_intl_stu_spousal_open_wp_inland_new($category,$id,$sid){
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
  if($img = $this->request->getFile('fee_receipt'))
         {
         //	echo"hih";

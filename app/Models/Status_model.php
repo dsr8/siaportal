@@ -55,7 +55,7 @@ public function getpost_status($tp){
       ->where('type_id ',$tp)
       ->orderBy('IF(sort_order > 0, sort_order, id * 10)', 'asc', false)
       ->orderBy('status.id','asc')
-      ->limit('1')
+      ->limit(1)
       ->get()->getResultArray();
 
       //return $this->findAll();
@@ -75,8 +75,8 @@ public function getpost_status($tp){
 
       ->orderBy($key, 'asc', false)
       ->orderBy('status.id','asc')
-     // ->limit('2')
-      //->limit('2')
+     // ->limit(2)
+      //->limit(2)
       ->get()->getResultArray();
 
       //return $this->findAll();

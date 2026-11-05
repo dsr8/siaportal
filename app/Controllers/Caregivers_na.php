@@ -32,7 +32,7 @@ class Caregivers_na extends BaseController
 public function edit_caregivers_na($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -736,7 +736,7 @@ $data['cpml'] = $cpm->where('id',$id)
 public function edit_caregivers_na_new($category,$id,$sid){
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

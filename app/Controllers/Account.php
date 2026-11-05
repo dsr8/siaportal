@@ -83,7 +83,7 @@ public function add_agent()
     
 }
 
-    if ($this->request->getMethod()=='post'){
+    if ($this->request->is('post')){
 $Agents = new Agent_model();
 
 $insert=$Agents->insert([
@@ -230,7 +230,7 @@ $Agent = new Agent_model();
     
 }
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
   $data = [

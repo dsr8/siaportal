@@ -31,7 +31,7 @@ class Bc_pnp_int_pg extends BaseController
 
  public function edit_bc_pnp_int_pg($category,$id,$sid){
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 
@@ -1513,7 +1513,7 @@ $data['cpml'] = $cpm->where('id',$id)
 ////////////new start//////
  public function edit_bc_pnp_int_pg_new($category,$id,$sid){
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

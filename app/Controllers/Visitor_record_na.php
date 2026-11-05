@@ -34,7 +34,7 @@ public function edit_visitor_record_na_new($category,$id,$sid){
 
 
 
-if ($this->request->getMethod()=='post'){
+if ($this->request->is('post')){
 
 
 

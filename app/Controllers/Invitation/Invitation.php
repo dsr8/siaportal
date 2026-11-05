@@ -79,7 +79,7 @@ class Invitation extends BaseController
     // and summary emails). The application, its status and its agreements are not touched.
     public function archive()
     {
-        if (!$this->isAuthorized() || $this->request->getMethod() !== 'post') {
+        if (!$this->isAuthorized() || ! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
@@ -92,7 +92,7 @@ class Invitation extends BaseController
 
     public function restore()
     {
-        if (!$this->isAuthorized() || $this->request->getMethod() !== 'post') {
+        if (!$this->isAuthorized() || ! $this->request->is('post')) {
             return redirect()->to(base_url());
         }
 
